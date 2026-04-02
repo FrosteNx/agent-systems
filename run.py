@@ -2,7 +2,6 @@ from model import FluModel
 import matplotlib.pyplot as plt
 
 
-
 model = FluModel(
     width=20,
     height=20,

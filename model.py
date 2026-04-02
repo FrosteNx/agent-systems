@@ -7,7 +7,6 @@ from agent import PersonAgent
 import random
 
 
-
 class FluModel(Model):
     def __init__(
         self,
