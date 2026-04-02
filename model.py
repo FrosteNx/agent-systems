@@ -25,6 +25,7 @@ class FluModel(Model):
         self.grid = MultiGrid(width, height, torus=True)
         self.schedule = RandomActivation(self)
         self.step_count = 0
+        self.schools = [(5, 5), (15, 15)]
 
         # disease parameters
         self.infection_probability = infection_probability
@@ -40,16 +41,25 @@ class FluModel(Model):
             else:
                 state = "Susceptible"
 
-            agent = PersonAgent(i, self, state)
+            if self.random.random() < 0.25:
+                age_group = "child"
+            else:
+                age_group = "adult"
+
+            agent = PersonAgent(i, self, state, age_group)
+
             self.schedule.add(agent)
 
             home_x = self.random.randrange(self.grid.width)
             home_y = self.random.randrange(self.grid.height)
             agent.home = (home_x, home_y)
 
-            work_x = self.random.randrange(self.grid.width)
-            work_y = self.random.randrange(self.grid.height)
-            agent.work = (work_x, work_y)
+            if agent.age_group == "child":
+                agent.work = self.random.choice(self.schools)
+            else:
+                work_x = self.random.randrange(self.grid.width)
+                work_y = self.random.randrange(self.grid.height)
+                agent.work = (work_x, work_y)
 
             self.grid.place_agent(agent, agent.home)
 
@@ -70,4 +80,10 @@ class FluModel(Model):
         for agent in self.schedule.agents:
             counts[agent.state] += 1
 
+        return counts
+    
+    def count_age_groups(self):
+        counts = {"child": 0, "adult": 0}
+        for agent in self.schedule.agents:
+            counts[agent.age_group] += 1
         return counts

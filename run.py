@@ -18,6 +18,8 @@ exposed_counts = []
 infected_counts = []
 recovered_counts = []
 
+print(model.count_age_groups())
+
 for i in range(steps):
     model.step()
     counts = model.count_states()

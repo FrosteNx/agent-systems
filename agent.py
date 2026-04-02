@@ -2,12 +2,18 @@ from mesa import Agent
 
 
 class PersonAgent(Agent):
-    def __init__(self, unique_id, model, state="Susceptible"):
+    def __init__(self, unique_id, model, state="Susceptible", age_group="adult"):
         super().__init__(unique_id, model)
         self.state = state
         self.days_in_state = 0
         self.home = None
         self.work = None
+        self.age_group = age_group
+
+        if self.age_group == "child":
+            self.transmission_multiplier = 1.5
+        else:
+            self.transmission_multiplier = 1.0
 
     def move(self):
         if self.state == "Infected":
@@ -32,7 +38,12 @@ class PersonAgent(Agent):
 
         for agent in neighbors:
             if agent is not self and agent.state == "Susceptible":
-                if self.random.random() < self.model.infection_probability:
+                infection_chance = min(
+                    1.0,
+                    self.model.infection_probability * self.transmission_multiplier
+                )
+
+                if self.random.random() < infection_chance:
                     agent.state = "Exposed"
                     agent.days_in_state = 0
 
