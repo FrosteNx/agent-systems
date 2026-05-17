@@ -61,6 +61,9 @@ print("Parameters saved to outputs/parameters.txt")
 
 parameters = {}
 
+parameters["EXPERIMENT_ID"] = experiment_id
+parameters["TIMESTAMP"] = timestamp
+
 for name in dir(config):
     if name.isupper():
         parameters[name] = getattr(config, name)
@@ -111,6 +114,8 @@ average_rt = results["Rt"].mean()
 
 with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
+    file.write(f"Experiment ID: {experiment_id}\n")
+    file.write(f"Timestamp: {timestamp}\n\n")
     file.write("======================\n\n")
     file.write(f"Population: {config.POPULATION}\n")
     file.write(f"Max steps: {config.SIMULATION_STEPS}\n")
