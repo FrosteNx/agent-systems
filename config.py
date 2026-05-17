@@ -1,3 +1,5 @@
+SCENARIO_NAME = "baseline"
+
 WIDTH = 20
 HEIGHT = 20
 

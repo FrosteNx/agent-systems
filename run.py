@@ -116,6 +116,7 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write(f"Experiment ID: {experiment_id}\n")
     file.write(f"Timestamp: {timestamp}\n\n")
+    file.write(f"Scenario: {config.SCENARIO_NAME}\n\n")
     file.write("======================\n\n")
     file.write(f"Population: {config.POPULATION}\n")
     file.write(f"Max steps: {config.SIMULATION_STEPS}\n")
