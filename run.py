@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import config
 import os
 from datetime import datetime
+import json
 
 
 model = FluModel(
@@ -49,6 +50,17 @@ with open(f"{data_dir}/parameters.txt", "w") as file:
             file.write(f"{name}: {value}\n")
 
 print("Parameters saved to outputs/parameters.txt")
+
+parameters = {}
+
+for name in dir(config):
+    if name.isupper():
+        parameters[name] = getattr(config, name)
+
+with open(f"{data_dir}/parameters.json", "w") as file:
+    json.dump(parameters, file, indent=4)
+
+print(f"Parameters saved to {data_dir}/parameters.json")
 
 actual_steps = 0
 
