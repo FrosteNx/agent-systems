@@ -40,6 +40,21 @@ print("Results saved to simulation_results.csv")
 
 print("Peak active cases:", model.peak_active_cases)
 
+final_counts = model.count_states()
+
+with open("simulation_summary.txt", "w") as file:
+    file.write("Flu simulation summary\n")
+    file.write("======================\n\n")
+    file.write(f"Population: {config.POPULATION}\n")
+    file.write(f"Steps: {config.SIMULATION_STEPS}\n")
+    file.write(f"Peak active cases: {model.peak_active_cases}\n\n")
+
+    file.write("Final state counts:\n")
+    for state, count in final_counts.items():
+        file.write(f"{state}: {count}\n")
+
+print("Summary saved to simulation_summary.txt")
+
 plt.plot(results["Susceptible"], label="Susceptible")
 plt.plot(results["Exposed"], label="Exposed")
 plt.plot(results["Infected"], label="Infected")
