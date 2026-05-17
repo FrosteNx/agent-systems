@@ -14,8 +14,13 @@ class PersonAgent(Agent):
 
         if self.age_group == "child":
             self.transmission_multiplier = 1.5
+            self.susceptibility_multiplier = 1.2
+        elif self.age_group == "senior":
+            self.transmission_multiplier = 1.0
+            self.susceptibility_multiplier = 1.4
         else:
             self.transmission_multiplier = 1.0
+            self.susceptibility_multiplier = 1.0
 
     def move(self):
         if self.state == "Infected":
@@ -42,7 +47,9 @@ class PersonAgent(Agent):
             if agent is not self and agent.state == "Susceptible":
                 infection_chance = min(
                     1.0,
-                    self.model.infection_probability * self.transmission_multiplier
+                    self.model.infection_probability
+                    * self.transmission_multiplier
+                    * agent.susceptibility_multiplier
                 )
 
                 if self.random.random() < infection_chance:
