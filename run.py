@@ -72,6 +72,13 @@ final_counts = model.count_states()
 
 attack_rate = model.total_infections / config.POPULATION
 
+dead_count = final_counts["Dead"]
+
+if model.total_infections > 0:
+    case_fatality_rate = dead_count / model.total_infections
+else:
+    case_fatality_rate = 0
+
 with open("outputs/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write("======================\n\n")
@@ -81,6 +88,7 @@ with open("outputs/simulation_summary.txt", "w") as file:
     file.write(f"Peak active cases: {model.peak_active_cases}\n\n")
     file.write(f"Total infections: {model.total_infections}\n")
     file.write(f"Attack rate: {attack_rate:.2%}\n")
+    file.write(f"Case fatality rate: {case_fatality_rate:.2%}\n")
 
     file.write("Final state counts:\n")
     for state, count in final_counts.items():
