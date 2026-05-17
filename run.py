@@ -1,6 +1,7 @@
 from model import FluModel
 import matplotlib.pyplot as plt
 import config
+import os
 
 
 model = FluModel(
@@ -27,6 +28,8 @@ steps = config.SIMULATION_STEPS
 
 print(model.count_age_groups())
 
+os.makedirs("outputs", exist_ok=True)
+
 for i in range(steps):
     model.step()
     counts = model.count_states()
@@ -35,14 +38,14 @@ for i in range(steps):
 
 results = model.datacollector.get_model_vars_dataframe()
 
-results.to_csv("simulation_results.csv", index_label="Step")
-print("Results saved to simulation_results.csv")
+results.to_csv("outputs/simulation_results.csv", index_label="Step")
+print("Results saved to outputs/simulation_results.csv")
 
 print("Peak active cases:", model.peak_active_cases)
 
 final_counts = model.count_states()
 
-with open("simulation_summary.txt", "w") as file:
+with open("outputs/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write("======================\n\n")
     file.write(f"Population: {config.POPULATION}\n")
@@ -53,7 +56,7 @@ with open("simulation_summary.txt", "w") as file:
     for state, count in final_counts.items():
         file.write(f"{state}: {count}\n")
 
-print("Summary saved to simulation_summary.txt")
+print("Summary saved to outputs/simulation_summary.txt")
 
 plt.plot(results["Susceptible"], label="Susceptible")
 plt.plot(results["Exposed"], label="Exposed")
