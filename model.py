@@ -19,7 +19,8 @@ class FluModel(Model):
         recovery_time=5,
         incubation_time=2,   
         vaccination_rate=0.2,
-        child_rate=0.25
+        child_rate=0.25,
+        senior_rate=0.15
     ):
         super().__init__()
 
@@ -35,6 +36,7 @@ class FluModel(Model):
         self.incubation_time = incubation_time
         self.vaccination_rate = vaccination_rate
         self.child_rate = child_rate
+        self.senior_rate = senior_rate
 
         for i in range(self.num_agents):
             if i < initial_infected:
@@ -44,8 +46,12 @@ class FluModel(Model):
             else:
                 state = "Susceptible"
 
-            if self.random.random() < self.child_rate:
+            r = self.random.random()
+
+            if r < self.child_rate:
                 age_group = "child"
+            elif r < self.child_rate + self.senior_rate:
+                age_group = "senior"
             else:
                 age_group = "adult"
 
@@ -96,7 +102,7 @@ class FluModel(Model):
         return counts
     
     def count_age_groups(self):
-        counts = {"child": 0, "adult": 0}
+        counts = {"child": 0, "adult": 0, "senior": 0}
         for agent in self.schedule.agents:
             counts[agent.age_group] += 1
         return counts

@@ -12,7 +12,8 @@ model = FluModel(
     recovery_time=config.RECOVERY_TIME,
     incubation_time=config.INCUBATION_TIME,
     vaccination_rate=config.VACCINATION_RATE,
-    child_rate=config.CHILD_RATE
+    child_rate=config.CHILD_RATE,
+    senior_rate=config.SENIOR_RATE
 )
 
 steps = config.SIMULATION_STEPS
