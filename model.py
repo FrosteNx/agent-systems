@@ -27,7 +27,8 @@ class FluModel(Model):
         asymptomatic_rate=0.3,
         asymptomatic_transmission_multiplier=0.6,
         isolation_rate=0.8,
-        vaccine_effectiveness=0.9
+        vaccine_effectiveness=0.9,
+        random_seed=42
     ):
         super().__init__()
 
@@ -53,6 +54,9 @@ class FluModel(Model):
         self.vaccine_effectiveness = vaccine_effectiveness
 
         self.peak_active_cases = 0
+        self.random_seed = random_seed
+
+        random.seed(self.random_seed)
 
         for i in range(self.num_agents):
             if i < initial_infected:
