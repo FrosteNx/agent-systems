@@ -45,6 +45,7 @@ plt.plot(results["Recovered"], label="Recovered")
 plt.plot(results["Dead"], label="Dead")
 plt.plot(results["Asymptomatic"], label="Asymptomatic")
 plt.plot(results["Vaccinated"], label="Vaccinated")
+plt.plot(results["ActiveCases"], label="Active cases", linestyle="--")
 
 plt.xlabel("Step")
 plt.ylabel("Number of people")

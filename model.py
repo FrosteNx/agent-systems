@@ -95,6 +95,11 @@ class FluModel(Model):
                 "Dead": lambda m: m.count_states()["Dead"],
                 "Asymptomatic": lambda m: m.count_states()["Asymptomatic"],
                 "Vaccinated": lambda m: m.count_states()["Vaccinated"],
+                "ActiveCases": lambda m: (
+                    m.count_states()["Exposed"]
+                    + m.count_states()["Infected"]
+                    + m.count_states()["Asymptomatic"]
+                ),
             }
         )
 
