@@ -79,6 +79,8 @@ if model.total_infections > 0:
 else:
     case_fatality_rate = 0
 
+average_rt = results["Rt"].mean()
+
 with open("outputs/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write("======================\n\n")
@@ -89,6 +91,7 @@ with open("outputs/simulation_summary.txt", "w") as file:
     file.write(f"Total infections: {model.total_infections}\n")
     file.write(f"Attack rate: {attack_rate:.2%}\n")
     file.write(f"Case fatality rate: {case_fatality_rate:.2%}\n")
+    file.write(f"Average Rt: {average_rt:.2f}\n")
 
     file.write("Final state counts:\n")
     for state, count in final_counts.items():
@@ -105,6 +108,7 @@ plt.plot(results["Asymptomatic"], label="Asymptomatic")
 plt.plot(results["Vaccinated"], label="Vaccinated")
 plt.plot(results["ActiveCases"], label="Active cases", linestyle="--")
 plt.plot(results["NewInfections"], label="New infections")
+plt.plot(results["Rt"], label="Rt")
 
 plt.xlabel("Step")
 plt.ylabel("Number of people")

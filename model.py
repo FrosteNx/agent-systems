@@ -109,6 +109,14 @@ class FluModel(Model):
                     + m.count_states()["Asymptomatic"]
                 ),
                 "NewInfections": lambda m: m.new_infections,
+                "Rt": lambda m: (
+                    m.new_infections /
+                    max(
+                        1,
+                        m.count_states()["Infected"]
+                        + m.count_states()["Asymptomatic"]
+                    )
+                ),
             }
         )
 
