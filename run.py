@@ -42,8 +42,11 @@ with open("outputs/parameters.txt", "w") as file:
 
 print("Parameters saved to outputs/parameters.txt")
 
+actual_steps = 0
+
 for i in range(steps):
     model.step()
+    actual_steps = i + 1
     counts = model.count_states()
 
     print(f"Step {i}: {counts}")
@@ -71,7 +74,8 @@ with open("outputs/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write("======================\n\n")
     file.write(f"Population: {config.POPULATION}\n")
-    file.write(f"Steps: {config.SIMULATION_STEPS}\n")
+    file.write(f"Max steps: {config.SIMULATION_STEPS}\n")
+    file.write(f"Actual steps: {actual_steps}\n")
     file.write(f"Peak active cases: {model.peak_active_cases}\n\n")
 
     file.write("Final state counts:\n")
