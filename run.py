@@ -26,6 +26,9 @@ for i in range(steps):
 
 results = model.datacollector.get_model_vars_dataframe()
 
+results.to_csv("simulation_results.csv", index_label="Step")
+print("Results saved to simulation_results.csv")
+
 plt.plot(results["Susceptible"], label="Susceptible")
 plt.plot(results["Exposed"], label="Exposed")
 plt.plot(results["Infected"], label="Infected")
