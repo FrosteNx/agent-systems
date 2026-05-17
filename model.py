@@ -23,7 +23,9 @@ class FluModel(Model):
         senior_rate=0.15,
         child_mortality_rate=0.001,
         adult_mortality_rate=0.005,
-        senior_mortality_rate=0.03
+        senior_mortality_rate=0.03,
+        asymptomatic_rate=0.3,
+        asymptomatic_transmission_multiplier=0.6
     ):
         super().__init__()
 
@@ -43,6 +45,8 @@ class FluModel(Model):
         self.child_mortality_rate = child_mortality_rate
         self.adult_mortality_rate = adult_mortality_rate
         self.senior_mortality_rate = senior_mortality_rate
+        self.asymptomatic_rate = asymptomatic_rate
+        self.asymptomatic_transmission_multiplier = asymptomatic_transmission_multiplier
 
         for i in range(self.num_agents):
             if i < initial_infected:
@@ -85,6 +89,7 @@ class FluModel(Model):
                 "Infected": lambda m: m.count_states()["Infected"],
                 "Recovered": lambda m: m.count_states()["Recovered"],
                 "Dead": lambda m: m.count_states()["Dead"],
+                "Asymptomatic": lambda m: m.count_states()["Asymptomatic"],
             }
         )
 
@@ -101,7 +106,8 @@ class FluModel(Model):
             "Exposed": 0,
             "Infected": 0,
             "Recovered": 0,
-            "Dead": 0
+            "Dead": 0,
+            "Asymptomatic": 0,
         }
 
         for agent in self.schedule.agents:

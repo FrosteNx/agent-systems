@@ -38,7 +38,7 @@ class PersonAgent(Agent):
     def infect_others(self):
         if self.state == "Dead":
             return
-        if self.state != "Infected":
+        if self.state not in ["Infected", "Asymptomatic"]:
             return
 
         neighbors = self.model.grid.get_neighbors(
@@ -49,10 +49,15 @@ class PersonAgent(Agent):
 
         for agent in neighbors:
             if agent is not self and agent.state == "Susceptible":
+                transmission = self.transmission_multiplier
+
+                if self.state == "Asymptomatic":
+                    transmission *= self.model.asymptomatic_transmission_multiplier
+
                 infection_chance = min(
                     1.0,
                     self.model.infection_probability
-                    * self.transmission_multiplier
+                    * transmission
                     * agent.susceptibility_multiplier
                 )
 
@@ -61,11 +66,17 @@ class PersonAgent(Agent):
                     agent.days_in_state = 0
 
     def update_health(self):
+        if self.state == "Dead":
+            return
+        
         self.days_in_state += 1
 
         if self.state == "Exposed":
             if self.days_in_state >= self.model.incubation_time:
-                self.state = "Infected"
+                if self.random.random() < self.model.asymptomatic_rate:
+                    self.state = "Asymptomatic"
+                else:
+                    self.state = "Infected"
                 self.days_in_state = 0
 
         elif self.state == "Infected":
@@ -81,6 +92,10 @@ class PersonAgent(Agent):
                     self.state = "Dead"
                 else:
                     self.state = "Recovered"
+
+        elif self.state == "Asymptomatic":
+            if self.days_in_state >= self.model.recovery_time:
+                self.state = "Recovered"
 
     def step(self):
         self.move()

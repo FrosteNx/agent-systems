@@ -16,7 +16,9 @@ model = FluModel(
     senior_rate=config.SENIOR_RATE,
     child_mortality_rate=config.CHILD_MORTALITY_RATE,
     adult_mortality_rate=config.ADULT_MORTALITY_RATE,
-    senior_mortality_rate=config.SENIOR_MORTALITY_RATE
+    senior_mortality_rate=config.SENIOR_MORTALITY_RATE,
+    asymptomatic_rate=config.ASYMPTOMATIC_RATE,
+    asymptomatic_transmission_multiplier=config.ASYMPTOMATIC_TRANSMISSION_MULTIPLIER
 )
 
 steps = config.SIMULATION_STEPS
@@ -39,6 +41,7 @@ plt.plot(results["Exposed"], label="Exposed")
 plt.plot(results["Infected"], label="Infected")
 plt.plot(results["Recovered"], label="Recovered")
 plt.plot(results["Dead"], label="Dead")
+plt.plot(results["Asymptomatic"], label="Asymptomatic")
 
 plt.xlabel("Step")
 plt.ylabel("Number of people")
