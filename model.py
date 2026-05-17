@@ -1,6 +1,7 @@
 from mesa import Model
 from mesa.space import MultiGrid
 from mesa.time import RandomActivation
+from mesa.datacollection import DataCollector
 
 from agent import PersonAgent
 
@@ -63,11 +64,21 @@ class FluModel(Model):
 
             self.grid.place_agent(agent, agent.home)
 
+        self.datacollector = DataCollector(
+            model_reporters={
+                "Susceptible": lambda m: m.count_states()["Susceptible"],
+                "Exposed": lambda m: m.count_states()["Exposed"],
+                "Infected": lambda m: m.count_states()["Infected"],
+                "Recovered": lambda m: m.count_states()["Recovered"],
+            }
+        )
+
         self.running = True
 
     def step(self):
         self.step_count += 1
         self.schedule.step()
+        self.datacollector.collect(self)
 
     def count_states(self):
         counts = {
