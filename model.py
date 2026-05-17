@@ -26,7 +26,8 @@ class FluModel(Model):
         senior_mortality_rate=0.03,
         asymptomatic_rate=0.3,
         asymptomatic_transmission_multiplier=0.6,
-        isolation_rate=0.8
+        isolation_rate=0.8,
+        vaccine_effectiveness=0.9
     ):
         super().__init__()
 
@@ -49,12 +50,13 @@ class FluModel(Model):
         self.asymptomatic_rate = asymptomatic_rate
         self.asymptomatic_transmission_multiplier = asymptomatic_transmission_multiplier
         self.isolation_rate = isolation_rate
+        self.vaccine_effectiveness = vaccine_effectiveness
 
         for i in range(self.num_agents):
             if i < initial_infected:
                 state = "Infected"
             elif random.random() < self.vaccination_rate:
-                state = "Recovered"  
+                state = "Vaccinated"
             else:
                 state = "Susceptible"
 
@@ -92,6 +94,7 @@ class FluModel(Model):
                 "Recovered": lambda m: m.count_states()["Recovered"],
                 "Dead": lambda m: m.count_states()["Dead"],
                 "Asymptomatic": lambda m: m.count_states()["Asymptomatic"],
+                "Vaccinated": lambda m: m.count_states()["Vaccinated"],
             }
         )
 
@@ -110,6 +113,7 @@ class FluModel(Model):
             "Recovered": 0,
             "Dead": 0,
             "Asymptomatic": 0,
+            "Vaccinated": 0,
         }
 
         for agent in self.schedule.agents:

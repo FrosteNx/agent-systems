@@ -62,7 +62,7 @@ class PersonAgent(Agent):
         )
 
         for agent in neighbors:
-            if agent is not self and agent.state == "Susceptible":
+            if agent is not self and agent.state in ["Susceptible", "Vaccinated"]:
                 transmission = self.transmission_multiplier
 
                 if self.state == "Asymptomatic":
@@ -74,6 +74,9 @@ class PersonAgent(Agent):
                     * transmission
                     * agent.susceptibility_multiplier
                 )
+
+                if agent.state == "Vaccinated":
+                    infection_chance *= (1 - self.model.vaccine_effectiveness)
 
                 if self.random.random() < infection_chance:
                     agent.state = "Exposed"
