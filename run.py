@@ -108,11 +108,27 @@ plt.plot(results["Asymptomatic"], label="Asymptomatic")
 plt.plot(results["Vaccinated"], label="Vaccinated")
 plt.plot(results["ActiveCases"], label="Active cases", linestyle="--")
 plt.plot(results["NewInfections"], label="New infections")
-plt.plot(results["Rt"], label="Rt")
 
 plt.xlabel("Step")
 plt.ylabel("Number of people")
 plt.title("Flu epidemic simulation")
 plt.legend()
 plt.tight_layout()
+plt.show()
+
+
+plt.figure()
+
+plt.plot(results["Rt"], label="Rt")
+plt.axhline(y=1, linestyle="--", label="Rt = 1")
+
+plt.xlabel("Step")
+plt.ylabel("Rt")
+plt.title("Effective reproduction number")
+plt.legend()
+plt.tight_layout()
+
+plt.savefig("outputs/rt_curve.png", dpi=300)
+print("Rt plot saved to outputs/rt_curve.png")
+
 plt.show()
