@@ -18,7 +18,8 @@ class FluModel(Model):
         infection_probability=0.4,
         recovery_time=5,
         incubation_time=2,   
-        vaccination_rate=0.2
+        vaccination_rate=0.2,
+        child_rate=0.25
     ):
         super().__init__()
 
@@ -33,6 +34,7 @@ class FluModel(Model):
         self.recovery_time = recovery_time
         self.incubation_time = incubation_time
         self.vaccination_rate = vaccination_rate
+        self.child_rate = child_rate
 
         for i in range(self.num_agents):
             if i < initial_infected:
@@ -42,7 +44,7 @@ class FluModel(Model):
             else:
                 state = "Susceptible"
 
-            if self.random.random() < 0.25:
+            if self.random.random() < self.child_rate:
                 age_group = "child"
             else:
                 age_group = "adult"

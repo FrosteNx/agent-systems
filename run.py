@@ -11,7 +11,8 @@ model = FluModel(
     infection_probability=config.INFECTION_PROBABILITY,
     recovery_time=config.RECOVERY_TIME,
     incubation_time=config.INCUBATION_TIME,
-    vaccination_rate=config.VACCINATION_RATE
+    vaccination_rate=config.VACCINATION_RATE,
+    child_rate=config.CHILD_RATE
 )
 
 steps = config.SIMULATION_STEPS
