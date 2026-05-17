@@ -53,6 +53,7 @@ class FluModel(Model):
         self.isolation_rate = isolation_rate
         self.vaccine_effectiveness = vaccine_effectiveness
         self.new_infections = 0
+        self.total_infections = initial_infected
 
         self.peak_active_cases = 0
         self.random_seed = random_seed

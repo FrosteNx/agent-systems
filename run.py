@@ -77,6 +77,7 @@ with open("outputs/simulation_summary.txt", "w") as file:
     file.write(f"Max steps: {config.SIMULATION_STEPS}\n")
     file.write(f"Actual steps: {actual_steps}\n")
     file.write(f"Peak active cases: {model.peak_active_cases}\n\n")
+    file.write(f"Total infections: {model.total_infections}\n")
 
     file.write("Final state counts:\n")
     for state, count in final_counts.items():

@@ -82,6 +82,7 @@ class PersonAgent(Agent):
                     agent.state = "Exposed"
                     agent.days_in_state = 0
                     self.model.new_infections += 1
+                    self.model.total_infections += 1
 
     def update_health(self):
         if self.state == "Dead":
