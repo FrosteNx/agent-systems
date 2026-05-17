@@ -52,6 +52,7 @@ class FluModel(Model):
         self.asymptomatic_transmission_multiplier = asymptomatic_transmission_multiplier
         self.isolation_rate = isolation_rate
         self.vaccine_effectiveness = vaccine_effectiveness
+        self.new_infections = 0
 
         self.peak_active_cases = 0
         self.random_seed = random_seed
@@ -106,6 +107,7 @@ class FluModel(Model):
                     + m.count_states()["Infected"]
                     + m.count_states()["Asymptomatic"]
                 ),
+                "NewInfections": lambda m: m.new_infections,
             }
         )
 
@@ -113,6 +115,7 @@ class FluModel(Model):
 
     def step(self):
         self.step_count += 1
+        self.new_infections = 0
         self.schedule.step()
 
         counts = self.count_states()

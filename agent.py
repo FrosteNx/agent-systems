@@ -81,6 +81,7 @@ class PersonAgent(Agent):
                 if self.random.random() < infection_chance:
                     agent.state = "Exposed"
                     agent.days_in_state = 0
+                    self.model.new_infections += 1
 
     def update_health(self):
         if self.state == "Dead":
