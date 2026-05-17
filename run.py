@@ -30,6 +30,7 @@ steps = config.SIMULATION_STEPS
 print(model.count_age_groups())
 
 os.makedirs("outputs", exist_ok=True)
+os.makedirs("outputs/plots", exist_ok=True)
 
 with open("outputs/parameters.txt", "w") as file:
     file.write("Simulation parameters\n")
@@ -112,6 +113,9 @@ plt.ylabel("Number of people")
 plt.title("Flu epidemic simulation")
 plt.legend()
 plt.tight_layout()
+
+plt.savefig("outputs/plots/epidemic_curve.png", dpi=300)
+
 plt.show()
 
 
@@ -126,7 +130,7 @@ plt.title("Effective reproduction number")
 plt.legend()
 plt.tight_layout()
 
-plt.savefig("outputs/rt_curve.png", dpi=300)
+plt.savefig("outputs/plots/rt_curve.png", dpi=300)
 print("Rt plot saved to outputs/rt_curve.png")
 
 plt.show()
@@ -143,7 +147,7 @@ plt.title("Active and new infections")
 plt.legend()
 plt.tight_layout()
 
-plt.savefig("outputs/infections_curve.png", dpi=300)
+plt.savefig("outputs/plots/infections_curve.png", dpi=300)
 print("Infections plot saved to outputs/infections_curve.png")
 
 plt.show()
