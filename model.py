@@ -52,6 +52,8 @@ class FluModel(Model):
         self.isolation_rate = isolation_rate
         self.vaccine_effectiveness = vaccine_effectiveness
 
+        self.peak_active_cases = 0
+
         for i in range(self.num_agents):
             if i < initial_infected:
                 state = "Infected"
@@ -108,6 +110,16 @@ class FluModel(Model):
     def step(self):
         self.step_count += 1
         self.schedule.step()
+
+        counts = self.count_states()
+        active_cases = (
+            counts["Exposed"]
+            + counts["Infected"]
+            + counts["Asymptomatic"]
+        )
+
+        self.peak_active_cases = max(self.peak_active_cases, active_cases)
+
         self.datacollector.collect(self)
 
     def count_states(self):
