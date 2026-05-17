@@ -2,6 +2,7 @@ from model import FluModel
 import matplotlib.pyplot as plt
 import config
 import os
+from datetime import datetime
 
 
 model = FluModel(
@@ -29,10 +30,16 @@ steps = config.SIMULATION_STEPS
 
 print(model.count_age_groups())
 
-os.makedirs("outputs", exist_ok=True)
-os.makedirs("outputs/plots", exist_ok=True)
+timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-with open("outputs/parameters.txt", "w") as file:
+output_dir = f"outputs/{timestamp}"
+plots_dir = f"{output_dir}/plots"
+data_dir = f"{output_dir}/data"
+
+os.makedirs(plots_dir, exist_ok=True)
+os.makedirs(data_dir, exist_ok=True)
+
+with open(f"{data_dir}/parameters.txt", "w") as file:
     file.write("Simulation parameters\n")
     file.write("=====================\n\n")
 
@@ -64,7 +71,7 @@ for i in range(steps):
 
 results = model.datacollector.get_model_vars_dataframe()
 
-results.to_csv("outputs/simulation_results.csv", index_label="Step")
+results.to_csv(f"{data_dir}/simulation_results.csv", index_label="Step")
 print("Results saved to outputs/simulation_results.csv")
 
 print("Peak active cases:", model.peak_active_cases)
@@ -82,7 +89,7 @@ else:
 
 average_rt = results["Rt"].mean()
 
-with open("outputs/simulation_summary.txt", "w") as file:
+with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write("======================\n\n")
     file.write(f"Population: {config.POPULATION}\n")
@@ -114,7 +121,7 @@ plt.title("Flu epidemic simulation")
 plt.legend()
 plt.tight_layout()
 
-plt.savefig("outputs/plots/epidemic_curve.png", dpi=300)
+plt.savefig(f"{plots_dir}/epidemic_curve.png", dpi=300)
 
 plt.show()
 
@@ -130,7 +137,7 @@ plt.title("Effective reproduction number")
 plt.legend()
 plt.tight_layout()
 
-plt.savefig("outputs/plots/rt_curve.png", dpi=300)
+plt.savefig(f"{plots_dir}/rt_curve.png", dpi=300)
 print("Rt plot saved to outputs/rt_curve.png")
 
 plt.show()
@@ -147,7 +154,7 @@ plt.title("Active and new infections")
 plt.legend()
 plt.tight_layout()
 
-plt.savefig("outputs/plots/infections_curve.png", dpi=300)
+plt.savefig(f"{plots_dir}/infections_curve.png", dpi=300)
 print("Infections plot saved to outputs/infections_curve.png")
 
 plt.show()
