@@ -25,8 +25,15 @@ class PersonAgent(Agent):
     def move(self):
         if self.state == "Dead":
             return
+        
         if self.state == "Infected":
-            target = self.home
+            if self.random.random() < self.model.isolation_rate:
+                target = self.home
+            else:
+                if self.model.step_count % 20 < 10:
+                    target = self.work
+                else:
+                    target = self.home
 
         elif self.state == "Asymptomatic":
             if self.model.step_count % 20 < 10:

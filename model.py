@@ -25,7 +25,8 @@ class FluModel(Model):
         adult_mortality_rate=0.005,
         senior_mortality_rate=0.03,
         asymptomatic_rate=0.3,
-        asymptomatic_transmission_multiplier=0.6
+        asymptomatic_transmission_multiplier=0.6,
+        isolation_rate=0.8
     ):
         super().__init__()
 
@@ -47,6 +48,7 @@ class FluModel(Model):
         self.senior_mortality_rate = senior_mortality_rate
         self.asymptomatic_rate = asymptomatic_rate
         self.asymptomatic_transmission_multiplier = asymptomatic_transmission_multiplier
+        self.isolation_rate = isolation_rate
 
         for i in range(self.num_agents):
             if i < initial_infected:

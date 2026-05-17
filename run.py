@@ -18,7 +18,8 @@ model = FluModel(
     adult_mortality_rate=config.ADULT_MORTALITY_RATE,
     senior_mortality_rate=config.SENIOR_MORTALITY_RATE,
     asymptomatic_rate=config.ASYMPTOMATIC_RATE,
-    asymptomatic_transmission_multiplier=config.ASYMPTOMATIC_TRANSMISSION_MULTIPLIER
+    asymptomatic_transmission_multiplier=config.ASYMPTOMATIC_TRANSMISSION_MULTIPLIER,
+    isolation_rate=config.ISOLATION_RATE
 )
 
 steps = config.SIMULATION_STEPS
