@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 import json
 from pathlib import Path
+import pandas as pd
 
 
 model = FluModel(
@@ -100,6 +101,29 @@ print("Results saved to outputs/simulation_results.csv")
 print("Peak active cases:", model.peak_active_cases)
 
 final_counts = model.count_states()
+
+population_data = []
+
+for agent in model.schedule.agents:
+    population_data.append({
+        "agent_id": agent.unique_id,
+        "state": agent.state,
+        "age_group": agent.age_group,
+        "x": agent.pos[0],
+        "y": agent.pos[1]
+    })
+
+population_df = pd.DataFrame(population_data)
+
+population_df.to_csv(
+    f"{data_dir}/final_population.csv",
+    index=False
+)
+
+print(
+    f"Final population saved to "
+    f"{data_dir}/final_population.csv"
+)
 
 attack_rate = model.total_infections / config.POPULATION
 
