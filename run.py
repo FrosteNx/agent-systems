@@ -102,12 +102,10 @@ print("Summary saved to outputs/simulation_summary.txt")
 plt.plot(results["Susceptible"], label="Susceptible")
 plt.plot(results["Exposed"], label="Exposed")
 plt.plot(results["Infected"], label="Infected")
+plt.plot(results["Asymptomatic"], label="Asymptomatic")
 plt.plot(results["Recovered"], label="Recovered")
 plt.plot(results["Dead"], label="Dead")
-plt.plot(results["Asymptomatic"], label="Asymptomatic")
 plt.plot(results["Vaccinated"], label="Vaccinated")
-plt.plot(results["ActiveCases"], label="Active cases", linestyle="--")
-plt.plot(results["NewInfections"], label="New infections")
 
 plt.xlabel("Step")
 plt.ylabel("Number of people")
@@ -130,5 +128,22 @@ plt.tight_layout()
 
 plt.savefig("outputs/rt_curve.png", dpi=300)
 print("Rt plot saved to outputs/rt_curve.png")
+
+plt.show()
+
+
+plt.figure()
+
+plt.plot(results["ActiveCases"], label="Active cases")
+plt.plot(results["NewInfections"], label="New infections")
+
+plt.xlabel("Step")
+plt.ylabel("Number of people")
+plt.title("Active and new infections")
+plt.legend()
+plt.tight_layout()
+
+plt.savefig("outputs/infections_curve.png", dpi=300)
+print("Infections plot saved to outputs/infections_curve.png")
 
 plt.show()
