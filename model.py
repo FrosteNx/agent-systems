@@ -20,7 +20,10 @@ class FluModel(Model):
         incubation_time=2,   
         vaccination_rate=0.2,
         child_rate=0.25,
-        senior_rate=0.15
+        senior_rate=0.15,
+        child_mortality_rate=0.001,
+        adult_mortality_rate=0.005,
+        senior_mortality_rate=0.03
     ):
         super().__init__()
 
@@ -37,6 +40,9 @@ class FluModel(Model):
         self.vaccination_rate = vaccination_rate
         self.child_rate = child_rate
         self.senior_rate = senior_rate
+        self.child_mortality_rate = child_mortality_rate
+        self.adult_mortality_rate = adult_mortality_rate
+        self.senior_mortality_rate = senior_mortality_rate
 
         for i in range(self.num_agents):
             if i < initial_infected:
@@ -78,6 +84,7 @@ class FluModel(Model):
                 "Exposed": lambda m: m.count_states()["Exposed"],
                 "Infected": lambda m: m.count_states()["Infected"],
                 "Recovered": lambda m: m.count_states()["Recovered"],
+                "Dead": lambda m: m.count_states()["Dead"],
             }
         )
 
@@ -93,7 +100,8 @@ class FluModel(Model):
             "Susceptible": 0,
             "Exposed": 0,
             "Infected": 0,
-            "Recovered": 0
+            "Recovered": 0,
+            "Dead": 0
         }
 
         for agent in self.schedule.agents:

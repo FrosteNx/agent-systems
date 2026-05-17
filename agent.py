@@ -23,6 +23,8 @@ class PersonAgent(Agent):
             self.susceptibility_multiplier = 1.0
 
     def move(self):
+        if self.state == "Dead":
+            return
         if self.state == "Infected":
             target = self.home
         else:
@@ -34,6 +36,8 @@ class PersonAgent(Agent):
         self.model.grid.move_agent(self, target)
 
     def infect_others(self):
+        if self.state == "Dead":
+            return
         if self.state != "Infected":
             return
 
@@ -66,7 +70,17 @@ class PersonAgent(Agent):
 
         elif self.state == "Infected":
             if self.days_in_state >= self.model.recovery_time:
-                self.state = "Recovered"
+                if self.age_group == "child":
+                    mortality_rate = self.model.child_mortality_rate
+                elif self.age_group == "senior":
+                    mortality_rate = self.model.senior_mortality_rate
+                else:
+                    mortality_rate = self.model.adult_mortality_rate
+
+                if self.random.random() < mortality_rate:
+                    self.state = "Dead"
+                else:
+                    self.state = "Recovered"
 
     def step(self):
         self.move()
