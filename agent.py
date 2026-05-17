@@ -27,6 +27,13 @@ class PersonAgent(Agent):
             return
         if self.state == "Infected":
             target = self.home
+
+        elif self.state == "Asymptomatic":
+            if self.model.step_count % 20 < 10:
+                target = self.work
+            else:
+                target = self.home
+
         else:
             if self.model.step_count % 20 < 10:
                 target = self.work
