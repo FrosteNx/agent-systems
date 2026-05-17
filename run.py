@@ -4,6 +4,7 @@ import config
 import os
 from datetime import datetime
 import json
+from pathlib import Path
 
 
 model = FluModel(
@@ -31,9 +32,16 @@ steps = config.SIMULATION_STEPS
 
 print(model.count_age_groups())
 
+Path("outputs").mkdir(exist_ok=True)
+
+existing_runs = sorted(Path("outputs").glob("experiment_*"))
+experiment_id = len(existing_runs) + 1
+
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-output_dir = f"outputs/{timestamp}"
+output_dir = (
+    f"outputs/experiment_{experiment_id:03d}_{timestamp}"
+)
 plots_dir = f"{output_dir}/plots"
 data_dir = f"{output_dir}/data"
 
