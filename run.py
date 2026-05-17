@@ -58,6 +58,7 @@ for agent in model.schedule.agents:
         "age_group": agent.age_group,
         "x": agent.pos[0],
         "y": agent.pos[1],
+        "household_id": agent.household_id,
         "home_x": agent.home[0],
         "home_y": agent.home[1],
         "work_x": agent.work[0],
@@ -134,7 +135,8 @@ for agent in model.schedule.agents:
         "state": agent.state,
         "age_group": agent.age_group,
         "x": agent.pos[0],
-        "y": agent.pos[1]
+        "y": agent.pos[1],
+        "household_id": agent.household_id,
     })
 
 population_df = pd.DataFrame(population_data)

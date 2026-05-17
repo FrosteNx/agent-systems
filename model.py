@@ -85,6 +85,8 @@ class FluModel(Model):
             home_y = self.random.randrange(self.grid.height)
             agent.home = (home_x, home_y)
 
+            agent.household_id = f"H_{home_x}_{home_y}"
+
             if agent.age_group == "child":
                 agent.work = self.random.choice(self.schools)
             else:

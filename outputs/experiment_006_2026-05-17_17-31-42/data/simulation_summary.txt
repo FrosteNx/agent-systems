@@ -1,0 +1,25 @@
+Flu simulation summary
+Experiment ID: 6
+Timestamp: 2026-05-17_17-31-42
+
+Scenario: baseline
+
+======================
+
+Population: 100
+Max steps: 50
+Actual steps: 27
+Peak active cases: 38
+
+Total infections: 71
+Attack rate: 71.00%
+Case fatality rate: 2.82%
+Average Rt: 0.30
+Final state counts:
+Susceptible: 16
+Exposed: 0
+Infected: 0
+Recovered: 69
+Dead: 2
+Asymptomatic: 0
+Vaccinated: 13
