@@ -3,7 +3,9 @@ from mesa import Agent
 
 class PersonAgent(Agent):
     def __init__(self, unique_id, model, state="Susceptible", age_group="adult"):
-        super().__init__(unique_id, model)
+        super().__init__(model)
+
+        self.unique_id = unique_id
         self.state = state
         self.days_in_state = 0
         self.home = None
