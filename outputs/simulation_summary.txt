@@ -3,13 +3,13 @@ Flu simulation summary
 
 Population: 100
 Steps: 50
-Peak active cases: 44
+Peak active cases: 20
 
 Final state counts:
-Susceptible: 23
+Susceptible: 25
 Exposed: 0
 Infected: 0
-Recovered: 65
+Recovered: 58
 Dead: 0
 Asymptomatic: 0
-Vaccinated: 12
+Vaccinated: 17

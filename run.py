@@ -31,6 +31,17 @@ print(model.count_age_groups())
 
 os.makedirs("outputs", exist_ok=True)
 
+with open("outputs/parameters.txt", "w") as file:
+    file.write("Simulation parameters\n")
+    file.write("=====================\n\n")
+
+    for name in dir(config):
+        if name.isupper():
+            value = getattr(config, name)
+            file.write(f"{name}: {value}\n")
+
+print("Parameters saved to outputs/parameters.txt")
+
 for i in range(steps):
     model.step()
     counts = model.count_states()
