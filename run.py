@@ -48,6 +48,16 @@ for i in range(steps):
 
     print(f"Step {i}: {counts}")
 
+    active_cases = (
+        counts["Exposed"]
+        + counts["Infected"]
+        + counts["Asymptomatic"]
+    )
+
+    if active_cases == 0:
+        print(f"Epidemic ended at step {i}")
+        break
+
 results = model.datacollector.get_model_vars_dataframe()
 
 results.to_csv("outputs/simulation_results.csv", index_label="Step")
