@@ -49,6 +49,30 @@ data_dir = f"{output_dir}/data"
 os.makedirs(plots_dir, exist_ok=True)
 os.makedirs(data_dir, exist_ok=True)
 
+initial_population_data = []
+
+for agent in model.schedule.agents:
+    initial_population_data.append({
+        "agent_id": agent.unique_id,
+        "state": agent.state,
+        "age_group": agent.age_group,
+        "x": agent.pos[0],
+        "y": agent.pos[1],
+        "home_x": agent.home[0],
+        "home_y": agent.home[1],
+        "work_x": agent.work[0],
+        "work_y": agent.work[1],
+    })
+
+initial_population_df = pd.DataFrame(initial_population_data)
+
+initial_population_df.to_csv(
+    f"{data_dir}/initial_population.csv",
+    index=False
+)
+
+print(f"Initial population saved to {data_dir}/initial_population.csv")
+
 with open(f"{data_dir}/parameters.txt", "w") as file:
     file.write("Simulation parameters\n")
     file.write("=====================\n\n")
