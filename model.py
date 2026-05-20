@@ -28,7 +28,8 @@ class FluModel(Model):
         asymptomatic_transmission_multiplier=0.6,
         isolation_rate=0.8,
         vaccine_effectiveness=0.9,
-        random_seed=42
+        random_seed=42,
+        household_size=4
     ):
         super().__init__()
 
@@ -37,6 +38,7 @@ class FluModel(Model):
         self.schedule = RandomActivation(self)
         self.step_count = 0
         self.schools = [(5, 5), (15, 15)]
+        self.household_size = household_size
 
         # disease parameters
         self.infection_probability = infection_probability
@@ -60,6 +62,17 @@ class FluModel(Model):
 
         random.seed(self.random_seed)
 
+        households = []
+
+        for h in range((self.num_agents // self.household_size) + 1):
+            home_x = self.random.randrange(self.grid.width)
+            home_y = self.random.randrange(self.grid.height)
+
+            households.append({
+                "id": f"H_{h}",
+                "home": (home_x, home_y)
+            })
+
         for i in range(self.num_agents):
             if i < initial_infected:
                 state = "Infected"
@@ -81,11 +94,10 @@ class FluModel(Model):
 
             self.schedule.add(agent)
 
-            home_x = self.random.randrange(self.grid.width)
-            home_y = self.random.randrange(self.grid.height)
-            agent.home = (home_x, home_y)
+            household = households[i // self.household_size]
 
-            agent.household_id = f"H_{home_x}_{home_y}"
+            agent.home = household["home"]
+            agent.household_id = household["id"]
 
             if agent.age_group == "child":
                 agent.work = self.random.choice(self.schools)
