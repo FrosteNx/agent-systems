@@ -27,7 +27,8 @@ model = FluModel(
     isolation_rate=config.ISOLATION_RATE,
     vaccine_effectiveness=config.VACCINE_EFFECTIVENESS,
     random_seed=config.RANDOM_SEED,
-    household_size=config.HOUSEHOLD_SIZE
+    household_size=config.HOUSEHOLD_SIZE,
+    household_transmission_multiplier=config.HOUSEHOLD_TRANSMISSION_MULTIPLIER
 )
 
 steps = config.SIMULATION_STEPS

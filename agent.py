@@ -75,6 +75,10 @@ class PersonAgent(Agent):
                     * agent.susceptibility_multiplier
                 )
 
+                if self.household_id == agent.household_id:
+                    infection_chance *= self.model.household_transmission_multiplier
+                    infection_chance = min(1.0, infection_chance)
+
                 if agent.state == "Vaccinated":
                     infection_chance *= (1 - self.model.vaccine_effectiveness)
 

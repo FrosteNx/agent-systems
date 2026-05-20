@@ -29,7 +29,8 @@ class FluModel(Model):
         isolation_rate=0.8,
         vaccine_effectiveness=0.9,
         random_seed=42,
-        household_size=4
+        household_size=4,
+        household_transmission_multiplier=1.5
     ):
         super().__init__()
 
@@ -56,6 +57,7 @@ class FluModel(Model):
         self.vaccine_effectiveness = vaccine_effectiveness
         self.new_infections = 0
         self.total_infections = initial_infected
+        self.household_transmission_multiplier = household_transmission_multiplier
 
         self.peak_active_cases = 0
         self.random_seed = random_seed
