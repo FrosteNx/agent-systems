@@ -93,8 +93,17 @@ class PersonAgent(Agent):
                 if self.random.random() < infection_chance:
                     agent.state = "Exposed"
                     agent.days_in_state = 0
+
                     self.model.new_infections += 1
                     self.model.total_infections += 1
+
+                    if self.current_location_type == "home":
+                        self.model.home_infections += 1
+                    elif self.current_location_type == "school":
+                        self.model.school_infections += 1
+                    elif self.current_location_type == "work":
+                        self.model.work_infections += 1
+
                     if self.household_id == agent.household_id:
                         self.model.household_infections += 1
                     else:
