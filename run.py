@@ -65,6 +65,7 @@ for agent in model.schedule.agents:
         "home_y": agent.home[1],
         "work_x": agent.work[0],
         "work_y": agent.work[1],
+        "current_location_type": agent.current_location_type,
     })
 
 initial_population_df = pd.DataFrame(initial_population_data)
@@ -139,6 +140,7 @@ for agent in model.schedule.agents:
         "x": agent.pos[0],
         "y": agent.pos[1],
         "household_id": agent.household_id,
+        "current_location_type": agent.current_location_type,
     })
 
 population_df = pd.DataFrame(population_data)

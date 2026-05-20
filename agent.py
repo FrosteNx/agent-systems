@@ -11,6 +11,7 @@ class PersonAgent(Agent):
         self.home = None
         self.work = None
         self.age_group = age_group
+        self.current_location_type = "home"
 
         if self.age_group == "child":
             self.transmission_multiplier = 1.5
@@ -48,6 +49,13 @@ class PersonAgent(Agent):
                 target = self.home
 
         self.model.grid.move_agent(self, target)
+
+        if target == self.home:
+            self.current_location_type = "home"
+        elif self.age_group == "child":
+            self.current_location_type = "school"
+        else:
+            self.current_location_type = "work"
 
     def infect_others(self):
         if self.state == "Dead":
