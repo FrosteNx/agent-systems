@@ -170,23 +170,19 @@ secondary_infections = model.total_infections - config.INITIAL_INFECTED
 
 total_household_infections = results["HouseholdInfections"].sum()
 total_community_infections = results["CommunityInfections"].sum()
-
-if secondary_infections > 0:
-    household_infection_share = total_household_infections / secondary_infections
-    community_infection_share = total_community_infections / secondary_infections
-else:
-    household_infection_share = 0
-    community_infection_share = 0
-
 total_home_infections = results["HomeInfections"].sum()
 total_school_infections = results["SchoolInfections"].sum()
 total_work_infections = results["WorkInfections"].sum()
 
 if secondary_infections > 0:
+    household_infection_share = total_household_infections / secondary_infections
+    community_infection_share = total_community_infections / secondary_infections
     home_infection_share = total_home_infections / secondary_infections
     school_infection_share = total_school_infections / secondary_infections
     work_infection_share = total_work_infections / secondary_infections
 else:
+    household_infection_share = 0
+    community_infection_share = 0
     home_infection_share = 0
     school_infection_share = 0
     work_infection_share = 0
@@ -202,6 +198,8 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Actual steps: {actual_steps}\n")
     file.write(f"Peak active cases: {model.peak_active_cases}\n\n")
     file.write(f"Total infections: {model.total_infections}\n")
+    file.write(f"Initial infections: {config.INITIAL_INFECTED}\n")
+    file.write(f"Secondary infections: {secondary_infections}\n")
     file.write(f"Household infections: {total_household_infections}\n")
     file.write(f"Household infection share: {household_infection_share:.2%}\n")
     file.write(f"Community infections: {total_community_infections}\n")
