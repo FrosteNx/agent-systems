@@ -164,6 +164,15 @@ else:
 
 average_rt = results["Rt"].mean()
 
+total_household_infections = results["HouseholdInfections"].sum()
+
+if model.total_infections > 0:
+    household_infection_share = (
+        total_household_infections / model.total_infections
+    )
+else:
+    household_infection_share = 0
+
 with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write(f"Experiment ID: {experiment_id}\n")
@@ -175,6 +184,8 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Actual steps: {actual_steps}\n")
     file.write(f"Peak active cases: {model.peak_active_cases}\n\n")
     file.write(f"Total infections: {model.total_infections}\n")
+    file.write(f"Household infections: {total_household_infections}\n")
+    file.write(f"Household infection share: {household_infection_share:.2%}\n")
     file.write(f"Attack rate: {attack_rate:.2%}\n")
     file.write(f"Case fatality rate: {case_fatality_rate:.2%}\n")
     file.write(f"Average Rt: {average_rt:.2f}\n")
