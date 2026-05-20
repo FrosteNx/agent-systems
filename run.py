@@ -173,6 +173,15 @@ if model.total_infections > 0:
 else:
     household_infection_share = 0
 
+total_community_infections = results["CommunityInfections"].sum()
+
+if model.total_infections > 0:
+    community_infection_share = (
+        total_community_infections / model.total_infections
+    )
+else:
+    community_infection_share = 0
+
 with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write(f"Experiment ID: {experiment_id}\n")
@@ -186,6 +195,8 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Total infections: {model.total_infections}\n")
     file.write(f"Household infections: {total_household_infections}\n")
     file.write(f"Household infection share: {household_infection_share:.2%}\n")
+    file.write(f"Community infections: {total_community_infections}\n")
+    file.write(f"Community infection share: {community_infection_share:.2%}\n")
     file.write(f"Attack rate: {attack_rate:.2%}\n")
     file.write(f"Case fatality rate: {case_fatality_rate:.2%}\n")
     file.write(f"Average Rt: {average_rt:.2f}\n")
