@@ -89,6 +89,8 @@ class PersonAgent(Agent):
                     self.model.total_infections += 1
                     if self.household_id == agent.household_id:
                         self.model.household_infections += 1
+                    else:
+                        self.model.community_infections += 1
 
     def update_health(self):
         if self.state == "Dead":

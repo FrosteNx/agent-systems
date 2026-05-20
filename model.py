@@ -59,6 +59,7 @@ class FluModel(Model):
         self.total_infections = initial_infected
         self.household_transmission_multiplier = household_transmission_multiplier
         self.household_infections = 0
+        self.community_infections = 0
 
         self.peak_active_cases = 0
         self.random_seed = random_seed
@@ -135,6 +136,7 @@ class FluModel(Model):
                     )
                 ),
                 "HouseholdInfections": lambda m: m.household_infections,
+                "CommunityInfections": lambda m: m.community_infections,
             }
         )
 
@@ -144,6 +146,7 @@ class FluModel(Model):
         self.step_count += 1
         self.new_infections = 0
         self.household_infections = 0
+        self.community_infections = 0
         self.schedule.step()
 
         counts = self.count_states()

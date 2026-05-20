@@ -237,6 +237,7 @@ plt.figure()
 plt.plot(results["ActiveCases"], label="Active cases")
 plt.plot(results["NewInfections"], label="New infections")
 plt.plot(results["HouseholdInfections"], label="Household infections")
+plt.plot(results["CommunityInfections"], label="Community infections")
 
 plt.xlabel("Step")
 plt.ylabel("Number of people")
