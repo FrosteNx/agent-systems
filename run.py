@@ -37,7 +37,8 @@ model = FluModel(
     lockdown=config.LOCKDOWN,
     lockdown_mobility=config.LOCKDOWN_MOBILITY,
     masks_enabled=config.MASKS_ENABLED,
-    mask_transmission_reduction=config.MASK_TRANSMISSION_REDUCTION
+    mask_transmission_reduction=config.MASK_TRANSMISSION_REDUCTION,
+    mask_compliance=config.MASK_COMPLIANCE
 )
 
 steps = config.SIMULATION_STEPS

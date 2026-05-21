@@ -38,7 +38,8 @@ class FluModel(Model):
         lockdown=False,
         lockdown_mobility=0.2,
         masks_enabled=False,
-        mask_transmission_reduction=0.4
+        mask_transmission_reduction=0.4,
+        mask_compliance=0.7
     ):
         super().__init__()
 
@@ -80,6 +81,7 @@ class FluModel(Model):
         self.lockdown_mobility = lockdown_mobility
         self.masks_enabled = masks_enabled
         self.mask_transmission_reduction = mask_transmission_reduction
+        self.mask_compliance = mask_compliance
 
         self.peak_active_cases = 0
         self.random_seed = random_seed

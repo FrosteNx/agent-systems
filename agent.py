@@ -116,7 +116,11 @@ class PersonAgent(Agent):
                     * agent.susceptibility_multiplier
                 )
 
-                if self.model.masks_enabled and self.current_location_type != "home":
+                if (
+                    self.model.masks_enabled
+                    and self.current_location_type != "home"
+                    and self.random.random() < self.model.mask_compliance
+                ):
                     infection_chance *= (1 - self.model.mask_transmission_reduction)
 
                 if self.household_id == agent.household_id:
