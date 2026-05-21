@@ -27,6 +27,13 @@ class PersonAgent(Agent):
         if self.state == "Dead":
             return
         
+        if self.model.lockdown:
+            if self.random.random() > self.model.lockdown_mobility:
+                target = self.home
+                self.model.grid.move_agent(self, target)
+                self.current_location_type = "home"
+                return
+        
         if self.age_group == "senior":
             if self.random.random() > self.model.senior_mobility:
                 target = self.home
@@ -108,6 +115,9 @@ class PersonAgent(Agent):
                     * transmission
                     * agent.susceptibility_multiplier
                 )
+
+                if self.model.masks_enabled and self.current_location_type != "home":
+                    infection_chance *= (1 - self.model.mask_transmission_reduction)
 
                 if self.household_id == agent.household_id:
                     infection_chance *= self.model.household_transmission_multiplier

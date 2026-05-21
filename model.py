@@ -34,7 +34,11 @@ class FluModel(Model):
         senior_mobility=0.4,
         child_mobility=1.0,
         school_closed=False,
-        work_closed=False
+        work_closed=False,
+        lockdown=False,
+        lockdown_mobility=0.2,
+        masks_enabled=False,
+        mask_transmission_reduction=0.4
     ):
         super().__init__()
 
@@ -72,6 +76,10 @@ class FluModel(Model):
         self.child_mobility = child_mobility
         self.school_closed = school_closed
         self.work_closed = work_closed
+        self.lockdown = lockdown
+        self.lockdown_mobility = lockdown_mobility
+        self.masks_enabled = masks_enabled
+        self.mask_transmission_reduction = mask_transmission_reduction
 
         self.peak_active_cases = 0
         self.random_seed = random_seed

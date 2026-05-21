@@ -33,7 +33,11 @@ model = FluModel(
     household_transmission_multiplier=config.HOUSEHOLD_TRANSMISSION_MULTIPLIER,
     senior_mobility=config.SENIOR_MOBILITY,
     child_mobility=config.CHILD_MOBILITY,
-    work_closed=config.WORK_CLOSED
+    work_closed=config.WORK_CLOSED,
+    lockdown=config.LOCKDOWN,
+    lockdown_mobility=config.LOCKDOWN_MOBILITY,
+    masks_enabled=config.MASKS_ENABLED,
+    mask_transmission_reduction=config.MASK_TRANSMISSION_REDUCTION
 )
 
 steps = config.SIMULATION_STEPS
