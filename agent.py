@@ -103,6 +103,8 @@ class PersonAgent(Agent):
                         self.model.school_infections += 1
                     elif self.current_location_type == "work":
                         self.model.work_infections += 1
+                    else:
+                        self.model.other_infections += 1
 
                     if self.household_id == agent.household_id:
                         self.model.household_infections += 1

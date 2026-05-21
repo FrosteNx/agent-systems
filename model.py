@@ -63,6 +63,7 @@ class FluModel(Model):
         self.home_infections = 0
         self.school_infections = 0
         self.work_infections = 0
+        self.other_infections = 0
 
         self.peak_active_cases = 0
         self.random_seed = random_seed
@@ -143,6 +144,7 @@ class FluModel(Model):
                 "HomeInfections": lambda m: m.home_infections,
                 "SchoolInfections": lambda m: m.school_infections,
                 "WorkInfections": lambda m: m.work_infections,
+                "OtherInfections": lambda m: m.other_infections,
             }
         )
 
@@ -156,6 +158,7 @@ class FluModel(Model):
         self.home_infections = 0
         self.school_infections = 0
         self.work_infections = 0
+        self.other_infections = 0
         self.schedule.step()
 
         counts = self.count_states()

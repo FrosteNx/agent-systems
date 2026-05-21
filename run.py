@@ -173,6 +173,7 @@ total_community_infections = results["CommunityInfections"].sum()
 total_home_infections = results["HomeInfections"].sum()
 total_school_infections = results["SchoolInfections"].sum()
 total_work_infections = results["WorkInfections"].sum()
+total_other_infections = results["OtherInfections"].sum()
 
 if secondary_infections > 0:
     household_infection_share = total_household_infections / secondary_infections
@@ -180,12 +181,14 @@ if secondary_infections > 0:
     home_infection_share = total_home_infections / secondary_infections
     school_infection_share = total_school_infections / secondary_infections
     work_infection_share = total_work_infections / secondary_infections
+    other_infection_share = total_other_infections / secondary_infections
 else:
     household_infection_share = 0
     community_infection_share = 0
     home_infection_share = 0
     school_infection_share = 0
     work_infection_share = 0
+    other_infection_share = 0
 
 household_share_sum = (
     household_infection_share
@@ -196,6 +199,7 @@ location_share_sum = (
     home_infection_share
     + school_infection_share
     + work_infection_share
+    + other_infection_share
 )
 
 with open(f"{data_dir}/simulation_summary.txt", "w") as file:
@@ -224,6 +228,8 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Home infection share: {home_infection_share:.2%}\n")
     file.write(f"School infection share: {school_infection_share:.2%}\n")
     file.write(f"Work infection share: {work_infection_share:.2%}\n")
+    file.write(f"Other infections: {total_other_infections}\n")
+    file.write(f"Other infection share: {other_infection_share:.2%}\n")
     file.write(f"Attack rate: {attack_rate:.2%}\n")
     file.write(f"Case fatality rate: {case_fatality_rate:.2%}\n")
     file.write(f"Average Rt: {average_rt:.2f}\n")
