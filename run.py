@@ -37,8 +37,17 @@ print(model.count_age_groups())
 
 Path("outputs").mkdir(exist_ok=True)
 
-existing_runs = sorted(Path("outputs").glob("experiment_*"))
-experiment_id = len(existing_runs) + 1
+global_summary_path = "outputs/all_experiments_summary.csv"
+
+if os.path.exists(global_summary_path):
+    previous_summary = pd.read_csv(global_summary_path)
+
+    if len(previous_summary) > 0:
+        experiment_id = int(previous_summary["experiment_id"].max()) + 1
+    else:
+        experiment_id = 1
+else:
+    experiment_id = 1
 
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
