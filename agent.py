@@ -27,6 +27,13 @@ class PersonAgent(Agent):
         if self.state == "Dead":
             return
         
+        if self.age_group == "senior":
+            if self.random.random() > self.model.senior_mobility:
+                target = self.home
+                self.model.grid.move_agent(self, target)
+                self.current_location_type = "home"
+                return
+        
         if self.state == "Infected":
             if self.random.random() < self.model.isolation_rate:
                 target = self.home

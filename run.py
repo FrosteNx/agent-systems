@@ -30,7 +30,8 @@ model = FluModel(
     vaccine_effectiveness=config.VACCINE_EFFECTIVENESS,
     random_seed=config.RANDOM_SEED,
     household_size=config.HOUSEHOLD_SIZE,
-    household_transmission_multiplier=config.HOUSEHOLD_TRANSMISSION_MULTIPLIER
+    household_transmission_multiplier=config.HOUSEHOLD_TRANSMISSION_MULTIPLIER,
+    senior_mobility=config.SENIOR_MOBILITY
 )
 
 steps = config.SIMULATION_STEPS
