@@ -318,3 +318,26 @@ plt.savefig(f"{plots_dir}/location_infections_bar.png", dpi=300)
 print(f"Location infections plot saved to {plots_dir}/location_infections_bar.png")
 
 plt.show()
+
+plt.figure()
+
+transmission_types = ["Household", "Community"]
+transmission_values = [
+    total_household_infections,
+    total_community_infections,
+]
+
+plt.bar(transmission_types, transmission_values)
+
+plt.xlabel("Transmission type")
+plt.ylabel("Number of infections")
+plt.title("Household vs community infections")
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/transmission_type_bar.png", dpi=300)
+print(
+    f"Transmission type plot saved to "
+    f"{plots_dir}/transmission_type_bar.png"
+)
+
+plt.show()
