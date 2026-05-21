@@ -404,3 +404,32 @@ print(
 )
 
 plt.show()
+
+plt.figure()
+
+transmission_share_labels = ["Household", "Community"]
+
+transmission_share_values = [
+    household_infection_share,
+    community_infection_share,
+]
+
+plt.pie(
+    transmission_share_values,
+    labels=transmission_share_labels,
+    autopct="%1.1f%%"
+)
+
+plt.title("Household vs community infection share")
+
+plt.savefig(
+    f"{plots_dir}/transmission_type_share_pie.png",
+    dpi=300
+)
+
+print(
+    f"Transmission type share pie chart saved to "
+    f"{plots_dir}/transmission_type_share_pie.png"
+)
+
+plt.show()
