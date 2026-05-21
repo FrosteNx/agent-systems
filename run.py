@@ -235,6 +235,22 @@ print(
     f"{data_dir}/summary_metrics.csv"
 )
 
+global_summary_path = "outputs/all_experiments_summary.csv"
+
+file_exists = os.path.exists(global_summary_path)
+
+summary_df.to_csv(
+    global_summary_path,
+    mode="a",
+    header=not file_exists,
+    index=False
+)
+
+print(
+    f"Experiment appended to "
+    f"{global_summary_path}"
+)
+
 with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write(f"Experiment ID: {experiment_id}\n")
