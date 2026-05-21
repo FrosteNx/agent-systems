@@ -260,6 +260,11 @@ summary_metrics = {
     "other_infection_share": other_infection_share,
 }
 
+logging.info("Final summary metrics:")
+
+for key, value in summary_metrics.items():
+    logging.info(f"{key}: {value}")
+
 summary_df = pd.DataFrame([summary_metrics])
 
 summary_df.to_csv(
