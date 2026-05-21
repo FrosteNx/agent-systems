@@ -31,7 +31,9 @@ model = FluModel(
     random_seed=config.RANDOM_SEED,
     household_size=config.HOUSEHOLD_SIZE,
     household_transmission_multiplier=config.HOUSEHOLD_TRANSMISSION_MULTIPLIER,
-    senior_mobility=config.SENIOR_MOBILITY
+    senior_mobility=config.SENIOR_MOBILITY,
+    child_mobility=config.CHILD_MOBILITY,
+    work_closed=config.WORK_CLOSED
 )
 
 steps = config.SIMULATION_STEPS

@@ -33,6 +33,25 @@ class PersonAgent(Agent):
                 self.model.grid.move_agent(self, target)
                 self.current_location_type = "home"
                 return
+            
+        if self.age_group == "child":
+            if self.random.random() > self.model.child_mobility:
+                target = self.home
+                self.model.grid.move_agent(self, target)
+                self.current_location_type = "home"
+                return
+            
+        if self.age_group == "child" and self.model.school_closed:
+            target = self.home
+            self.model.grid.move_agent(self, target)
+            self.current_location_type = "home"
+            return
+        
+        if self.age_group == "adult" and self.model.work_closed:
+            target = self.home
+            self.model.grid.move_agent(self, target)
+            self.current_location_type = "home"
+            return
         
         if self.state == "Infected":
             if self.random.random() < self.model.isolation_rate:
