@@ -296,3 +296,25 @@ plt.savefig(f"{plots_dir}/infections_curve.png", dpi=300)
 print("Infections plot saved to outputs/infections_curve.png")
 
 plt.show()
+
+plt.figure()
+
+locations = ["Home", "School", "Work", "Other"]
+location_values = [
+    total_home_infections,
+    total_school_infections,
+    total_work_infections,
+    total_other_infections,
+]
+
+plt.bar(locations, location_values)
+
+plt.xlabel("Location")
+plt.ylabel("Number of infections")
+plt.title("Infections by location")
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/location_infections_bar.png", dpi=300)
+print(f"Location infections plot saved to {plots_dir}/location_infections_bar.png")
+
+plt.show()
