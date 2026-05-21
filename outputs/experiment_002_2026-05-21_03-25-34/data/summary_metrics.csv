@@ -1,0 +1,2 @@
+experiment_id,timestamp,output_dir,scenario_name,population,initial_infected,total_infections,secondary_infections,peak_active_cases,attack_rate,case_fatality_rate,average_rt,household_infection_share,community_infection_share,home_infection_share,school_infection_share,work_infection_share,other_infection_share
+2,2026-05-21_03-25-34,outputs/experiment_002_2026-05-21_03-25-34,baseline,100,3,76,73,53,0.76,0.0,0.24016182645409698,0.3150684931506849,0.684931506849315,0.8356164383561644,0.0821917808219178,0.0821917808219178,0.0

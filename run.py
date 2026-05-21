@@ -204,6 +204,8 @@ location_share_sum = (
 
 summary_metrics = {
     "experiment_id": experiment_id,
+    "timestamp": timestamp,
+    "output_dir": output_dir,
     "scenario_name": config.SCENARIO_NAME,
     "population": config.POPULATION,
     "initial_infected": config.INITIAL_INFECTED,
