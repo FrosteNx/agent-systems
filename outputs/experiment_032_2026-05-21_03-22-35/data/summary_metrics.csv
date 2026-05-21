@@ -1,0 +1,2 @@
+experiment_id,scenario_name,population,initial_infected,total_infections,secondary_infections,peak_active_cases,attack_rate,case_fatality_rate,average_rt,household_infection_share,community_infection_share,home_infection_share,school_infection_share,work_infection_share,other_infection_share
+32,baseline,100,3,85,82,44,0.85,0.0,0.252428676971544,0.2926829268292683,0.7073170731707317,0.7926829268292683,0.15853658536585366,0.04878048780487805,0.0

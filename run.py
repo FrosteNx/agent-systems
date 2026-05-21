@@ -202,6 +202,37 @@ location_share_sum = (
     + other_infection_share
 )
 
+summary_metrics = {
+    "experiment_id": experiment_id,
+    "scenario_name": config.SCENARIO_NAME,
+    "population": config.POPULATION,
+    "initial_infected": config.INITIAL_INFECTED,
+    "total_infections": model.total_infections,
+    "secondary_infections": secondary_infections,
+    "peak_active_cases": model.peak_active_cases,
+    "attack_rate": attack_rate,
+    "case_fatality_rate": case_fatality_rate,
+    "average_rt": average_rt,
+    "household_infection_share": household_infection_share,
+    "community_infection_share": community_infection_share,
+    "home_infection_share": home_infection_share,
+    "school_infection_share": school_infection_share,
+    "work_infection_share": work_infection_share,
+    "other_infection_share": other_infection_share,
+}
+
+summary_df = pd.DataFrame([summary_metrics])
+
+summary_df.to_csv(
+    f"{data_dir}/summary_metrics.csv",
+    index=False
+)
+
+print(
+    f"Summary metrics saved to "
+    f"{data_dir}/summary_metrics.csv"
+)
+
 with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write(f"Experiment ID: {experiment_id}\n")
