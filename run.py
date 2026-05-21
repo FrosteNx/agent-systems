@@ -187,6 +187,17 @@ else:
     school_infection_share = 0
     work_infection_share = 0
 
+household_share_sum = (
+    household_infection_share
+    + community_infection_share
+)
+
+location_share_sum = (
+    home_infection_share
+    + school_infection_share
+    + work_infection_share
+)
+
 with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write(f"Experiment ID: {experiment_id}\n")
@@ -200,6 +211,8 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Total infections: {model.total_infections}\n")
     file.write(f"Initial infections: {config.INITIAL_INFECTED}\n")
     file.write(f"Secondary infections: {secondary_infections}\n")
+    file.write(f"Household/community share sum: {household_share_sum:.2%}\n")
+    file.write(f"Location share sum: {location_share_sum:.2%}\n")
     file.write(f"Household infections: {total_household_infections}\n")
     file.write(f"Household infection share: {household_infection_share:.2%}\n")
     file.write(f"Community infections: {total_community_infections}\n")
