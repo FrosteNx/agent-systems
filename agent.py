@@ -60,6 +60,13 @@ class PersonAgent(Agent):
             self.current_location_type = "home"
             return
         
+        if self.state == "Infected" and self.model.quarantine_enabled:
+            if self.random.random() < self.model.quarantine_compliance:
+                target = self.home
+                self.model.grid.move_agent(self, target)
+                self.current_location_type = "home"
+                return
+        
         if self.state == "Infected":
             if self.random.random() < self.model.isolation_rate:
                 target = self.home
