@@ -1,0 +1,43 @@
+Flu simulation summary
+Experiment ID: 28
+Timestamp: 2026-05-21_03-02-52
+
+Scenario: baseline
+
+======================
+
+Population: 100
+Max steps: 50
+Actual steps: 20
+Peak active cases: 9
+
+Total infections: 15
+Initial infections: 3
+Secondary infections: 12
+Household/community share sum: 100.00%
+Location share sum: 100.00%
+Household infections: 6
+Household infection share: 50.00%
+Community infections: 6
+Community infection share: 50.00%
+
+Infections by location:
+Home infections: 9
+School infections: 0
+Work infections: 3
+Home infection share: 75.00%
+School infection share: 0.00%
+Work infection share: 25.00%
+Other infections: 0
+Other infection share: 0.00%
+Attack rate: 15.00%
+Case fatality rate: 0.00%
+Average Rt: 0.26
+Final state counts:
+Susceptible: 66
+Exposed: 0
+Infected: 0
+Recovered: 15
+Dead: 0
+Asymptomatic: 0
+Vaccinated: 19

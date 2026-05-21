@@ -373,3 +373,34 @@ print(
 )
 
 plt.show()
+
+plt.figure()
+
+pie_labels = ["Home", "School", "Work", "Other"]
+
+pie_values = [
+    home_infection_share,
+    school_infection_share,
+    work_infection_share,
+    other_infection_share,
+]
+
+plt.pie(
+    pie_values,
+    labels=pie_labels,
+    autopct="%1.1f%%"
+)
+
+plt.title("Infection share by location")
+
+plt.savefig(
+    f"{plots_dir}/location_infection_share_pie.png",
+    dpi=300
+)
+
+print(
+    f"Location infection share pie chart saved to "
+    f"{plots_dir}/location_infection_share_pie.png"
+)
+
+plt.show()
