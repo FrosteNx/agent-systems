@@ -341,3 +341,35 @@ print(
 )
 
 plt.show()
+
+plt.figure()
+
+location_share_labels = ["Home", "School", "Work", "Other"]
+
+location_share_values = [
+    home_infection_share * 100,
+    school_infection_share * 100,
+    work_infection_share * 100,
+    other_infection_share * 100,
+]
+
+plt.bar(location_share_labels, location_share_values)
+
+plt.xlabel("Location")
+plt.ylabel("Share of infections (%)")
+plt.title("Infection share by location")
+plt.ylim(0, 100)
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{plots_dir}/location_infection_share_bar.png",
+    dpi=300
+)
+
+print(
+    f"Location infection share plot saved to "
+    f"{plots_dir}/location_infection_share_bar.png"
+)
+
+plt.show()
