@@ -6,6 +6,7 @@ from datetime import datetime
 import json
 from pathlib import Path
 import pandas as pd
+import logging
 
 
 model = FluModel(
@@ -59,6 +60,19 @@ data_dir = f"{output_dir}/data"
 
 os.makedirs(plots_dir, exist_ok=True)
 os.makedirs(data_dir, exist_ok=True)
+
+logs_dir = f"{output_dir}/logs"
+os.makedirs(logs_dir, exist_ok=True)
+
+logging.basicConfig(
+    filename=f"{logs_dir}/simulation.log",
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
+logging.info("Simulation started")
+logging.info(f"Scenario: {config.SCENARIO_NAME}")
+logging.info(f"Population: {config.POPULATION}")
 
 initial_population_data = []
 
@@ -118,6 +132,16 @@ for i in range(steps):
     actual_steps = i + 1
     counts = model.count_states()
 
+    logging.info(
+        f"Step {i} | "
+        f"S={counts['Susceptible']} "
+        f"E={counts['Exposed']} "
+        f"I={counts['Infected']} "
+        f"A={counts['Asymptomatic']} "
+        f"R={counts['Recovered']} "
+        f"D={counts['Dead']}"
+    )
+
     print(f"Step {i}: {counts}")
 
     active_cases = (
@@ -129,6 +153,8 @@ for i in range(steps):
     if active_cases == 0:
         print(f"Epidemic ended at step {i}")
         break
+
+logging.info("Simulation finished")
 
 results = model.datacollector.get_model_vars_dataframe()
 
