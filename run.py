@@ -63,9 +63,10 @@ os.makedirs(data_dir, exist_ok=True)
 
 logs_dir = f"{output_dir}/logs"
 os.makedirs(logs_dir, exist_ok=True)
+log_file = f"{logs_dir}/simulation.log"
 
 logging.basicConfig(
-    filename=f"{logs_dir}/simulation.log",
+    filename=log_file,
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s"
 )
@@ -241,6 +242,7 @@ summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
     "output_dir": output_dir,
+    "log_file": log_file,
     "scenario_name": config.SCENARIO_NAME,
     "population": config.POPULATION,
     "initial_infected": config.INITIAL_INFECTED,
@@ -290,6 +292,7 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write("Flu simulation summary\n")
     file.write(f"Experiment ID: {experiment_id}\n")
     file.write(f"Timestamp: {timestamp}\n\n")
+    file.write(f"Log file: {log_file}\n\n")
     file.write(f"Scenario: {config.SCENARIO_NAME}\n\n")
     file.write("======================\n\n")
     file.write(f"Population: {config.POPULATION}\n")
