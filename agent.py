@@ -122,6 +122,7 @@ class PersonAgent(Agent):
                     and self.random.random() < self.model.mask_compliance
                 ):
                     infection_chance *= (1 - self.model.mask_transmission_reduction)
+                    self.model.mask_protected_contacts += 1
 
                 if self.household_id == agent.household_id:
                     infection_chance *= self.model.household_transmission_multiplier

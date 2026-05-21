@@ -395,6 +395,7 @@ plt.plot(results["CommunityInfections"], label="Community infections")
 plt.plot(results["HomeInfections"], label="Home infections")
 plt.plot(results["SchoolInfections"], label="School infections")
 plt.plot(results["WorkInfections"], label="Work infections")
+plt.plot(results["MaskProtectedContacts"], label="Mask protected contacts")
 
 plt.xlabel("Step")
 plt.ylabel("Number of people")
