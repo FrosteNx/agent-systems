@@ -255,6 +255,8 @@ location_share_sum = (
     + other_infection_share
 )
 
+total_mask_protected_contacts = results["MaskProtectedContacts"].sum()
+
 summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
@@ -275,6 +277,7 @@ summary_metrics = {
     "school_infection_share": school_infection_share,
     "work_infection_share": work_infection_share,
     "other_infection_share": other_infection_share,
+    "mask_protected_contacts": total_mask_protected_contacts,
 }
 
 logging.info("Final summary metrics:")
@@ -342,6 +345,11 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Attack rate: {attack_rate:.2%}\n")
     file.write(f"Case fatality rate: {case_fatality_rate:.2%}\n")
     file.write(f"Average Rt: {average_rt:.2f}\n")
+    file.write("\nMask intervention:\n")
+    file.write(f"Masks enabled: {config.MASKS_ENABLED}\n")
+    file.write(f"Mask compliance: {config.MASK_COMPLIANCE:.2%}\n")
+    file.write(f"Mask transmission reduction: {config.MASK_TRANSMISSION_REDUCTION:.2%}\n")
+    file.write(f"Mask protected contacts: {total_mask_protected_contacts}\n")
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
 
     file.write("Final state counts:\n")
