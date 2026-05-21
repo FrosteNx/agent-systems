@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import pandas as pd
 import logging
+import time
 
 
 model = FluModel(
@@ -128,6 +129,8 @@ print(f"Parameters saved to {data_dir}/parameters.json")
 
 actual_steps = 0
 
+start_time = time.time()
+
 for i in range(steps):
     model.step()
     actual_steps = i + 1
@@ -155,7 +158,13 @@ for i in range(steps):
         print(f"Epidemic ended at step {i}")
         break
 
+execution_time_seconds = time.time() - start_time
+
 logging.info("Simulation finished")
+logging.info(
+    f"Execution time: "
+    f"{execution_time_seconds:.2f} seconds"
+)
 
 results = model.datacollector.get_model_vars_dataframe()
 
@@ -325,6 +334,7 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Attack rate: {attack_rate:.2%}\n")
     file.write(f"Case fatality rate: {case_fatality_rate:.2%}\n")
     file.write(f"Average Rt: {average_rt:.2f}\n")
+    file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
 
     file.write("Final state counts:\n")
     for state, count in final_counts.items():
