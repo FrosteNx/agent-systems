@@ -4,7 +4,10 @@ import config
 import os
 from datetime import datetime
 import json
-
+from visualization import (
+    save_city_snapshot,
+    create_city_animation
+)
 
 model = FluModel(
     width=config.WIDTH,
@@ -63,10 +66,14 @@ with open(f"{data_dir}/parameters.json", "w") as file:
 print(f"Parameters saved to {data_dir}/parameters.json")
 
 actual_steps = 0
+snapshot_files = []
 
 for i in range(steps):
     model.step()
     actual_steps = i + 1
+    if config.ENABLE_VISUALIZATION and i % config.VISUALIZATION_EVERY_N_STEPS == 0:
+        snapshot_file = save_city_snapshot(model, plots_dir, i)
+        snapshot_files.append(snapshot_file)
     counts = model.count_states()
 
     print(f"Step {i}: {counts}")
@@ -80,6 +87,14 @@ for i in range(steps):
     if active_cases == 0:
         print(f"Epidemic ended at step {i}")
         break
+
+#visualization
+if config.ENABLE_VISUALIZATION:
+    create_city_animation(
+        snapshot_files,
+        plots_dir,
+        config.GIF_FRAME_DURATION
+    )
 
 results = model.datacollector.get_model_vars_dataframe()
 
@@ -135,7 +150,7 @@ plt.tight_layout()
 
 plt.savefig(f"{plots_dir}/epidemic_curve.png", dpi=300)
 
-plt.show()
+#plt.show()
 
 
 plt.figure()
@@ -152,7 +167,7 @@ plt.tight_layout()
 plt.savefig(f"{plots_dir}/rt_curve.png", dpi=300)
 print("Rt plot saved to outputs/rt_curve.png")
 
-plt.show()
+#plt.show()
 
 
 plt.figure()
@@ -169,4 +184,5 @@ plt.tight_layout()
 plt.savefig(f"{plots_dir}/infections_curve.png", dpi=300)
 print("Infections plot saved to outputs/infections_curve.png")
 
-plt.show()
+#plt.show()
+
