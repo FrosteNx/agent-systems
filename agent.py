@@ -12,6 +12,7 @@ class PersonAgent(Agent):
         self.work = None
         self.age_group = age_group
         self.current_location_type = "home"
+        self.is_detected = False
 
         if self.age_group == "child":
             self.transmission_multiplier = 1.5
@@ -60,11 +61,12 @@ class PersonAgent(Agent):
             self.current_location_type = "home"
             return
         
-        if self.state == "Infected" and self.model.quarantine_enabled:
+        if self.state == "Infected" and self.model.quarantine_enabled and self.is_detected:
             if self.random.random() < self.model.quarantine_compliance:
                 target = self.home
                 self.model.grid.move_agent(self, target)
                 self.current_location_type = "home"
+                self.model.quarantined_agents += 1
                 return
         
         if self.state == "Infected":
@@ -122,6 +124,10 @@ class PersonAgent(Agent):
                     * transmission
                     * agent.susceptibility_multiplier
                 )
+                if self.is_detected:
+                    infection_chance *= (
+                        self.model.detected_transmission_multiplier
+                    )
 
                 if (
                     self.model.masks_enabled
@@ -171,6 +177,8 @@ class PersonAgent(Agent):
                     self.state = "Asymptomatic"
                 else:
                     self.state = "Infected"
+                    if self.random.random() < self.model.testing_rate:
+                        self.is_detected = True
                 self.days_in_state = 0
 
         elif self.state == "Infected":

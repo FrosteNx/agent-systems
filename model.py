@@ -41,7 +41,9 @@ class FluModel(Model):
         mask_transmission_reduction=0.4,
         mask_compliance=0.7,
         quarantine_enabled=False,
-        quarantine_compliance=0.9
+        quarantine_compliance=0.9,
+        testing_rate=0.5,
+        detected_transmission_multiplier=0.3
     ):
         super().__init__()
 
@@ -87,6 +89,9 @@ class FluModel(Model):
         self.mask_protected_contacts = 0
         self.quarantine_enabled = quarantine_enabled
         self.quarantine_compliance = quarantine_compliance
+        self.quarantined_agents = 0
+        self.testing_rate = testing_rate
+        self.detected_transmission_multiplier = detected_transmission_multiplier
 
         self.peak_active_cases = 0
         self.random_seed = random_seed
@@ -169,6 +174,11 @@ class FluModel(Model):
                 "WorkInfections": lambda m: m.work_infections,
                 "OtherInfections": lambda m: m.other_infections,
                 "MaskProtectedContacts": lambda m: m.mask_protected_contacts,
+                "QuarantinedAgents": lambda m: m.quarantined_agents,
+                "DetectedInfected": lambda m: sum(
+                    1 for agent in m.schedule.agents
+                    if agent.state == "Infected" and agent.is_detected
+                ),
             }
         )
 
@@ -184,6 +194,7 @@ class FluModel(Model):
         self.work_infections = 0
         self.other_infections = 0
         self.mask_protected_contacts = 0
+        self.quarantined_agents = 0
         self.schedule.step()
 
         counts = self.count_states()

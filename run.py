@@ -40,7 +40,9 @@ model = FluModel(
     mask_transmission_reduction=config.MASK_TRANSMISSION_REDUCTION,
     mask_compliance=config.MASK_COMPLIANCE,
     quarantine_enabled=config.QUARANTINE_ENABLED,
-    quarantine_compliance=config.QUARANTINE_COMPLIANCE
+    quarantine_compliance=config.QUARANTINE_COMPLIANCE,
+    testing_rate=config.TESTING_RATE,
+    detected_transmission_multiplier=config.DETECTED_TRANSMISSION_MULTIPLIER
 )
 
 steps = config.SIMULATION_STEPS
@@ -229,6 +231,7 @@ total_home_infections = results["HomeInfections"].sum()
 total_school_infections = results["SchoolInfections"].sum()
 total_work_infections = results["WorkInfections"].sum()
 total_other_infections = results["OtherInfections"].sum()
+total_quarantined_agents = results["QuarantinedAgents"].sum()
 
 if secondary_infections > 0:
     household_infection_share = total_household_infections / secondary_infections
@@ -280,6 +283,7 @@ summary_metrics = {
     "work_infection_share": work_infection_share,
     "other_infection_share": other_infection_share,
     "mask_protected_contacts": total_mask_protected_contacts,
+    "total_quarantined_agents": total_quarantined_agents,
 }
 
 logging.info("Final summary metrics:")
@@ -352,6 +356,10 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Mask compliance: {config.MASK_COMPLIANCE:.2%}\n")
     file.write(f"Mask transmission reduction: {config.MASK_TRANSMISSION_REDUCTION:.2%}\n")
     file.write(f"Mask protected contacts: {total_mask_protected_contacts}\n")
+    file.write("\nQuarantine intervention:\n")
+    file.write(f"Quarantine enabled: {config.QUARANTINE_ENABLED}\n")
+    file.write(f"Quarantine compliance: {config.QUARANTINE_COMPLIANCE:.2%}\n")
+    file.write(f"Total quarantined agent-steps: {total_quarantined_agents}\n")
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
 
     file.write("Final state counts:\n")
@@ -420,6 +428,23 @@ plt.show()
 
 plt.figure()
 
+plt.plot(results["QuarantinedAgents"], label="Quarantined agents")
+plt.plot(results["DetectedInfected"], label="Detected infected")
+
+plt.xlabel("Step")
+plt.ylabel("Number of agents")
+plt.title("Quarantined agents over time")
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/quarantine_curve.png", dpi=300)
+
+print(f"Quarantine plot saved to {plots_dir}/quarantine_curve.png")
+
+plt.show()
+
+plt.figure()
+
 locations = ["Home", "School", "Work", "Other"]
 location_values = [
     total_home_infections,
@@ -438,7 +463,7 @@ plt.tight_layout()
 plt.savefig(f"{plots_dir}/location_infections_bar.png", dpi=300)
 print(f"Location infections plot saved to {plots_dir}/location_infections_bar.png")
 
-plt.show()
+#plt.show()
 
 plt.figure()
 
@@ -461,7 +486,7 @@ print(
     f"{plots_dir}/transmission_type_bar.png"
 )
 
-plt.show()
+#plt.show()
 
 plt.figure()
 
@@ -493,7 +518,7 @@ print(
     f"{plots_dir}/location_infection_share_bar.png"
 )
 
-plt.show()
+#plt.show()
 
 plt.figure()
 
@@ -524,7 +549,7 @@ print(
     f"{plots_dir}/location_infection_share_pie.png"
 )
 
-plt.show()
+#plt.show()
 
 plt.figure()
 
@@ -553,4 +578,4 @@ print(
     f"{plots_dir}/transmission_type_share_pie.png"
 )
 
-plt.show()
+#plt.show()
