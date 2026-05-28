@@ -270,6 +270,67 @@ if model.total_infections > 0:
 else:
     detection_rate = 0
 
+if model.total_infections > 0:
+    quarantine_rate = (
+        model.total_quarantined_people
+        / model.total_infections
+    )
+else:
+    quarantine_rate = 0
+
+undetected_infections = (
+    model.total_infections
+    - model.total_detected_infections
+)
+
+if model.total_infections > 0:
+    undetected_rate = (
+        undetected_infections
+        / model.total_infections
+    )
+else:
+    undetected_rate = 0
+
+if model.total_infections > 0:
+    asymptomatic_rate_observed = (
+        model.total_asymptomatic_infections
+        / model.total_infections
+    )
+else:
+    asymptomatic_rate_observed = 0
+
+age_counts = model.count_age_groups()
+
+child_attack_rate = (
+    model.child_infections / age_counts["child"]
+    if age_counts["child"] > 0 else 0
+)
+
+adult_attack_rate = (
+    model.adult_infections / age_counts["adult"]
+    if age_counts["adult"] > 0 else 0
+)
+
+senior_attack_rate = (
+    model.senior_infections / age_counts["senior"]
+    if age_counts["senior"] > 0 else 0
+)
+
+child_death_rate = (
+    model.child_deaths / age_counts["child"]
+    if age_counts["child"] > 0 else 0
+)
+
+adult_death_rate = (
+    model.adult_deaths / age_counts["adult"]
+    if age_counts["adult"] > 0 else 0
+)
+
+senior_death_rate = (
+    model.senior_deaths / age_counts["senior"]
+    if age_counts["senior"] > 0 else 0
+)
+
 summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
@@ -295,7 +356,24 @@ summary_metrics = {
     "total_quarantined_people": model.total_quarantined_people,
     "total_detected_infections": model.total_detected_infections,
     "detection_rate": detection_rate,
-}
+    "quarantine_rate": quarantine_rate,
+    "undetected_infections": undetected_infections,
+    "undetected_rate": undetected_rate,
+    "total_asymptomatic_infections": model.total_asymptomatic_infections,
+    "asymptomatic_rate_observed": asymptomatic_rate_observed,
+    "child_deaths": model.child_deaths,
+    "adult_deaths": model.adult_deaths,
+    "senior_deaths": model.senior_deaths,
+    "child_death_rate": child_death_rate,
+    "adult_death_rate": adult_death_rate,
+    "senior_death_rate": senior_death_rate,
+    "child_infections": model.child_infections,
+    "adult_infections": model.adult_infections,
+    "senior_infections": model.senior_infections,
+    "child_attack_rate": child_attack_rate,
+    "adult_attack_rate": adult_attack_rate,
+    "senior_attack_rate": senior_attack_rate,
+    }
 
 logging.info("Final summary metrics:")
 
@@ -372,8 +450,27 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Quarantine compliance: {config.QUARANTINE_COMPLIANCE:.2%}\n")
     file.write(f"Total quarantined agent-steps: {total_quarantined_agents}\n")
     file.write(f"Total quarantined people: {model.total_quarantined_people}\n")
+    file.write(f"Total quarantined people: {model.total_quarantined_people}\n")
     file.write(f"Total detected infections: {model.total_detected_infections}\n")
     file.write(f"Detection rate: {detection_rate:.2%}\n")
+    file.write(f"Undetected infections: {undetected_infections}\n")
+    file.write(f"Undetected rate: {undetected_rate:.2%}\n")
+    file.write(f"Total asymptomatic infections: {model.total_asymptomatic_infections}\n")
+    file.write(f"Observed asymptomatic rate: {asymptomatic_rate_observed:.2%}\n")
+    file.write("\nDeaths by age group:\n")
+    file.write(f"Child deaths: {model.child_deaths}\n")
+    file.write(f"Adult deaths: {model.adult_deaths}\n")
+    file.write(f"Senior deaths: {model.senior_deaths}\n")
+    file.write(f"Child death rate: {child_death_rate:.2%}\n")
+    file.write(f"Adult death rate: {adult_death_rate:.2%}\n")
+    file.write(f"Senior death rate: {senior_death_rate:.2%}\n")
+    file.write("\nInfections by age group:\n")
+    file.write(f"Child infections: {model.child_infections}\n")
+    file.write(f"Adult infections: {model.adult_infections}\n")
+    file.write(f"Senior infections: {model.senior_infections}\n")
+    file.write(f"Child attack rate: {child_attack_rate:.2%}\n")
+    file.write(f"Adult attack rate: {adult_attack_rate:.2%}\n")
+    file.write(f"Senior attack rate: {senior_attack_rate:.2%}\n")
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
 
@@ -445,6 +542,7 @@ plt.figure()
 
 plt.plot(results["QuarantinedAgents"], label="Quarantined agents")
 plt.plot(results["DetectedInfected"], label="Detected infected")
+plt.plot(results["UndetectedInfected"], label="Undetected infected")
 
 plt.xlabel("Step")
 plt.ylabel("Number of agents")

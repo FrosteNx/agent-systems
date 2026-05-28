@@ -153,6 +153,13 @@ class PersonAgent(Agent):
                     agent.state = "Exposed"
                     agent.days_in_state = 0
 
+                    if agent.age_group == "child":
+                        self.model.child_infections += 1
+                    elif agent.age_group == "adult":
+                        self.model.adult_infections += 1
+                    elif agent.age_group == "senior":
+                        self.model.senior_infections += 1
+
                     self.model.new_infections += 1
                     self.model.total_infections += 1
 
@@ -172,6 +179,12 @@ class PersonAgent(Agent):
 
     def update_health(self):
         if self.state == "Dead":
+            if self.age_group == "child":
+                self.model.child_deaths += 1
+            elif self.age_group == "adult":
+                self.model.adult_deaths += 1
+            elif self.age_group == "senior":
+                self.model.senior_deaths += 1
             return
         
         self.days_in_state += 1
@@ -180,6 +193,7 @@ class PersonAgent(Agent):
             if self.days_in_state >= self.model.incubation_time:
                 if self.random.random() < self.model.asymptomatic_rate:
                     self.state = "Asymptomatic"
+                    self.model.total_asymptomatic_infections += 1
                 else:
                     self.state = "Infected"
                     if self.random.random() < self.model.testing_rate:

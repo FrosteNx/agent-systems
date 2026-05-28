@@ -94,6 +94,13 @@ class FluModel(Model):
         self.detected_transmission_multiplier = detected_transmission_multiplier
         self.total_detected_infections = 0
         self.total_quarantined_people = 0
+        self.total_asymptomatic_infections = 0
+        self.child_deaths = 0
+        self.adult_deaths = 0
+        self.senior_deaths = 0
+        self.child_infections = 0
+        self.adult_infections = 0
+        self.senior_infections = 0
 
         self.peak_active_cases = 0
         self.random_seed = random_seed
@@ -180,6 +187,10 @@ class FluModel(Model):
                 "DetectedInfected": lambda m: sum(
                     1 for agent in m.schedule.agents
                     if agent.state == "Infected" and agent.is_detected
+                ),
+                "UndetectedInfected": lambda m: sum(
+                    1 for agent in m.schedule.agents
+                    if agent.state == "Infected" and not agent.is_detected
                 ),
             }
         )
