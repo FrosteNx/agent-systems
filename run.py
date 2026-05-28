@@ -262,6 +262,14 @@ location_share_sum = (
 
 total_mask_protected_contacts = results["MaskProtectedContacts"].sum()
 
+if model.total_infections > 0:
+    detection_rate = (
+        model.total_detected_infections
+        / model.total_infections
+    )
+else:
+    detection_rate = 0
+
 summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
@@ -284,6 +292,9 @@ summary_metrics = {
     "other_infection_share": other_infection_share,
     "mask_protected_contacts": total_mask_protected_contacts,
     "total_quarantined_agents": total_quarantined_agents,
+    "total_quarantined_people": model.total_quarantined_people,
+    "total_detected_infections": model.total_detected_infections,
+    "detection_rate": detection_rate,
 }
 
 logging.info("Final summary metrics:")
@@ -360,7 +371,11 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Quarantine enabled: {config.QUARANTINE_ENABLED}\n")
     file.write(f"Quarantine compliance: {config.QUARANTINE_COMPLIANCE:.2%}\n")
     file.write(f"Total quarantined agent-steps: {total_quarantined_agents}\n")
+    file.write(f"Total quarantined people: {model.total_quarantined_people}\n")
+    file.write(f"Total detected infections: {model.total_detected_infections}\n")
+    file.write(f"Detection rate: {detection_rate:.2%}\n")
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
+    
 
     file.write("Final state counts:\n")
     for state, count in final_counts.items():

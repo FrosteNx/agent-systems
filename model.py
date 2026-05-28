@@ -92,6 +92,8 @@ class FluModel(Model):
         self.quarantined_agents = 0
         self.testing_rate = testing_rate
         self.detected_transmission_multiplier = detected_transmission_multiplier
+        self.total_detected_infections = 0
+        self.total_quarantined_people = 0
 
         self.peak_active_cases = 0
         self.random_seed = random_seed

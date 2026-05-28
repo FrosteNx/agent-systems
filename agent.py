@@ -13,6 +13,7 @@ class PersonAgent(Agent):
         self.age_group = age_group
         self.current_location_type = "home"
         self.is_detected = False
+        self.was_quarantined = False
 
         if self.age_group == "child":
             self.transmission_multiplier = 1.5
@@ -67,6 +68,10 @@ class PersonAgent(Agent):
                 self.model.grid.move_agent(self, target)
                 self.current_location_type = "home"
                 self.model.quarantined_agents += 1
+
+                if not self.was_quarantined:
+                    self.was_quarantined = True
+                    self.model.total_quarantined_people += 1
                 return
         
         if self.state == "Infected":
@@ -178,7 +183,9 @@ class PersonAgent(Agent):
                 else:
                     self.state = "Infected"
                     if self.random.random() < self.model.testing_rate:
-                        self.is_detected = True
+                        if not self.is_detected:
+                            self.is_detected = True
+                            self.model.total_detected_infections += 1
                 self.days_in_state = 0
 
         elif self.state == "Infected":
