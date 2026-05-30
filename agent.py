@@ -50,7 +50,7 @@ class PersonAgent(Agent):
                 self.current_location_type = "home"
                 return
             
-        if self.age_group == "child" and self.model.school_closed:
+        if self.age_group == "child" and self.model.school_closed_active:
             target = self.home
             self.model.grid.move_agent(self, target)
             self.current_location_type = "home"
@@ -219,6 +219,7 @@ class PersonAgent(Agent):
         elif self.state == "Asymptomatic":
             if self.days_in_state >= self.model.recovery_time:
                 self.state = "Recovered"
+                self.is_detected = False
 
     def step(self):
         self.move()

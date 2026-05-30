@@ -34,6 +34,8 @@ class FluModel(Model):
         senior_mobility=0.4,
         child_mobility=1.0,
         school_closed=False,
+        auto_school_closure=False,
+        school_closure_threshold=100,
         work_closed=False,
         lockdown=False,
         lockdown_mobility=0.2,
@@ -84,6 +86,10 @@ class FluModel(Model):
         self.senior_mobility = senior_mobility
         self.child_mobility = child_mobility
         self.school_closed = school_closed
+        self.auto_school_closure = auto_school_closure
+        self.school_closure_threshold = school_closure_threshold
+        self.school_closed_active = school_closed
+        self.school_closure_start_step = None
         self.work_closed = work_closed
         self.lockdown = lockdown
         self.lockdown_mobility = lockdown_mobility
@@ -209,6 +215,7 @@ class FluModel(Model):
                     -1 if m.lockdown_start_step is None
                     else m.lockdown_start_step
                 ),
+                "SchoolClosedActive": lambda m: int(m.school_closed_active),
             }
         )
 
@@ -232,6 +239,18 @@ class FluModel(Model):
                 if active_cases <= self.lockdown_release_threshold:
                     self.lockdown_active = False
                     self.lockdown_end_step = self.step_count
+        if self.auto_school_closure:
+            active_cases = (
+                self.count_states()["Exposed"]
+                + self.count_states()["Infected"]
+                + self.count_states()["Asymptomatic"]
+            )
+
+            if active_cases >= self.school_closure_threshold:
+                if not self.school_closed_active:
+                    self.school_closure_start_step = self.step_count
+
+                self.school_closed_active = True
         self.step_count += 1
         self.new_infections = 0
         self.household_infections = 0

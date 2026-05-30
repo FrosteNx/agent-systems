@@ -46,7 +46,9 @@ model = FluModel(
     quarantine_enabled=config.QUARANTINE_ENABLED,
     quarantine_compliance=config.QUARANTINE_COMPLIANCE,
     testing_rate=config.TESTING_RATE,
-    detected_transmission_multiplier=config.DETECTED_TRANSMISSION_MULTIPLIER
+    detected_transmission_multiplier=config.DETECTED_TRANSMISSION_MULTIPLIER,
+    auto_school_closure=config.AUTO_SCHOOL_CLOSURE,
+    school_closure_threshold=config.SCHOOL_CLOSURE_THRESHOLD,
 )
 
 steps = config.SIMULATION_STEPS
@@ -394,6 +396,7 @@ summary_metrics = {
     "lockdown_end_step": model.lockdown_end_step,
     "lockdown_duration": lockdown_duration,
     "lockdown_activation_count": model.lockdown_activation_count,
+    "school_closure_start_step": model.school_closure_start_step,
     }
 
 logging.info("Final summary metrics:")
@@ -495,6 +498,7 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Lockdown end step: {model.lockdown_end_step}\n")
     file.write(f"Lockdown duration: {lockdown_duration}\n")
     file.write(f"Lockdown activation count: {model.lockdown_activation_count}\n")
+    file.write(f"School closure start step: {model.school_closure_start_step}\n")
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
 
@@ -827,6 +831,26 @@ plt.savefig(f"{plots_dir}/lockdown_thresholds_curve.png", dpi=300)
 print(
     f"Lockdown thresholds plot saved to "
     f"{plots_dir}/lockdown_thresholds_curve.png"
+)
+
+#plt.show()
+
+plt.figure()
+
+plt.plot(results["SchoolClosedActive"], label="School closed")
+
+plt.xlabel("Step")
+plt.ylabel("Active")
+plt.title("School closure status over time")
+plt.yticks([0, 1], ["Open", "Closed"])
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/school_closure_status.png", dpi=300)
+
+print(
+    f"School closure status plot saved to "
+    f"{plots_dir}/school_closure_status.png"
 )
 
 #plt.show()
