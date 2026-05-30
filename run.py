@@ -692,3 +692,71 @@ print(
 )
 
 #plt.show()
+
+plt.figure()
+
+attack_age_groups = ["Child", "Adult", "Senior"]
+attack_values = [
+    child_attack_rate * 100,
+    adult_attack_rate * 100,
+    senior_attack_rate * 100,
+]
+
+plt.bar(attack_age_groups, attack_values)
+
+plt.xlabel("Age group")
+plt.ylabel("Attack rate (%)")
+plt.title("Attack rate by age group")
+plt.ylim(0, 100)
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/attack_rate_by_age_bar.png", dpi=300)
+
+print(f"Attack rate by age plot saved to {plots_dir}/attack_rate_by_age_bar.png")
+
+#plt.show()
+
+plt.figure()
+
+infection_age_groups = ["Child", "Adult", "Senior"]
+infection_values = [
+    model.child_infections,
+    model.adult_infections,
+    model.senior_infections,
+]
+
+plt.bar(infection_age_groups, infection_values)
+
+plt.xlabel("Age group")
+plt.ylabel("Infections")
+plt.title("Infections by age group")
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/infections_by_age_bar.png", dpi=300)
+
+print(f"Infections by age plot saved to {plots_dir}/infections_by_age_bar.png")
+
+#plt.show()
+
+plt.figure()
+
+death_rate_age_groups = ["Child", "Adult", "Senior"]
+death_rate_values = [
+    child_death_rate * 100,
+    adult_death_rate * 100,
+    senior_death_rate * 100,
+]
+
+plt.bar(death_rate_age_groups, death_rate_values)
+
+plt.xlabel("Age group")
+plt.ylabel("Death rate (%)")
+plt.title("Death rate by age group")
+plt.ylim(0, 100)
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/death_rate_by_age_bar.png", dpi=300)
+
+print(f"Death rate by age plot saved to {plots_dir}/death_rate_by_age_bar.png")
+
+#plt.show()
