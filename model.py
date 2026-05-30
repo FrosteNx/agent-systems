@@ -36,6 +36,8 @@ class FluModel(Model):
         school_closed=False,
         auto_school_closure=False,
         school_closure_threshold=100,
+        auto_school_reopen=False,
+        school_reopen_threshold=20,
         work_closed=False,
         lockdown=False,
         lockdown_mobility=0.2,
@@ -90,6 +92,10 @@ class FluModel(Model):
         self.school_closure_threshold = school_closure_threshold
         self.school_closed_active = school_closed
         self.school_closure_start_step = None
+        self.auto_school_reopen = auto_school_reopen
+        self.school_reopen_threshold = school_reopen_threshold
+        self.school_closure_end_step = None
+        self.school_closure_count = 0
         self.work_closed = work_closed
         self.lockdown = lockdown
         self.lockdown_mobility = lockdown_mobility
@@ -249,8 +255,13 @@ class FluModel(Model):
             if active_cases >= self.school_closure_threshold:
                 if not self.school_closed_active:
                     self.school_closure_start_step = self.step_count
+                    self.school_closure_count += 1
 
                 self.school_closed_active = True
+        if self.auto_school_reopen and self.school_closed_active:
+            if active_cases <= self.school_reopen_threshold:
+                self.school_closed_active = False
+                self.school_closure_end_step = self.step_count
         self.step_count += 1
         self.new_infections = 0
         self.household_infections = 0

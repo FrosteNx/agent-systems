@@ -49,6 +49,8 @@ model = FluModel(
     detected_transmission_multiplier=config.DETECTED_TRANSMISSION_MULTIPLIER,
     auto_school_closure=config.AUTO_SCHOOL_CLOSURE,
     school_closure_threshold=config.SCHOOL_CLOSURE_THRESHOLD,
+    auto_school_reopen=config.AUTO_SCHOOL_REOPEN,
+    school_reopen_threshold=config.SCHOOL_REOPEN_THRESHOLD,
 )
 
 steps = config.SIMULATION_STEPS
@@ -350,6 +352,19 @@ elif model.lockdown_start_step is not None:
 else:
     lockdown_duration = 0
 
+if (
+    model.school_closure_start_step is not None
+    and model.school_closure_end_step is not None
+):
+    school_closure_duration = (
+        model.school_closure_end_step
+        - model.school_closure_start_step
+    )
+elif model.school_closure_start_step is not None:
+    school_closure_duration = actual_steps - model.school_closure_start_step
+else:
+    school_closure_duration = 0
+
 summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
@@ -397,6 +412,9 @@ summary_metrics = {
     "lockdown_duration": lockdown_duration,
     "lockdown_activation_count": model.lockdown_activation_count,
     "school_closure_start_step": model.school_closure_start_step,
+    "school_closure_end_step": model.school_closure_end_step,
+    "school_closure_duration": school_closure_duration,
+    "school_closure_count": model.school_closure_count,
     }
 
 logging.info("Final summary metrics:")
@@ -499,6 +517,9 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Lockdown duration: {lockdown_duration}\n")
     file.write(f"Lockdown activation count: {model.lockdown_activation_count}\n")
     file.write(f"School closure start step: {model.school_closure_start_step}\n")
+    file.write(f"School closure end step: {model.school_closure_end_step}\n")
+    file.write(f"School closure duration: {school_closure_duration}\n")
+    file.write(f"School closure count: {model.school_closure_count}\n")
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
 
