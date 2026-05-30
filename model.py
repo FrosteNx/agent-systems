@@ -39,6 +39,8 @@ class FluModel(Model):
         lockdown_mobility=0.2,
         auto_lockdown=False,
         lockdown_threshold=100,
+        auto_lockdown_release=False,
+        lockdown_release_threshold=20,
         masks_enabled=False,
         mask_transmission_reduction=0.4,
         mask_compliance=0.7,
@@ -88,6 +90,11 @@ class FluModel(Model):
         self.lockdown_active = lockdown
         self.auto_lockdown = auto_lockdown
         self.lockdown_threshold = lockdown_threshold
+        self.lockdown_start_step = None
+        self.lockdown_end_step = None
+        self.auto_lockdown_release = auto_lockdown_release
+        self.lockdown_activation_count = 0
+        self.lockdown_release_threshold = lockdown_release_threshold
         self.masks_enabled = masks_enabled
         self.mask_transmission_reduction = mask_transmission_reduction
         self.mask_compliance = mask_compliance
@@ -198,6 +205,10 @@ class FluModel(Model):
                     if agent.state == "Infected" and not agent.is_detected
                 ),
                 "LockdownActive": lambda m: int(m.lockdown_active),
+                "LockdownStartStep": lambda m: (
+                    -1 if m.lockdown_start_step is None
+                    else m.lockdown_start_step
+                ),
             }
         )
 
@@ -212,7 +223,15 @@ class FluModel(Model):
             )
 
             if active_cases >= self.lockdown_threshold:
+                if not self.lockdown_active:
+                    self.lockdown_start_step = self.step_count
+                    self.lockdown_activation_count += 1
+
                 self.lockdown_active = True
+            if self.auto_lockdown_release and self.lockdown_active:
+                if active_cases <= self.lockdown_release_threshold:
+                    self.lockdown_active = False
+                    self.lockdown_end_step = self.step_count
         self.step_count += 1
         self.new_infections = 0
         self.household_infections = 0

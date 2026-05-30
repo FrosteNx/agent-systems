@@ -178,14 +178,6 @@ class PersonAgent(Agent):
                         self.model.community_infections += 1
 
     def update_health(self):
-        if self.state == "Dead":
-            if self.age_group == "child":
-                self.model.child_deaths += 1
-            elif self.age_group == "adult":
-                self.model.adult_deaths += 1
-            elif self.age_group == "senior":
-                self.model.senior_deaths += 1
-            return
         
         self.days_in_state += 1
 
@@ -213,8 +205,16 @@ class PersonAgent(Agent):
 
                 if self.random.random() < mortality_rate:
                     self.state = "Dead"
+                    if self.age_group == "child":
+                        self.model.child_deaths += 1
+                    elif self.age_group == "adult":
+                        self.model.adult_deaths += 1
+                    elif self.age_group == "senior":
+                        self.model.senior_deaths += 1
+                    return
                 else:
                     self.state = "Recovered"
+                    self.is_detected = False
 
         elif self.state == "Asymptomatic":
             if self.days_in_state >= self.model.recovery_time:

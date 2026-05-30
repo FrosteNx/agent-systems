@@ -38,6 +38,8 @@ model = FluModel(
     lockdown_mobility=config.LOCKDOWN_MOBILITY,
     auto_lockdown=config.AUTO_LOCKDOWN,
     lockdown_threshold=config.LOCKDOWN_THRESHOLD,
+    auto_lockdown_release=config.AUTO_LOCKDOWN_RELEASE,
+    lockdown_release_threshold=config.LOCKDOWN_RELEASE_THRESHOLD,
     masks_enabled=config.MASKS_ENABLED,
     mask_transmission_reduction=config.MASK_TRANSMISSION_REDUCTION,
     mask_compliance=config.MASK_COMPLIANCE,
@@ -333,6 +335,19 @@ senior_death_rate = (
     if age_counts["senior"] > 0 else 0
 )
 
+if (
+    model.lockdown_start_step is not None
+    and model.lockdown_end_step is not None
+):
+    lockdown_duration = (
+        model.lockdown_end_step
+        - model.lockdown_start_step
+    )
+elif model.lockdown_start_step is not None:
+    lockdown_duration = actual_steps - model.lockdown_start_step
+else:
+    lockdown_duration = 0
+
 summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
@@ -375,6 +390,10 @@ summary_metrics = {
     "child_attack_rate": child_attack_rate,
     "adult_attack_rate": adult_attack_rate,
     "senior_attack_rate": senior_attack_rate,
+    "lockdown_start_step": model.lockdown_start_step,
+    "lockdown_end_step": model.lockdown_end_step,
+    "lockdown_duration": lockdown_duration,
+    "lockdown_activation_count": model.lockdown_activation_count,
     }
 
 logging.info("Final summary metrics:")
@@ -452,7 +471,6 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Quarantine compliance: {config.QUARANTINE_COMPLIANCE:.2%}\n")
     file.write(f"Total quarantined agent-steps: {total_quarantined_agents}\n")
     file.write(f"Total quarantined people: {model.total_quarantined_people}\n")
-    file.write(f"Total quarantined people: {model.total_quarantined_people}\n")
     file.write(f"Total detected infections: {model.total_detected_infections}\n")
     file.write(f"Detection rate: {detection_rate:.2%}\n")
     file.write(f"Undetected infections: {undetected_infections}\n")
@@ -473,6 +491,10 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Child attack rate: {child_attack_rate:.2%}\n")
     file.write(f"Adult attack rate: {adult_attack_rate:.2%}\n")
     file.write(f"Senior attack rate: {senior_attack_rate:.2%}\n")
+    file.write(f"Lockdown start step: {model.lockdown_start_step}\n")
+    file.write(f"Lockdown end step: {model.lockdown_end_step}\n")
+    file.write(f"Lockdown duration: {lockdown_duration}\n")
+    file.write(f"Lockdown activation count: {model.lockdown_activation_count}\n")
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
 
@@ -778,4 +800,4 @@ plt.savefig(f"{plots_dir}/lockdown_status.png", dpi=300)
 
 print(f"Lockdown status plot saved to {plots_dir}/lockdown_status.png")
 
-plt.show()
+#plt.show()
