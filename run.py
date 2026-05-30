@@ -801,3 +801,32 @@ plt.savefig(f"{plots_dir}/lockdown_status.png", dpi=300)
 print(f"Lockdown status plot saved to {plots_dir}/lockdown_status.png")
 
 #plt.show()
+
+plt.figure()
+
+plt.plot(results["ActiveCases"], label="Active cases")
+plt.axhline(
+    y=config.LOCKDOWN_THRESHOLD,
+    linestyle="--",
+    label="Lockdown threshold"
+)
+plt.axhline(
+    y=config.LOCKDOWN_RELEASE_THRESHOLD,
+    linestyle=":",
+    label="Release threshold"
+)
+
+plt.xlabel("Step")
+plt.ylabel("Active cases")
+plt.title("Active cases and lockdown thresholds")
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/lockdown_thresholds_curve.png", dpi=300)
+
+print(
+    f"Lockdown thresholds plot saved to "
+    f"{plots_dir}/lockdown_thresholds_curve.png"
+)
+
+#plt.show()
