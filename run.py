@@ -36,6 +36,8 @@ model = FluModel(
     work_closed=config.WORK_CLOSED,
     lockdown=config.LOCKDOWN,
     lockdown_mobility=config.LOCKDOWN_MOBILITY,
+    auto_lockdown=config.AUTO_LOCKDOWN,
+    lockdown_threshold=config.LOCKDOWN_THRESHOLD,
     masks_enabled=config.MASKS_ENABLED,
     mask_transmission_reduction=config.MASK_TRANSMISSION_REDUCTION,
     mask_compliance=config.MASK_COMPLIANCE,
@@ -760,3 +762,20 @@ plt.savefig(f"{plots_dir}/death_rate_by_age_bar.png", dpi=300)
 print(f"Death rate by age plot saved to {plots_dir}/death_rate_by_age_bar.png")
 
 #plt.show()
+
+plt.figure()
+
+plt.plot(results["LockdownActive"], label="Lockdown active")
+
+plt.xlabel("Step")
+plt.ylabel("Active")
+plt.title("Lockdown status over time")
+plt.yticks([0, 1], ["Off", "On"])
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/lockdown_status.png", dpi=300)
+
+print(f"Lockdown status plot saved to {plots_dir}/lockdown_status.png")
+
+plt.show()

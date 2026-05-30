@@ -37,13 +37,15 @@ class FluModel(Model):
         work_closed=False,
         lockdown=False,
         lockdown_mobility=0.2,
+        auto_lockdown=False,
+        lockdown_threshold=100,
         masks_enabled=False,
         mask_transmission_reduction=0.4,
         mask_compliance=0.7,
         quarantine_enabled=False,
         quarantine_compliance=0.9,
         testing_rate=0.5,
-        detected_transmission_multiplier=0.3
+        detected_transmission_multiplier=0.3,
     ):
         super().__init__()
 
@@ -83,6 +85,9 @@ class FluModel(Model):
         self.work_closed = work_closed
         self.lockdown = lockdown
         self.lockdown_mobility = lockdown_mobility
+        self.lockdown_active = lockdown
+        self.auto_lockdown = auto_lockdown
+        self.lockdown_threshold = lockdown_threshold
         self.masks_enabled = masks_enabled
         self.mask_transmission_reduction = mask_transmission_reduction
         self.mask_compliance = mask_compliance
@@ -192,12 +197,22 @@ class FluModel(Model):
                     1 for agent in m.schedule.agents
                     if agent.state == "Infected" and not agent.is_detected
                 ),
+                "LockdownActive": lambda m: int(m.lockdown_active),
             }
         )
 
         self.running = True
 
     def step(self):
+        if self.auto_lockdown:
+            active_cases = (
+                self.count_states()["Exposed"]
+                + self.count_states()["Infected"]
+                + self.count_states()["Asymptomatic"]
+            )
+
+            if active_cases >= self.lockdown_threshold:
+                self.lockdown_active = True
         self.step_count += 1
         self.new_infections = 0
         self.household_infections = 0

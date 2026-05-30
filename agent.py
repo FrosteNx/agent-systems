@@ -29,7 +29,7 @@ class PersonAgent(Agent):
         if self.state == "Dead":
             return
         
-        if self.model.lockdown:
+        if self.model.lockdown_active:
             if self.random.random() > self.model.lockdown_mobility:
                 target = self.home
                 self.model.grid.move_agent(self, target)
