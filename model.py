@@ -137,6 +137,9 @@ class FluModel(Model):
         self.mask_compliance_active = mask_compliance
         self.auto_mask_relaxation = auto_mask_relaxation
         self.mask_relaxation_threshold = mask_relaxation_threshold
+        self.mask_compliance_start_step = None
+        self.mask_compliance_end_step = None
+        self.mask_compliance_activation_count = 0
         
 
         self.peak_active_cases = 0
@@ -278,9 +281,16 @@ class FluModel(Model):
                 self.school_closure_end_step = self.step_count
         if self.auto_mask_compliance:
             if active_cases >= self.mask_compliance_threshold:
+                if self.mask_compliance_active != self.high_mask_compliance:
+                    self.mask_compliance_start_step = self.step_count
+                    self.mask_compliance_activation_count += 1
+
                 self.mask_compliance_active = self.high_mask_compliance
         if self.auto_mask_relaxation:
             if active_cases <= self.mask_relaxation_threshold:
+                if self.mask_compliance_active != self.base_mask_compliance:
+                    self.mask_compliance_end_step = self.step_count
+
                 self.mask_compliance_active = self.base_mask_compliance
         self.step_count += 1
         self.new_infections = 0

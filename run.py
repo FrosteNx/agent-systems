@@ -369,7 +369,21 @@ elif model.school_closure_start_step is not None:
     school_closure_duration = actual_steps - model.school_closure_start_step
 else:
     school_closure_duration = 0
-
+if (
+    model.mask_compliance_start_step is not None
+    and model.mask_compliance_end_step is not None
+):
+    mask_compliance_duration = (
+        model.mask_compliance_end_step
+        - model.mask_compliance_start_step
+    )
+elif model.mask_compliance_start_step is not None:
+    mask_compliance_duration = (
+        actual_steps
+        - model.mask_compliance_start_step
+    )
+else:
+    mask_compliance_duration = 0
 summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
@@ -421,6 +435,10 @@ summary_metrics = {
     "school_closure_duration": school_closure_duration,
     "school_closure_count": model.school_closure_count,
     "final_mask_compliance": model.mask_compliance_active,
+    "mask_compliance_start_step": model.mask_compliance_start_step,
+    "mask_compliance_end_step": model.mask_compliance_end_step,
+    "mask_compliance_duration": mask_compliance_duration,
+    "mask_compliance_activation_count": model.mask_compliance_activation_count,
     }
 
 logging.info("Final summary metrics:")
@@ -527,6 +545,11 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"School closure duration: {school_closure_duration}\n")
     file.write(f"School closure count: {model.school_closure_count}\n")
     file.write(f"Final mask compliance: {model.mask_compliance_active:.2%}\n")
+    file.write(f"Mask compliance start step: {model.mask_compliance_start_step}\n")
+    file.write(f"Mask compliance end step: {model.mask_compliance_end_step}\n")
+    file.write(f"Mask compliance duration: {mask_compliance_duration}\n")
+    file.write(f"Mask compliance activation count: {model.mask_compliance_activation_count}\n")
+    
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
 
@@ -900,5 +923,24 @@ print(
     f"Mask compliance plot saved to "
     f"{plots_dir}/mask_compliance_curve.png"
 )
+
+#plt.show()
+
+plt.figure()
+
+plt.plot(results["LockdownActive"], label="Lockdown active")
+plt.plot(results["SchoolClosedActive"], label="School closed")
+plt.plot(results["MaskComplianceActive"], label="Mask compliance")
+
+plt.xlabel("Step")
+plt.ylabel("Policy level")
+plt.title("Dynamic policy status over time")
+plt.ylim(0, 1)
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/policy_status.png", dpi=300)
+
+print(f"Policy status plot saved to {plots_dir}/policy_status.png")
 
 #plt.show()
