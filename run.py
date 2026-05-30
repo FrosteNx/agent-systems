@@ -51,6 +51,11 @@ model = FluModel(
     school_closure_threshold=config.SCHOOL_CLOSURE_THRESHOLD,
     auto_school_reopen=config.AUTO_SCHOOL_REOPEN,
     school_reopen_threshold=config.SCHOOL_REOPEN_THRESHOLD,
+    auto_mask_compliance=config.AUTO_MASK_COMPLIANCE,
+    mask_compliance_threshold=config.MASK_COMPLIANCE_THRESHOLD,
+    high_mask_compliance=config.HIGH_MASK_COMPLIANCE,
+    auto_mask_relaxation=config.AUTO_MASK_RELAXATION,
+    mask_relaxation_threshold=config.MASK_RELAXATION_THRESHOLD,
 )
 
 steps = config.SIMULATION_STEPS
@@ -415,6 +420,7 @@ summary_metrics = {
     "school_closure_end_step": model.school_closure_end_step,
     "school_closure_duration": school_closure_duration,
     "school_closure_count": model.school_closure_count,
+    "final_mask_compliance": model.mask_compliance_active,
     }
 
 logging.info("Final summary metrics:")
@@ -520,6 +526,7 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"School closure end step: {model.school_closure_end_step}\n")
     file.write(f"School closure duration: {school_closure_duration}\n")
     file.write(f"School closure count: {model.school_closure_count}\n")
+    file.write(f"Final mask compliance: {model.mask_compliance_active:.2%}\n")
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
 
@@ -872,6 +879,26 @@ plt.savefig(f"{plots_dir}/school_closure_status.png", dpi=300)
 print(
     f"School closure status plot saved to "
     f"{plots_dir}/school_closure_status.png"
+)
+
+#plt.show()
+
+plt.figure()
+
+plt.plot(results["MaskComplianceActive"], label="Mask compliance")
+
+plt.xlabel("Step")
+plt.ylabel("Compliance")
+plt.title("Mask compliance over time")
+plt.ylim(0, 1)
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/mask_compliance_curve.png", dpi=300)
+
+print(
+    f"Mask compliance plot saved to "
+    f"{plots_dir}/mask_compliance_curve.png"
 )
 
 #plt.show()

@@ -137,7 +137,7 @@ class PersonAgent(Agent):
                 if (
                     self.model.masks_enabled
                     and self.current_location_type != "home"
-                    and self.random.random() < self.model.mask_compliance
+                    and self.random.random() < self.model.mask_compliance_active
                 ):
                     infection_chance *= (1 - self.model.mask_transmission_reduction)
                     self.model.mask_protected_contacts += 1

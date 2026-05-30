@@ -52,6 +52,11 @@ class FluModel(Model):
         quarantine_compliance=0.9,
         testing_rate=0.5,
         detected_transmission_multiplier=0.3,
+        auto_mask_compliance=False,
+        mask_compliance_threshold=100,
+        high_mask_compliance=0.9,
+        auto_mask_relaxation=False,
+        mask_relaxation_threshold=20,
     ):
         super().__init__()
 
@@ -125,6 +130,14 @@ class FluModel(Model):
         self.child_infections = 0
         self.adult_infections = 0
         self.senior_infections = 0
+        self.auto_mask_compliance = auto_mask_compliance
+        self.mask_compliance_threshold = mask_compliance_threshold
+        self.base_mask_compliance = mask_compliance
+        self.high_mask_compliance = high_mask_compliance
+        self.mask_compliance_active = mask_compliance
+        self.auto_mask_relaxation = auto_mask_relaxation
+        self.mask_relaxation_threshold = mask_relaxation_threshold
+        
 
         self.peak_active_cases = 0
         self.random_seed = random_seed
@@ -222,6 +235,7 @@ class FluModel(Model):
                     else m.lockdown_start_step
                 ),
                 "SchoolClosedActive": lambda m: int(m.school_closed_active),
+                "MaskComplianceActive": lambda m: m.mask_compliance_active,
             }
         )
 
@@ -262,6 +276,12 @@ class FluModel(Model):
             if active_cases <= self.school_reopen_threshold:
                 self.school_closed_active = False
                 self.school_closure_end_step = self.step_count
+        if self.auto_mask_compliance:
+            if active_cases >= self.mask_compliance_threshold:
+                self.mask_compliance_active = self.high_mask_compliance
+        if self.auto_mask_relaxation:
+            if active_cases <= self.mask_relaxation_threshold:
+                self.mask_compliance_active = self.base_mask_compliance
         self.step_count += 1
         self.new_infections = 0
         self.household_infections = 0
