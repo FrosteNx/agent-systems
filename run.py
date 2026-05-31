@@ -409,6 +409,23 @@ else:
     testing_rate_duration = 0
 
 
+if (
+    model.quarantine_compliance_start_step is not None
+    and model.quarantine_compliance_end_step is not None
+):
+    quarantine_compliance_duration = (
+        model.quarantine_compliance_end_step
+        - model.quarantine_compliance_start_step
+    )
+elif model.quarantine_compliance_start_step is not None:
+    quarantine_compliance_duration = (
+        actual_steps
+        - model.quarantine_compliance_start_step
+    )
+else:
+    quarantine_compliance_duration = 0
+
+
 summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
@@ -470,6 +487,10 @@ summary_metrics = {
     "testing_rate_duration": testing_rate_duration,
     "testing_rate_activation_count": model.testing_rate_activation_count,
     "final_quarantine_compliance": model.quarantine_compliance_active,
+    "quarantine_compliance_start_step": model.quarantine_compliance_start_step,
+    "quarantine_compliance_end_step": model.quarantine_compliance_end_step,
+    "quarantine_compliance_duration": quarantine_compliance_duration,
+    "quarantine_compliance_activation_count": model.quarantine_compliance_activation_count,
     }
 
 logging.info("Final summary metrics:")
@@ -586,6 +607,10 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Testing rate duration: {testing_rate_duration}\n")
     file.write(f"Testing rate activation count: {model.testing_rate_activation_count}\n")
     file.write(f"Final quarantine compliance: "f"{model.quarantine_compliance_active:.2%}\n")
+    file.write(f"Quarantine compliance start step: {model.quarantine_compliance_start_step}\n")
+    file.write(f"Quarantine compliance end step: {model.quarantine_compliance_end_step}\n")
+    file.write(f"Quarantine compliance duration: {quarantine_compliance_duration}\n")
+    file.write(f"Quarantine compliance activation count: {model.quarantine_compliance_activation_count}\n")
     
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
