@@ -492,85 +492,146 @@ else:
 
 
 summary_metrics = {
+
+    # =====================
+    # GENERAL INFORMATION
+    # =====================
     "experiment_id": experiment_id,
     "timestamp": timestamp,
+    "scenario_name": config.SCENARIO_NAME,
     "output_dir": output_dir,
     "log_file": log_file,
-    "scenario_name": config.SCENARIO_NAME,
+
     "population": config.POPULATION,
     "initial_infected": config.INITIAL_INFECTED,
+
+    # =====================
+    # EPIDEMIC OUTCOMES
+    # =====================
     "total_infections": model.total_infections,
     "secondary_infections": secondary_infections,
     "peak_active_cases": model.peak_active_cases,
+
     "attack_rate": attack_rate,
     "case_fatality_rate": case_fatality_rate,
     "average_rt": average_rt,
+
+    # =====================
+    # TRANSMISSION ANALYSIS
+    # =====================
     "household_infection_share": household_infection_share,
     "community_infection_share": community_infection_share,
+
     "home_infection_share": home_infection_share,
     "school_infection_share": school_infection_share,
     "work_infection_share": work_infection_share,
     "other_infection_share": other_infection_share,
+
+    # =====================
+    # INTERVENTION OUTCOMES
+    # =====================
     "mask_protected_contacts": total_mask_protected_contacts,
+
     "total_quarantined_agents": total_quarantined_agents,
     "total_quarantined_people": model.total_quarantined_people,
+    "quarantine_rate": quarantine_rate,
+
     "total_detected_infections": model.total_detected_infections,
     "detection_rate": detection_rate,
-    "quarantine_rate": quarantine_rate,
+
     "undetected_infections": undetected_infections,
     "undetected_rate": undetected_rate,
+
     "total_asymptomatic_infections": model.total_asymptomatic_infections,
     "asymptomatic_rate_observed": asymptomatic_rate_observed,
-    "child_deaths": model.child_deaths,
-    "adult_deaths": model.adult_deaths,
-    "senior_deaths": model.senior_deaths,
-    "child_death_rate": child_death_rate,
-    "adult_death_rate": adult_death_rate,
-    "senior_death_rate": senior_death_rate,
-    "child_infections": model.child_infections,
-    "adult_infections": model.adult_infections,
-    "senior_infections": model.senior_infections,
-    "child_attack_rate": child_attack_rate,
-    "adult_attack_rate": adult_attack_rate,
-    "senior_attack_rate": senior_attack_rate,
+
+    # =====================
+    # VACCINATION CAMPAIGN
+    # =====================
+    "vaccination_campaign_start_step": model.vaccination_campaign_start_step,
+    "total_campaign_vaccinations": model.total_campaign_vaccinations,
+
+    # =====================
+    # DYNAMIC POLICIES
+    # =====================
+
+    # Lockdown
     "lockdown_start_step": model.lockdown_start_step,
     "lockdown_end_step": model.lockdown_end_step,
     "lockdown_duration": lockdown_duration,
     "lockdown_activation_count": model.lockdown_activation_count,
+
+    # Schools
     "school_closure_start_step": model.school_closure_start_step,
     "school_closure_end_step": model.school_closure_end_step,
     "school_closure_duration": school_closure_duration,
     "school_closure_count": model.school_closure_count,
+
+    # Work
+    "work_closure_start_step": model.work_closure_start_step,
+    "work_closure_end_step": model.work_closure_end_step,
+    "work_closure_duration": work_closure_duration,
+    "work_closure_count": model.work_closure_count,
+
+    # Masks
     "final_mask_compliance": model.mask_compliance_active,
     "mask_compliance_start_step": model.mask_compliance_start_step,
     "mask_compliance_end_step": model.mask_compliance_end_step,
     "mask_compliance_duration": mask_compliance_duration,
     "mask_compliance_activation_count": model.mask_compliance_activation_count,
+
+    # Testing
     "final_testing_rate": model.testing_rate_active,
     "testing_rate_start_step": model.testing_rate_start_step,
     "testing_rate_end_step": model.testing_rate_end_step,
     "testing_rate_duration": testing_rate_duration,
     "testing_rate_activation_count": model.testing_rate_activation_count,
+
+    # Quarantine compliance
     "final_quarantine_compliance": model.quarantine_compliance_active,
     "quarantine_compliance_start_step": model.quarantine_compliance_start_step,
     "quarantine_compliance_end_step": model.quarantine_compliance_end_step,
     "quarantine_compliance_duration": quarantine_compliance_duration,
     "quarantine_compliance_activation_count": model.quarantine_compliance_activation_count,
-    "work_closure_start_step": model.work_closure_start_step,
-    "work_closure_end_step": model.work_closure_end_step,
-    "work_closure_duration": work_closure_duration,
-    "work_closure_count": model.work_closure_count,\
+
+    # =====================
+    # MOBILITY POLICIES
+    # =====================
+
+    # Seniors
     "senior_mobility_reduction_start_step": model.senior_mobility_reduction_start_step,
     "senior_mobility_reduction_end_step": model.senior_mobility_reduction_end_step,
     "senior_mobility_reduction_duration": senior_mobility_reduction_duration,
     "senior_mobility_reduction_count": model.senior_mobility_reduction_count,
+
+    # Children
     "child_mobility_reduction_start_step": model.child_mobility_reduction_start_step,
     "child_mobility_reduction_end_step": model.child_mobility_reduction_end_step,
     "child_mobility_reduction_duration": child_mobility_reduction_duration,
     "child_mobility_reduction_count": model.child_mobility_reduction_count,
-    "vaccination_campaign_start_step": model.vaccination_campaign_start_step,
-    "total_campaign_vaccinations": model.total_campaign_vaccinations,
-    }
+
+    # =====================
+    # AGE GROUP ANALYSIS
+    # =====================
+
+    # Infections
+    "child_infections": model.child_infections,
+    "adult_infections": model.adult_infections,
+    "senior_infections": model.senior_infections,
+
+    "child_attack_rate": child_attack_rate,
+    "adult_attack_rate": adult_attack_rate,
+    "senior_attack_rate": senior_attack_rate,
+
+    # Deaths
+    "child_deaths": model.child_deaths,
+    "adult_deaths": model.adult_deaths,
+    "senior_deaths": model.senior_deaths,
+
+    "child_death_rate": child_death_rate,
+    "adult_death_rate": adult_death_rate,
+    "senior_death_rate": senior_death_rate,
+}
 
 logging.info("Final summary metrics:")
 
