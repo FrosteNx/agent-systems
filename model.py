@@ -152,6 +152,9 @@ class FluModel(Model):
         self.testing_rate_active = testing_rate
         self.auto_testing_relaxation = auto_testing_relaxation
         self.testing_relaxation_threshold = testing_relaxation_threshold
+        self.testing_rate_start_step = None
+        self.testing_rate_end_step = None
+        self.testing_rate_activation_count = 0
         
 
         self.peak_active_cases = 0
@@ -269,6 +272,7 @@ class FluModel(Model):
                 if not self.lockdown_active:
                     self.lockdown_start_step = self.step_count
                     self.lockdown_activation_count += 1
+                    
                 self.lockdown_active = True
 
             if self.auto_lockdown_release and self.lockdown_active:
@@ -287,6 +291,7 @@ class FluModel(Model):
                 if not self.school_closed_active:
                     self.school_closure_start_step = self.step_count
                     self.school_closure_count += 1
+
                 self.school_closed_active = True
 
         if self.auto_school_reopen and self.school_closed_active:
@@ -299,21 +304,30 @@ class FluModel(Model):
                 if self.mask_compliance_active != self.high_mask_compliance:
                     self.mask_compliance_start_step = self.step_count
                     self.mask_compliance_activation_count += 1
+
                 self.mask_compliance_active = self.high_mask_compliance
 
         if self.auto_mask_relaxation:
             if active_cases <= self.mask_relaxation_threshold:
                 if self.mask_compliance_active != self.base_mask_compliance:
                     self.mask_compliance_end_step = self.step_count
+
                 self.mask_compliance_active = self.base_mask_compliance
 
         if self.auto_testing_rate:
             if active_cases >= self.testing_rate_threshold:
+                if self.testing_rate_active != self.high_testing_rate:
+                    self.testing_rate_start_step = self.step_count
+                    self.testing_rate_activation_count += 1
+
                 self.testing_rate_active = self.high_testing_rate
 
 
         if self.auto_testing_relaxation:
             if active_cases <= self.testing_relaxation_threshold:
+                if self.testing_rate_active != self.base_testing_rate:
+                    self.testing_rate_end_step = self.step_count
+
                 self.testing_rate_active = self.base_testing_rate
 
         self.step_count += 1

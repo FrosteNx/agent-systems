@@ -389,6 +389,21 @@ elif model.mask_compliance_start_step is not None:
     )
 else:
     mask_compliance_duration = 0
+
+if (
+    model.testing_rate_start_step is not None
+    and model.testing_rate_end_step is not None
+):
+    testing_rate_duration = (
+        model.testing_rate_end_step
+        - model.testing_rate_start_step
+    )
+elif model.testing_rate_start_step is not None:
+    testing_rate_duration = actual_steps - model.testing_rate_start_step
+else:
+    testing_rate_duration = 0
+
+
 summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
@@ -445,6 +460,10 @@ summary_metrics = {
     "mask_compliance_duration": mask_compliance_duration,
     "mask_compliance_activation_count": model.mask_compliance_activation_count,
     "final_testing_rate": model.testing_rate_active,
+    "testing_rate_start_step": model.testing_rate_start_step,
+    "testing_rate_end_step": model.testing_rate_end_step,
+    "testing_rate_duration": testing_rate_duration,
+    "testing_rate_activation_count": model.testing_rate_activation_count,
     }
 
 logging.info("Final summary metrics:")
@@ -556,6 +575,10 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Mask compliance duration: {mask_compliance_duration}\n")
     file.write(f"Mask compliance activation count: {model.mask_compliance_activation_count}\n")
     file.write(f"Final testing rate: {model.testing_rate_active:.2%}\n")
+    file.write(f"Testing rate start step: {model.testing_rate_start_step}\n")
+    file.write(f"Testing rate end step: {model.testing_rate_end_step}\n")
+    file.write(f"Testing rate duration: {testing_rate_duration}\n")
+    file.write(f"Testing rate activation count: {model.testing_rate_activation_count}\n")
     
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
