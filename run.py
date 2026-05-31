@@ -59,6 +59,8 @@ model = FluModel(
     auto_testing_rate=config.AUTO_TESTING_RATE,
     testing_rate_threshold=config.TESTING_RATE_THRESHOLD,
     high_testing_rate=config.HIGH_TESTING_RATE,
+    auto_testing_relaxation=config.AUTO_TESTING_RELAXATION,
+    testing_relaxation_threshold=config.TESTING_RELAXATION_THRESHOLD,
 )
 
 steps = config.SIMULATION_STEPS
@@ -946,7 +948,7 @@ plt.savefig(f"{plots_dir}/testing_rate_curve.png", dpi=300)
 
 print(f"Testing rate plot saved to {plots_dir}/testing_rate_curve.png")
 
-plt.show()
+#plt.show()
 
 plt.figure()
 

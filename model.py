@@ -60,6 +60,8 @@ class FluModel(Model):
         auto_testing_rate=False,
         testing_rate_threshold=100,
         high_testing_rate=0.9,
+        auto_testing_relaxation=False,
+        testing_relaxation_threshold=20,
     ):
         super().__init__()
 
@@ -148,6 +150,8 @@ class FluModel(Model):
         self.base_testing_rate = testing_rate
         self.high_testing_rate = high_testing_rate
         self.testing_rate_active = testing_rate
+        self.auto_testing_relaxation = auto_testing_relaxation
+        self.testing_relaxation_threshold = testing_relaxation_threshold
         
 
         self.peak_active_cases = 0
@@ -306,6 +310,11 @@ class FluModel(Model):
         if self.auto_testing_rate:
             if active_cases >= self.testing_rate_threshold:
                 self.testing_rate_active = self.high_testing_rate
+
+
+        if self.auto_testing_relaxation:
+            if active_cases <= self.testing_relaxation_threshold:
+                self.testing_rate_active = self.base_testing_rate
 
         self.step_count += 1
         self.new_infections = 0
