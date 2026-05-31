@@ -471,6 +471,23 @@ else:
     senior_mobility_reduction_duration = 0
 
 
+if (
+    model.child_mobility_reduction_start_step is not None
+    and model.child_mobility_reduction_end_step is not None
+):
+    child_mobility_reduction_duration = (
+        model.child_mobility_reduction_end_step
+        - model.child_mobility_reduction_start_step
+    )
+elif model.child_mobility_reduction_start_step is not None:
+    child_mobility_reduction_duration = (
+        actual_steps
+        - model.child_mobility_reduction_start_step
+    )
+else:
+    child_mobility_reduction_duration = 0
+
+
 summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
@@ -544,6 +561,10 @@ summary_metrics = {
     "senior_mobility_reduction_end_step": model.senior_mobility_reduction_end_step,
     "senior_mobility_reduction_duration": senior_mobility_reduction_duration,
     "senior_mobility_reduction_count": model.senior_mobility_reduction_count,
+    "child_mobility_reduction_start_step": model.child_mobility_reduction_start_step,
+    "child_mobility_reduction_end_step": model.child_mobility_reduction_end_step,
+    "child_mobility_reduction_duration": child_mobility_reduction_duration,
+    "child_mobility_reduction_count": model.child_mobility_reduction_count,
     }
 
 logging.info("Final summary metrics:")
@@ -672,6 +693,10 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Senior mobility reduction end step: {model.senior_mobility_reduction_end_step}\n")
     file.write(f"Senior mobility reduction duration: {senior_mobility_reduction_duration}\n")
     file.write(f"Senior mobility reduction count: {model.senior_mobility_reduction_count}\n")
+    file.write(f"Child mobility reduction start step: {model.child_mobility_reduction_start_step}\n")
+    file.write(f"Child mobility reduction end step: {model.child_mobility_reduction_end_step}\n")
+    file.write(f"Child mobility reduction duration: {child_mobility_reduction_duration}\n")
+    file.write(f"Child mobility reduction count: {model.child_mobility_reduction_count}\n")
     
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
