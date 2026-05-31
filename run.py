@@ -1095,9 +1095,10 @@ print(f"Policy status plot saved to {plots_dir}/policy_status.png")
 
 plt.figure()
 
+plt.plot(results["LockdownActive"], label="Lockdown active")
+plt.plot(results["SchoolClosedActive"], label="School closed")
+plt.plot(results["WorkClosedActive"], label="Work closed")
 plt.plot(results["MaskComplianceActive"], label="Mask compliance")
-plt.plot(results["TestingRateActive"], label="Testing rate")
-plt.plot(results["QuarantineComplianceActive"], label="Quarantine compliance")
 
 plt.xlabel("Step")
 plt.ylabel("Policy level")
