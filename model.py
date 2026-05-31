@@ -326,6 +326,8 @@ class FluModel(Model):
                 "WorkClosedActive": lambda m: int(m.work_closed_active),
                 "SeniorMobilityActive": lambda m: m.senior_mobility_active,
                 "ChildMobilityActive": lambda m: m.child_mobility_active,
+                "VaccinationCampaignActive": lambda m: int(m.vaccination_campaign_active),
+                "NewVaccinations": lambda m: m.new_vaccinations,
             }
         )
 
@@ -458,6 +460,19 @@ class FluModel(Model):
 
                 self.quarantine_compliance_active = self.base_quarantine_compliance
 
+        if self.auto_vaccination_campaign:
+            active_cases = (
+                self.count_states()["Exposed"]
+                + self.count_states()["Infected"]
+                + self.count_states()["Asymptomatic"]
+            )
+
+            if active_cases >= self.vaccination_campaign_threshold:
+                if not self.vaccination_campaign_active:
+                    self.vaccination_campaign_start_step = self.step_count
+
+                self.vaccination_campaign_active = True
+
         self.step_count += 1
         self.new_infections = 0
         self.household_infections = 0
@@ -469,6 +484,7 @@ class FluModel(Model):
         self.mask_protected_contacts = 0
         self.quarantined_agents = 0
         self.new_vaccinations = 0
+        self.run_vaccination_campaign()
         self.schedule.step()
 
         counts = self.count_states()
@@ -503,3 +519,21 @@ class FluModel(Model):
         for agent in self.schedule.agents:
             counts[agent.age_group] += 1
         return counts
+    
+    def run_vaccination_campaign(self):
+        if not self.vaccination_campaign_active:
+            return
+
+        candidates = [
+            agent for agent in self.schedule.agents
+            if agent.state == "Susceptible"
+        ]
+
+        self.random.shuffle(candidates)
+
+        selected = candidates[:self.daily_vaccination_capacity]
+
+        for agent in selected:
+            agent.state = "Vaccinated"
+            self.new_vaccinations += 1
+            self.total_campaign_vaccinations += 1
