@@ -68,6 +68,8 @@ model = FluModel(
     quarantine_relaxation_threshold=config.QUARANTINE_RELAXATION_THRESHOLD,
     auto_work_closure=config.AUTO_WORK_CLOSURE,
     work_closure_threshold=config.WORK_CLOSURE_THRESHOLD,
+    auto_work_reopen=config.AUTO_WORK_REOPEN,
+    work_reopen_threshold=config.WORK_REOPEN_THRESHOLD,
 )
 
 steps = config.SIMULATION_STEPS
@@ -493,6 +495,8 @@ summary_metrics = {
     "quarantine_compliance_end_step": model.quarantine_compliance_end_step,
     "quarantine_compliance_duration": quarantine_compliance_duration,
     "quarantine_compliance_activation_count": model.quarantine_compliance_activation_count,
+    "work_closure_start_step": model.work_closure_start_step,
+    "work_closure_end_step": model.work_closure_end_step,
     }
 
 logging.info("Final summary metrics:")
@@ -613,6 +617,8 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Quarantine compliance end step: {model.quarantine_compliance_end_step}\n")
     file.write(f"Quarantine compliance duration: {quarantine_compliance_duration}\n")
     file.write(f"Quarantine compliance activation count: {model.quarantine_compliance_activation_count}\n")
+    file.write(f"Work closure start step: {model.work_closure_start_step}\n")
+    file.write(f"Work closure end step: {model.work_closure_end_step}\n")
     
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
