@@ -62,6 +62,9 @@ class FluModel(Model):
         high_testing_rate=0.9,
         auto_testing_relaxation=False,
         testing_relaxation_threshold=20,
+        auto_quarantine_compliance=False,
+        quarantine_compliance_threshold=100,
+        high_quarantine_compliance=0.95,
     ):
         super().__init__()
 
@@ -155,6 +158,11 @@ class FluModel(Model):
         self.testing_rate_start_step = None
         self.testing_rate_end_step = None
         self.testing_rate_activation_count = 0
+        self.auto_quarantine_compliance = auto_quarantine_compliance
+        self.quarantine_compliance_threshold = quarantine_compliance_threshold
+        self.base_quarantine_compliance = quarantine_compliance
+        self.high_quarantine_compliance = high_quarantine_compliance
+        self.quarantine_compliance_active = quarantine_compliance
         
 
         self.peak_active_cases = 0
@@ -255,6 +263,7 @@ class FluModel(Model):
                 "SchoolClosedActive": lambda m: int(m.school_closed_active),
                 "MaskComplianceActive": lambda m: m.mask_compliance_active,
                 "TestingRateActive": lambda m: m.testing_rate_active,
+                "QuarantineComplianceActive": lambda m: m.quarantine_compliance_active,
             }
         )
 
@@ -329,6 +338,10 @@ class FluModel(Model):
                     self.testing_rate_end_step = self.step_count
 
                 self.testing_rate_active = self.base_testing_rate
+
+        if self.auto_quarantine_compliance:
+            if active_cases >= self.quarantine_compliance_threshold:
+                self.quarantine_compliance_active = self.high_quarantine_compliance
 
         self.step_count += 1
         self.new_infections = 0
