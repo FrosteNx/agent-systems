@@ -56,7 +56,7 @@ class PersonAgent(Agent):
             self.current_location_type = "home"
             return
         
-        if self.age_group == "adult" and self.model.work_closed:
+        if self.age_group == "adult" and self.model.work_closed_active:
             target = self.home
             self.model.grid.move_agent(self, target)
             self.current_location_type = "home"

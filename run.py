@@ -66,6 +66,8 @@ model = FluModel(
     high_quarantine_compliance=config.HIGH_QUARANTINE_COMPLIANCE,
     auto_quarantine_relaxation=config.AUTO_QUARANTINE_RELAXATION,
     quarantine_relaxation_threshold=config.QUARANTINE_RELAXATION_THRESHOLD,
+    auto_work_closure=config.AUTO_WORK_CLOSURE,
+    work_closure_threshold=config.WORK_CLOSURE_THRESHOLD,
 )
 
 steps = config.SIMULATION_STEPS
