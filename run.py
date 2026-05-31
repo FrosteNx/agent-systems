@@ -1046,3 +1046,25 @@ plt.savefig(f"{plots_dir}/policy_status.png", dpi=300)
 print(f"Policy status plot saved to {plots_dir}/policy_status.png")
 
 #plt.show()
+
+plt.figure()
+
+plt.plot(results["MaskComplianceActive"], label="Mask compliance")
+plt.plot(results["TestingRateActive"], label="Testing rate")
+plt.plot(results["QuarantineComplianceActive"], label="Quarantine compliance")
+
+plt.xlabel("Step")
+plt.ylabel("Policy level")
+plt.title("Continuous dynamic policy levels")
+plt.ylim(0, 1)
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/continuous_policy_levels.png", dpi=300)
+
+print(
+    f"Continuous policy levels plot saved to "
+    f"{plots_dir}/continuous_policy_levels.png"
+)
+
+#plt.show()
