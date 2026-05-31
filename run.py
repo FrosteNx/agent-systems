@@ -70,6 +70,9 @@ model = FluModel(
     work_closure_threshold=config.WORK_CLOSURE_THRESHOLD,
     auto_work_reopen=config.AUTO_WORK_REOPEN,
     work_reopen_threshold=config.WORK_REOPEN_THRESHOLD,
+    auto_senior_mobility_reduction=config.AUTO_SENIOR_MOBILITY_REDUCTION,
+    senior_mobility_threshold=config.SENIOR_MOBILITY_THRESHOLD,
+    low_senior_mobility=config.LOW_SENIOR_MOBILITY,
 )
 
 steps = config.SIMULATION_STEPS

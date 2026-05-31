@@ -71,6 +71,9 @@ class FluModel(Model):
         work_closure_threshold=100,
         auto_work_reopen=False,
         work_reopen_threshold=20,
+        auto_senior_mobility_reduction=False,
+        senior_mobility_threshold=100,
+        low_senior_mobility=0.1,
     ):
         super().__init__()
 
@@ -182,6 +185,11 @@ class FluModel(Model):
         self.work_reopen_threshold = work_reopen_threshold
         self.work_closure_end_step = None
         self.work_closure_count = 0
+        self.auto_senior_mobility_reduction = auto_senior_mobility_reduction
+        self.senior_mobility_threshold = senior_mobility_threshold
+        self.base_senior_mobility = senior_mobility
+        self.low_senior_mobility = low_senior_mobility
+        self.senior_mobility_active = senior_mobility
         
 
         self.peak_active_cases = 0
@@ -284,6 +292,7 @@ class FluModel(Model):
                 "TestingRateActive": lambda m: m.testing_rate_active,
                 "QuarantineComplianceActive": lambda m: m.quarantine_compliance_active,
                 "WorkClosedActive": lambda m: int(m.work_closed_active),
+                "SeniorMobilityActive": lambda m: m.senior_mobility_active,
             }
         )
 
@@ -340,6 +349,10 @@ class FluModel(Model):
             if active_cases <= self.work_reopen_threshold:
                 self.work_closed_active = False
                 self.work_closure_end_step = self.step_count
+
+        if self.auto_senior_mobility_reduction:
+            if active_cases >= self.senior_mobility_threshold:
+                self.senior_mobility_active = self.low_senior_mobility
 
         if self.auto_mask_compliance:
             if active_cases >= self.mask_compliance_threshold:

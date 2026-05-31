@@ -37,7 +37,7 @@ class PersonAgent(Agent):
                 return
         
         if self.age_group == "senior":
-            if self.random.random() > self.model.senior_mobility:
+            if self.random.random() > self.model.senior_mobility_active:
                 target = self.home
                 self.model.grid.move_agent(self, target)
                 self.current_location_type = "home"
