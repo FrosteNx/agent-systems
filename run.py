@@ -80,6 +80,9 @@ model = FluModel(
     low_child_mobility=config.LOW_CHILD_MOBILITY,
     auto_child_mobility_restore=config.AUTO_CHILD_MOBILITY_RESTORE,
     child_mobility_restore_threshold=config.CHILD_MOBILITY_RESTORE_THRESHOLD,
+    auto_vaccination_campaign=config.AUTO_VACCINATION_CAMPAIGN,
+    vaccination_campaign_threshold=config.VACCINATION_CAMPAIGN_THRESHOLD,
+    daily_vaccination_capacity=config.DAILY_VACCINATION_CAPACITY,
 )
 
 steps = config.SIMULATION_STEPS

@@ -81,6 +81,9 @@ class FluModel(Model):
         low_child_mobility=0.2,
         auto_child_mobility_restore=False,
         child_mobility_restore_threshold=20,
+        auto_vaccination_campaign=False,
+        vaccination_campaign_threshold=100,
+        daily_vaccination_capacity=20,
     ):
         super().__init__()
 
@@ -212,6 +215,13 @@ class FluModel(Model):
         self.child_mobility_reduction_start_step = None
         self.child_mobility_reduction_end_step = None
         self.child_mobility_reduction_count = 0
+        self.auto_vaccination_campaign = auto_vaccination_campaign
+        self.vaccination_campaign_threshold = vaccination_campaign_threshold
+        self.daily_vaccination_capacity = daily_vaccination_capacity
+        self.vaccination_campaign_active = False
+        self.vaccination_campaign_start_step = None
+        self.new_vaccinations = 0
+        self.total_campaign_vaccinations = 0
         
 
         self.peak_active_cases = 0
@@ -458,6 +468,7 @@ class FluModel(Model):
         self.other_infections = 0
         self.mask_protected_contacts = 0
         self.quarantined_agents = 0
+        self.new_vaccinations = 0
         self.schedule.step()
 
         counts = self.count_states()
