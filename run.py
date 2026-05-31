@@ -568,6 +568,8 @@ summary_metrics = {
     "child_mobility_reduction_end_step": model.child_mobility_reduction_end_step,
     "child_mobility_reduction_duration": child_mobility_reduction_duration,
     "child_mobility_reduction_count": model.child_mobility_reduction_count,
+    "vaccination_campaign_start_step": model.vaccination_campaign_start_step,
+    "total_campaign_vaccinations": model.total_campaign_vaccinations,
     }
 
 logging.info("Final summary metrics:")
@@ -660,6 +662,14 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Undetected rate: {undetected_rate:.2%}\n")
     file.write(f"Total asymptomatic infections: {model.total_asymptomatic_infections}\n")
     file.write(f"Observed asymptomatic rate: {asymptomatic_rate_observed:.2%}\n")
+
+    file.write("\nVaccination campaign\n")
+    file.write("--------------------\n")
+    file.write(f"Auto vaccination campaign: {config.AUTO_VACCINATION_CAMPAIGN}\n")
+    file.write(f"Vaccination campaign threshold: {config.VACCINATION_CAMPAIGN_THRESHOLD}\n")
+    file.write(f"Daily vaccination capacity: {config.DAILY_VACCINATION_CAPACITY}\n")
+    file.write(f"Vaccination campaign start step: {model.vaccination_campaign_start_step}\n")
+    file.write(f"Total campaign vaccinations: {model.total_campaign_vaccinations}\n")
 
     file.write("\nDynamic policies\n")
     file.write("----------------\n")
