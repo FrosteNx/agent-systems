@@ -996,6 +996,26 @@ print(
 
 plt.figure()
 
+plt.plot(results["WorkClosedActive"], label="Work closed")
+
+plt.xlabel("Step")
+plt.ylabel("Active")
+plt.title("Work closure status over time")
+plt.yticks([0, 1], ["Open", "Closed"])
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/work_closure_status.png", dpi=300)
+
+print(
+    f"Work closure status plot saved to "
+    f"{plots_dir}/work_closure_status.png"
+)
+
+#plt.show()
+
+plt.figure()
+
 plt.plot(results["MaskComplianceActive"], label="Mask compliance")
 
 plt.xlabel("Step")
@@ -1099,6 +1119,7 @@ plt.figure()
 
 plt.plot(results["LockdownActive"], label="Lockdown active")
 plt.plot(results["SchoolClosedActive"], label="School closed")
+plt.plot(results["WorkClosedActive"], label="Work closed")
 
 plt.xlabel("Step")
 plt.ylabel("Status")
