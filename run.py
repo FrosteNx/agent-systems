@@ -467,6 +467,7 @@ summary_metrics = {
     "testing_rate_end_step": model.testing_rate_end_step,
     "testing_rate_duration": testing_rate_duration,
     "testing_rate_activation_count": model.testing_rate_activation_count,
+    "final_quarantine_compliance": model.quarantine_compliance_active,
     }
 
 logging.info("Final summary metrics:")
@@ -582,6 +583,7 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Testing rate end step: {model.testing_rate_end_step}\n")
     file.write(f"Testing rate duration: {testing_rate_duration}\n")
     file.write(f"Testing rate activation count: {model.testing_rate_activation_count}\n")
+    file.write(f"Final quarantine compliance: "f"{model.quarantine_compliance_active:.2%}\n")
     
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
@@ -973,6 +975,29 @@ plt.tight_layout()
 plt.savefig(f"{plots_dir}/testing_rate_curve.png", dpi=300)
 
 print(f"Testing rate plot saved to {plots_dir}/testing_rate_curve.png")
+
+#plt.show()
+
+plt.figure()
+
+plt.plot(
+    results["QuarantineComplianceActive"],
+    label="Quarantine compliance"
+)
+
+plt.xlabel("Step")
+plt.ylabel("Compliance")
+plt.title("Quarantine compliance over time")
+plt.ylim(0, 1)
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/quarantine_compliance_curve.png", dpi=300)
+
+print(
+    f"Quarantine compliance plot saved to "
+    f"{plots_dir}/quarantine_compliance_curve.png"
+)
 
 #plt.show()
 
