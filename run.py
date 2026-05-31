@@ -1198,6 +1198,27 @@ print(
 
 plt.figure()
 
+plt.plot(results["SeniorMobilityActive"], label="Senior mobility")
+plt.plot(results["ChildMobilityActive"], label="Child mobility")
+
+plt.xlabel("Step")
+plt.ylabel("Mobility")
+plt.title("Dynamic mobility levels")
+plt.ylim(0, 1)
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/mobility_policy_levels.png", dpi=300)
+
+print(
+    f"Mobility policy levels plot saved to "
+    f"{plots_dir}/mobility_policy_levels.png"
+)
+
+#plt.show()
+
+plt.figure()
+
 plt.plot(results["LockdownActive"], label="Lockdown active")
 plt.plot(results["SchoolClosedActive"], label="School closed")
 plt.plot(results["WorkClosedActive"], label="Work closed")
