@@ -78,6 +78,8 @@ model = FluModel(
     auto_child_mobility_reduction=config.AUTO_CHILD_MOBILITY_REDUCTION,
     child_mobility_threshold=config.CHILD_MOBILITY_THRESHOLD,
     low_child_mobility=config.LOW_CHILD_MOBILITY,
+    auto_child_mobility_restore=config.AUTO_CHILD_MOBILITY_RESTORE,
+    child_mobility_restore_threshold=config.CHILD_MOBILITY_RESTORE_THRESHOLD,
 )
 
 steps = config.SIMULATION_STEPS

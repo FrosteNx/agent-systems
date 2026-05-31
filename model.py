@@ -79,6 +79,8 @@ class FluModel(Model):
         auto_child_mobility_reduction=False,
         child_mobility_threshold=100,
         low_child_mobility=0.2,
+        auto_child_mobility_restore=False,
+        child_mobility_restore_threshold=20,
     ):
         super().__init__()
 
@@ -205,6 +207,8 @@ class FluModel(Model):
         self.base_child_mobility = child_mobility
         self.low_child_mobility = low_child_mobility
         self.child_mobility_active = child_mobility
+        self.auto_child_mobility_restore = auto_child_mobility_restore
+        self.child_mobility_restore_threshold = child_mobility_restore_threshold
         
 
         self.peak_active_cases = 0
@@ -385,6 +389,10 @@ class FluModel(Model):
             if active_cases >= self.child_mobility_threshold:
                 self.child_mobility_active = self.low_child_mobility
 
+        if self.auto_child_mobility_restore:
+            if active_cases <= self.child_mobility_restore_threshold:
+                self.child_mobility_active = self.base_child_mobility
+
         if self.auto_mask_compliance:
             if active_cases >= self.mask_compliance_threshold:
                 if self.mask_compliance_active != self.high_mask_compliance:
@@ -407,7 +415,6 @@ class FluModel(Model):
                     self.testing_rate_activation_count += 1
 
                 self.testing_rate_active = self.high_testing_rate
-
 
         if self.auto_testing_relaxation:
             if active_cases <= self.testing_relaxation_threshold:
