@@ -1068,3 +1068,24 @@ print(
 )
 
 #plt.show()
+
+plt.figure()
+
+plt.plot(results["LockdownActive"], label="Lockdown active")
+plt.plot(results["SchoolClosedActive"], label="School closed")
+
+plt.xlabel("Step")
+plt.ylabel("Status")
+plt.title("Binary dynamic policy status")
+plt.yticks([0, 1], ["Off/Open", "On/Closed"])
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/binary_policy_status.png", dpi=300)
+
+print(
+    f"Binary policy status plot saved to "
+    f"{plots_dir}/binary_policy_status.png"
+)
+
+#plt.show()
