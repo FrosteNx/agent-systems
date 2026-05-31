@@ -194,6 +194,9 @@ class FluModel(Model):
         self.senior_mobility_active = senior_mobility
         self.auto_senior_mobility_restore = auto_senior_mobility_restore
         self.senior_mobility_restore_threshold = senior_mobility_restore_threshold
+        self.senior_mobility_reduction_start_step = None
+        self.senior_mobility_reduction_end_step = None
+        self.senior_mobility_reduction_count = 0
         
 
         self.peak_active_cases = 0
@@ -356,10 +359,17 @@ class FluModel(Model):
 
         if self.auto_senior_mobility_reduction:
             if active_cases >= self.senior_mobility_threshold:
+                if self.senior_mobility_active != self.low_senior_mobility:
+                    self.senior_mobility_reduction_start_step = self.step_count
+                    self.senior_mobility_reduction_count += 1
+
                 self.senior_mobility_active = self.low_senior_mobility
 
         if self.auto_senior_mobility_restore:
             if active_cases <= self.senior_mobility_restore_threshold:
+                if self.senior_mobility_active != self.base_senior_mobility:
+                    self.senior_mobility_reduction_end_step = self.step_count
+
                 self.senior_mobility_active = self.base_senior_mobility
 
         if self.auto_mask_compliance:

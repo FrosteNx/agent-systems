@@ -449,6 +449,23 @@ else:
     work_closure_duration = 0
 
 
+if (
+    model.senior_mobility_reduction_start_step is not None
+    and model.senior_mobility_reduction_end_step is not None
+):
+    senior_mobility_reduction_duration = (
+        model.senior_mobility_reduction_end_step
+        - model.senior_mobility_reduction_start_step
+    )
+elif model.senior_mobility_reduction_start_step is not None:
+    senior_mobility_reduction_duration = (
+        actual_steps
+        - model.senior_mobility_reduction_start_step
+    )
+else:
+    senior_mobility_reduction_duration = 0
+
+
 summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
@@ -517,7 +534,11 @@ summary_metrics = {
     "work_closure_start_step": model.work_closure_start_step,
     "work_closure_end_step": model.work_closure_end_step,
     "work_closure_duration": work_closure_duration,
-    "work_closure_count": model.work_closure_count,
+    "work_closure_count": model.work_closure_count,\
+    "senior_mobility_reduction_start_step": model.senior_mobility_reduction_start_step,
+    "senior_mobility_reduction_end_step": model.senior_mobility_reduction_end_step,
+    "senior_mobility_reduction_duration": senior_mobility_reduction_duration,
+    "senior_mobility_reduction_count": model.senior_mobility_reduction_count,
     }
 
 logging.info("Final summary metrics:")
@@ -642,6 +663,10 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Work closure end step: {model.work_closure_end_step}\n")
     file.write(f"Work closure duration: {work_closure_duration}\n")
     file.write(f"Work closure count: {model.work_closure_count}\n")
+    file.write(f"Senior mobility reduction start step: {model.senior_mobility_reduction_start_step}\n")
+    file.write(f"Senior mobility reduction end step: {model.senior_mobility_reduction_end_step}\n")
+    file.write(f"Senior mobility reduction duration: {senior_mobility_reduction_duration}\n")
+    file.write(f"Senior mobility reduction count: {model.senior_mobility_reduction_count}\n")
     
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
