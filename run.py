@@ -906,6 +906,26 @@ plt.show()
 
 plt.figure()
 
+plt.plot(results["NewVaccinations"], label="New vaccinations")
+plt.plot(results["VaccinationCampaignActive"], label="Vaccination campaign active")
+
+plt.xlabel("Step")
+plt.ylabel("Count / status")
+plt.title("Vaccination campaign over time")
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/vaccination_campaign_curve.png", dpi=300)
+
+print(
+    f"Vaccination campaign plot saved to "
+    f"{plots_dir}/vaccination_campaign_curve.png"
+)
+
+#plt.show()
+
+plt.figure()
+
 locations = ["Home", "School", "Work", "Other"]
 location_values = [
     total_home_infections,
