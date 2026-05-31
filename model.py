@@ -65,6 +65,8 @@ class FluModel(Model):
         auto_quarantine_compliance=False,
         quarantine_compliance_threshold=100,
         high_quarantine_compliance=0.95,
+        auto_quarantine_relaxation=False,
+        quarantine_relaxation_threshold=20,
     ):
         super().__init__()
 
@@ -163,6 +165,8 @@ class FluModel(Model):
         self.base_quarantine_compliance = quarantine_compliance
         self.high_quarantine_compliance = high_quarantine_compliance
         self.quarantine_compliance_active = quarantine_compliance
+        self.auto_quarantine_relaxation = auto_quarantine_relaxation
+        self.quarantine_relaxation_threshold = quarantine_relaxation_threshold
         
 
         self.peak_active_cases = 0
@@ -342,6 +346,10 @@ class FluModel(Model):
         if self.auto_quarantine_compliance:
             if active_cases >= self.quarantine_compliance_threshold:
                 self.quarantine_compliance_active = self.high_quarantine_compliance
+
+        if self.auto_quarantine_relaxation:
+            if active_cases <= self.quarantine_relaxation_threshold:
+                self.quarantine_compliance_active = self.base_quarantine_compliance
 
         self.step_count += 1
         self.new_infections = 0
