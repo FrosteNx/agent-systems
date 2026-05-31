@@ -56,6 +56,9 @@ model = FluModel(
     high_mask_compliance=config.HIGH_MASK_COMPLIANCE,
     auto_mask_relaxation=config.AUTO_MASK_RELAXATION,
     mask_relaxation_threshold=config.MASK_RELAXATION_THRESHOLD,
+    auto_testing_rate=config.AUTO_TESTING_RATE,
+    testing_rate_threshold=config.TESTING_RATE_THRESHOLD,
+    high_testing_rate=config.HIGH_TESTING_RATE,
 )
 
 steps = config.SIMULATION_STEPS
@@ -439,6 +442,7 @@ summary_metrics = {
     "mask_compliance_end_step": model.mask_compliance_end_step,
     "mask_compliance_duration": mask_compliance_duration,
     "mask_compliance_activation_count": model.mask_compliance_activation_count,
+    "final_testing_rate": model.testing_rate_active,
     }
 
 logging.info("Final summary metrics:")
@@ -549,6 +553,7 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Mask compliance end step: {model.mask_compliance_end_step}\n")
     file.write(f"Mask compliance duration: {mask_compliance_duration}\n")
     file.write(f"Mask compliance activation count: {model.mask_compliance_activation_count}\n")
+    file.write(f"Final testing rate: {model.testing_rate_active:.2%}\n")
     
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     
@@ -925,6 +930,23 @@ print(
 )
 
 #plt.show()
+
+plt.figure()
+
+plt.plot(results["TestingRateActive"], label="Testing rate")
+
+plt.xlabel("Step")
+plt.ylabel("Testing rate")
+plt.title("Testing rate over time")
+plt.ylim(0, 1)
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/testing_rate_curve.png", dpi=300)
+
+print(f"Testing rate plot saved to {plots_dir}/testing_rate_curve.png")
+
+plt.show()
 
 plt.figure()
 

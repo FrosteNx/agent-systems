@@ -188,7 +188,7 @@ class PersonAgent(Agent):
                     self.model.total_asymptomatic_infections += 1
                 else:
                     self.state = "Infected"
-                    if self.random.random() < self.model.testing_rate:
+                    if self.random.random() < self.model.testing_rate_active:
                         if not self.is_detected:
                             self.is_detected = True
                             self.model.total_detected_infections += 1

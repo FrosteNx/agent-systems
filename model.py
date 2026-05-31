@@ -57,6 +57,9 @@ class FluModel(Model):
         high_mask_compliance=0.9,
         auto_mask_relaxation=False,
         mask_relaxation_threshold=20,
+        auto_testing_rate=False,
+        testing_rate_threshold=100,
+        high_testing_rate=0.9,
     ):
         super().__init__()
 
@@ -140,6 +143,11 @@ class FluModel(Model):
         self.mask_compliance_start_step = None
         self.mask_compliance_end_step = None
         self.mask_compliance_activation_count = 0
+        self.auto_testing_rate = auto_testing_rate
+        self.testing_rate_threshold = testing_rate_threshold
+        self.base_testing_rate = testing_rate
+        self.high_testing_rate = high_testing_rate
+        self.testing_rate_active = testing_rate
         
 
         self.peak_active_cases = 0
@@ -239,6 +247,7 @@ class FluModel(Model):
                 ),
                 "SchoolClosedActive": lambda m: int(m.school_closed_active),
                 "MaskComplianceActive": lambda m: m.mask_compliance_active,
+                "TestingRateActive": lambda m: m.testing_rate_active,
             }
         )
 
@@ -256,12 +265,13 @@ class FluModel(Model):
                 if not self.lockdown_active:
                     self.lockdown_start_step = self.step_count
                     self.lockdown_activation_count += 1
-
                 self.lockdown_active = True
+
             if self.auto_lockdown_release and self.lockdown_active:
                 if active_cases <= self.lockdown_release_threshold:
                     self.lockdown_active = False
                     self.lockdown_end_step = self.step_count
+
         if self.auto_school_closure:
             active_cases = (
                 self.count_states()["Exposed"]
@@ -273,25 +283,30 @@ class FluModel(Model):
                 if not self.school_closed_active:
                     self.school_closure_start_step = self.step_count
                     self.school_closure_count += 1
-
                 self.school_closed_active = True
+
         if self.auto_school_reopen and self.school_closed_active:
             if active_cases <= self.school_reopen_threshold:
                 self.school_closed_active = False
                 self.school_closure_end_step = self.step_count
+
         if self.auto_mask_compliance:
             if active_cases >= self.mask_compliance_threshold:
                 if self.mask_compliance_active != self.high_mask_compliance:
                     self.mask_compliance_start_step = self.step_count
                     self.mask_compliance_activation_count += 1
-
                 self.mask_compliance_active = self.high_mask_compliance
+
         if self.auto_mask_relaxation:
             if active_cases <= self.mask_relaxation_threshold:
                 if self.mask_compliance_active != self.base_mask_compliance:
                     self.mask_compliance_end_step = self.step_count
-
                 self.mask_compliance_active = self.base_mask_compliance
+
+        if self.auto_testing_rate:
+            if active_cases >= self.testing_rate_threshold:
+                self.testing_rate_active = self.high_testing_rate
+
         self.step_count += 1
         self.new_infections = 0
         self.household_infections = 0
