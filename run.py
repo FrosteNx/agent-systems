@@ -430,6 +430,20 @@ else:
     quarantine_compliance_duration = 0
 
 
+if (
+    model.work_closure_start_step is not None
+    and model.work_closure_end_step is not None
+):
+    work_closure_duration = (
+        model.work_closure_end_step
+        - model.work_closure_start_step
+    )
+elif model.work_closure_start_step is not None:
+    work_closure_duration = actual_steps - model.work_closure_start_step
+else:
+    work_closure_duration = 0
+
+
 summary_metrics = {
     "experiment_id": experiment_id,
     "timestamp": timestamp,
@@ -497,6 +511,8 @@ summary_metrics = {
     "quarantine_compliance_activation_count": model.quarantine_compliance_activation_count,
     "work_closure_start_step": model.work_closure_start_step,
     "work_closure_end_step": model.work_closure_end_step,
+    "work_closure_duration": work_closure_duration,
+    "work_closure_count": model.work_closure_count,
     }
 
 logging.info("Final summary metrics:")
@@ -619,6 +635,8 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Quarantine compliance activation count: {model.quarantine_compliance_activation_count}\n")
     file.write(f"Work closure start step: {model.work_closure_start_step}\n")
     file.write(f"Work closure end step: {model.work_closure_end_step}\n")
+    file.write(f"Work closure duration: {work_closure_duration}\n")
+    file.write(f"Work closure count: {model.work_closure_count}\n")
     
     file.write(f"Execution time (seconds): "f"{execution_time_seconds:.2f}\n")
     

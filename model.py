@@ -181,6 +181,7 @@ class FluModel(Model):
         self.auto_work_reopen = auto_work_reopen
         self.work_reopen_threshold = work_reopen_threshold
         self.work_closure_end_step = None
+        self.work_closure_count = 0
         
 
         self.peak_active_cases = 0
@@ -331,6 +332,7 @@ class FluModel(Model):
             if active_cases >= self.work_closure_threshold:
                 if not self.work_closed_active:
                     self.work_closure_start_step = self.step_count
+                    self.work_closure_count += 1
 
                 self.work_closed_active = True
 
