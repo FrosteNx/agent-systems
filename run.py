@@ -1148,6 +1148,26 @@ print(
 
 plt.figure()
 
+plt.plot(results["SeniorMobilityActive"], label="Senior mobility")
+
+plt.xlabel("Step")
+plt.ylabel("Mobility")
+plt.title("Senior mobility over time")
+plt.ylim(0, 1)
+plt.legend()
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/senior_mobility_curve.png", dpi=300)
+
+print(
+    f"Senior mobility plot saved to "
+    f"{plots_dir}/senior_mobility_curve.png"
+)
+
+#plt.show()
+
+plt.figure()
+
 plt.plot(results["LockdownActive"], label="Lockdown active")
 plt.plot(results["SchoolClosedActive"], label="School closed")
 plt.plot(results["WorkClosedActive"], label="Work closed")
