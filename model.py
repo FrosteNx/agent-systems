@@ -229,6 +229,7 @@ class FluModel(Model):
         self.senior_campaign_vaccinations = 0
         self.vaccination_campaign_end_step = None
         self.vaccination_campaign_activation_count = 0
+        self.initial_vaccinations = 0
         
 
         self.peak_active_cases = 0
@@ -252,6 +253,7 @@ class FluModel(Model):
                 state = "Infected"
             elif random.random() < self.vaccination_rate:
                 state = "Vaccinated"
+                self.initial_vaccinations += 1
             else:
                 state = "Susceptible"
 

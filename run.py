@@ -568,6 +568,7 @@ summary_metrics = {
     "vaccination_campaign_start_step": model.vaccination_campaign_start_step,
     "vaccination_campaign_end_step": model.vaccination_campaign_end_step,
     "vaccination_campaign_duration": vaccination_campaign_duration,
+    "initial_vaccinations": model.initial_vaccinations,
     "total_campaign_vaccinations": model.total_campaign_vaccinations,
     "vaccination_campaign_activation_count": model.vaccination_campaign_activation_count,
 
@@ -756,6 +757,7 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Vaccination campaign start step: {model.vaccination_campaign_start_step}\n")
     file.write(f"Vaccination campaign end step: {model.vaccination_campaign_end_step}\n")
     file.write(f"Vaccination campaign duration: {vaccination_campaign_duration}\n")
+    file.write(f"Initial vaccinations: {model.initial_vaccinations}\n")
     file.write(f"Total campaign vaccinations: {model.total_campaign_vaccinations}\n")
     file.write(f"Vaccination campaign activation count: {model.vaccination_campaign_activation_count}\n")
 
