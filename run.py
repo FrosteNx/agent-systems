@@ -341,6 +341,31 @@ else:
 
 age_counts = model.count_age_groups()
 
+vaccinated_by_age = {
+    "child": 0,
+    "adult": 0,
+    "senior": 0,
+}
+
+for agent in model.schedule.agents:
+    if agent.state == "Vaccinated":
+        vaccinated_by_age[agent.age_group] += 1
+
+child_vaccination_coverage = (
+    vaccinated_by_age["child"] / age_counts["child"]
+    if age_counts["child"] > 0 else 0
+)
+
+adult_vaccination_coverage = (
+    vaccinated_by_age["adult"] / age_counts["adult"]
+    if age_counts["adult"] > 0 else 0
+)
+
+senior_vaccination_coverage = (
+    vaccinated_by_age["senior"] / age_counts["senior"]
+    if age_counts["senior"] > 0 else 0
+)
+
 child_attack_rate = (
     model.child_infections / age_counts["child"]
     if age_counts["child"] > 0 else 0
@@ -588,6 +613,9 @@ summary_metrics = {
     "child_campaign_vaccinations": model.child_campaign_vaccinations,
     "adult_campaign_vaccinations": model.adult_campaign_vaccinations,
     "senior_campaign_vaccinations": model.senior_campaign_vaccinations,
+    "child_vaccination_coverage": child_vaccination_coverage,
+    "adult_vaccination_coverage": adult_vaccination_coverage,
+    "senior_vaccination_coverage": senior_vaccination_coverage,
 
     # =====================
     # DYNAMIC POLICIES
@@ -779,6 +807,9 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Child campaign vaccinations: {model.child_campaign_vaccinations}\n")
     file.write(f"Adult campaign vaccinations: {model.adult_campaign_vaccinations}\n")
     file.write(f"Senior campaign vaccinations: {model.senior_campaign_vaccinations}\n")
+    file.write(f"Child vaccination coverage: {child_vaccination_coverage:.2%}\n")
+    file.write(f"Adult vaccination coverage: {adult_vaccination_coverage:.2%}\n")
+    file.write(f"Senior vaccination coverage: {senior_vaccination_coverage:.2%}\n")
 
     file.write("\nDynamic policies\n")
     file.write("----------------\n")
