@@ -228,6 +228,7 @@ class FluModel(Model):
         self.adult_campaign_vaccinations = 0
         self.senior_campaign_vaccinations = 0
         self.vaccination_campaign_end_step = None
+        self.vaccination_campaign_activation_count = 0
         
 
         self.peak_active_cases = 0
@@ -476,6 +477,7 @@ class FluModel(Model):
             if active_cases >= self.vaccination_campaign_threshold:
                 if not self.vaccination_campaign_active:
                     self.vaccination_campaign_start_step = self.step_count
+                    self.vaccination_campaign_activation_count += 1
 
                 self.vaccination_campaign_active = True
 
