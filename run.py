@@ -544,6 +544,12 @@ vaccination_coverage = (
 )
 
 
+breakthrough_infection_rate = (
+    model.vaccinated_breakthrough_infections / total_vaccinations
+    if total_vaccinations > 0 else 0
+)
+
+
 summary_metrics = {
 
     # =====================
@@ -609,6 +615,8 @@ summary_metrics = {
     "vaccination_coverage": vaccination_coverage,
     "total_campaign_vaccinations": model.total_campaign_vaccinations,
     "vaccination_campaign_activation_count": model.vaccination_campaign_activation_count,
+    "vaccinated_breakthrough_infections": model.vaccinated_breakthrough_infections,
+    "breakthrough_infection_rate": breakthrough_infection_rate,
 
     "child_campaign_vaccinations": model.child_campaign_vaccinations,
     "adult_campaign_vaccinations": model.adult_campaign_vaccinations,
@@ -803,6 +811,8 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Vaccination coverage: {vaccination_coverage:.2%}\n")
     file.write(f"Total campaign vaccinations: {model.total_campaign_vaccinations}\n")
     file.write(f"Vaccination campaign activation count: {model.vaccination_campaign_activation_count}\n")
+    file.write(f"Breakthrough infections: {model.vaccinated_breakthrough_infections}\n")
+    file.write(f"Breakthrough infection rate: {breakthrough_infection_rate:.2%}\n")
 
     file.write(f"Child campaign vaccinations: {model.child_campaign_vaccinations}\n")
     file.write(f"Adult campaign vaccinations: {model.adult_campaign_vaccinations}\n")

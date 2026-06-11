@@ -230,6 +230,7 @@ class FluModel(Model):
         self.vaccination_campaign_end_step = None
         self.vaccination_campaign_activation_count = 0
         self.initial_vaccinations = 0
+        self.vaccinated_breakthrough_infections = 0
         
 
         self.peak_active_cases = 0

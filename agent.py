@@ -150,6 +150,9 @@ class PersonAgent(Agent):
                     infection_chance *= (1 - self.model.vaccine_effectiveness)
 
                 if self.random.random() < infection_chance:
+                    if agent.state == "Vaccinated":
+                        self.model.vaccinated_breakthrough_infections += 1
+                        
                     agent.state = "Exposed"
                     agent.days_in_state = 0
 
