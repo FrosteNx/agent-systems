@@ -84,6 +84,7 @@ class FluModel(Model):
         auto_vaccination_campaign=False,
         vaccination_campaign_threshold=100,
         daily_vaccination_capacity=20,
+        prioritize_seniors_for_vaccination=True,
     ):
         super().__init__()
 
@@ -222,6 +223,7 @@ class FluModel(Model):
         self.vaccination_campaign_start_step = None
         self.new_vaccinations = 0
         self.total_campaign_vaccinations = 0
+        self.prioritize_seniors_for_vaccination = prioritize_seniors_for_vaccination
         
 
         self.peak_active_cases = 0
@@ -529,7 +531,23 @@ class FluModel(Model):
             if agent.state == "Susceptible"
         ]
 
-        self.random.shuffle(candidates)
+        if self.prioritize_seniors_for_vaccination:
+            senior_candidates = [
+                agent for agent in candidates
+                if agent.age_group == "senior"
+            ]
+
+            other_candidates = [
+                agent for agent in candidates
+                if agent.age_group != "senior"
+            ]
+
+            self.random.shuffle(senior_candidates)
+            self.random.shuffle(other_candidates)
+
+            candidates = senior_candidates + other_candidates
+        else:
+            self.random.shuffle(candidates)
 
         selected = candidates[:self.daily_vaccination_capacity]
 
