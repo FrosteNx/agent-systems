@@ -491,6 +491,23 @@ else:
     child_mobility_reduction_duration = 0
 
 
+if (
+    model.vaccination_campaign_start_step is not None
+    and model.vaccination_campaign_end_step is not None
+):
+    vaccination_campaign_duration = (
+        model.vaccination_campaign_end_step
+        - model.vaccination_campaign_start_step
+    )
+elif model.vaccination_campaign_start_step is not None:
+    vaccination_campaign_duration = (
+        actual_steps
+        - model.vaccination_campaign_start_step
+    )
+else:
+    vaccination_campaign_duration = 0
+
+
 summary_metrics = {
 
     # =====================
@@ -550,6 +567,7 @@ summary_metrics = {
     # =====================
     "vaccination_campaign_start_step": model.vaccination_campaign_start_step,
     "vaccination_campaign_end_step": model.vaccination_campaign_end_step,
+    "vaccination_campaign_duration": vaccination_campaign_duration,
     "total_campaign_vaccinations": model.total_campaign_vaccinations,
 
     "child_campaign_vaccinations": model.child_campaign_vaccinations,
@@ -736,6 +754,7 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Daily vaccination capacity: {config.DAILY_VACCINATION_CAPACITY}\n")
     file.write(f"Vaccination campaign start step: {model.vaccination_campaign_start_step}\n")
     file.write(f"Vaccination campaign end step: {model.vaccination_campaign_end_step}\n")
+    file.write(f"Vaccination campaign duration: {vaccination_campaign_duration}\n")
     file.write(f"Total campaign vaccinations: {model.total_campaign_vaccinations}\n")
 
     file.write(f"Child campaign vaccinations: {model.child_campaign_vaccinations}\n")
