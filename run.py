@@ -551,6 +551,10 @@ summary_metrics = {
     "vaccination_campaign_start_step": model.vaccination_campaign_start_step,
     "total_campaign_vaccinations": model.total_campaign_vaccinations,
 
+    "child_campaign_vaccinations": model.child_campaign_vaccinations,
+    "adult_campaign_vaccinations": model.adult_campaign_vaccinations,
+    "senior_campaign_vaccinations": model.senior_campaign_vaccinations,
+
     # =====================
     # DYNAMIC POLICIES
     # =====================
@@ -731,6 +735,10 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Daily vaccination capacity: {config.DAILY_VACCINATION_CAPACITY}\n")
     file.write(f"Vaccination campaign start step: {model.vaccination_campaign_start_step}\n")
     file.write(f"Total campaign vaccinations: {model.total_campaign_vaccinations}\n")
+
+    file.write(f"Child campaign vaccinations: {model.child_campaign_vaccinations}\n")
+    file.write(f"Adult campaign vaccinations: {model.adult_campaign_vaccinations}\n")
+    file.write(f"Senior campaign vaccinations: {model.senior_campaign_vaccinations}\n")
 
     file.write("\nDynamic policies\n")
     file.write("----------------\n")

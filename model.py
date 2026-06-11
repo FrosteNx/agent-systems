@@ -224,6 +224,9 @@ class FluModel(Model):
         self.new_vaccinations = 0
         self.total_campaign_vaccinations = 0
         self.prioritize_seniors_for_vaccination = prioritize_seniors_for_vaccination
+        self.child_campaign_vaccinations = 0
+        self.adult_campaign_vaccinations = 0
+        self.senior_campaign_vaccinations = 0
         
 
         self.peak_active_cases = 0
@@ -555,3 +558,10 @@ class FluModel(Model):
             agent.state = "Vaccinated"
             self.new_vaccinations += 1
             self.total_campaign_vaccinations += 1
+            
+            if agent.age_group == "child":
+                self.child_campaign_vaccinations += 1
+            elif agent.age_group == "adult":
+                self.adult_campaign_vaccinations += 1
+            elif agent.age_group == "senior":
+                self.senior_campaign_vaccinations += 1
