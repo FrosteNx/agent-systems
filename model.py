@@ -227,6 +227,7 @@ class FluModel(Model):
         self.child_campaign_vaccinations = 0
         self.adult_campaign_vaccinations = 0
         self.senior_campaign_vaccinations = 0
+        self.vaccination_campaign_end_step = None
         
 
         self.peak_active_cases = 0
@@ -534,6 +535,14 @@ class FluModel(Model):
             if agent.state == "Susceptible"
         ]
 
+        if len(candidates) == 0:
+            self.vaccination_campaign_active = False
+
+            if self.vaccination_campaign_end_step is None:
+                self.vaccination_campaign_end_step = self.step_count
+
+            return
+
         if self.prioritize_seniors_for_vaccination:
             senior_candidates = [
                 agent for agent in candidates
@@ -558,7 +567,7 @@ class FluModel(Model):
             agent.state = "Vaccinated"
             self.new_vaccinations += 1
             self.total_campaign_vaccinations += 1
-            
+
             if agent.age_group == "child":
                 self.child_campaign_vaccinations += 1
             elif agent.age_group == "adult":
