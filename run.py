@@ -934,6 +934,31 @@ print(
 
 plt.figure()
 
+vaccination_age_groups = ["Child", "Adult", "Senior"]
+vaccination_values = [
+    model.child_campaign_vaccinations,
+    model.adult_campaign_vaccinations,
+    model.senior_campaign_vaccinations,
+]
+
+plt.bar(vaccination_age_groups, vaccination_values)
+
+plt.xlabel("Age group")
+plt.ylabel("Vaccinations")
+plt.title("Campaign vaccinations by age group")
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/campaign_vaccinations_by_age_bar.png", dpi=300)
+
+print(
+    f"Campaign vaccinations by age plot saved to "
+    f"{plots_dir}/campaign_vaccinations_by_age_bar.png"
+)
+
+#plt.show()
+
+plt.figure()
+
 locations = ["Home", "School", "Work", "Other"]
 location_values = [
     total_home_infections,
