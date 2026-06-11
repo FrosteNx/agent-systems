@@ -1030,6 +1030,32 @@ print(
 
 plt.figure()
 
+vaccination_coverage_age_groups = ["Child", "Adult", "Senior"]
+vaccination_coverage_values = [
+    child_vaccination_coverage * 100,
+    adult_vaccination_coverage * 100,
+    senior_vaccination_coverage * 100,
+]
+
+plt.bar(vaccination_coverage_age_groups, vaccination_coverage_values)
+
+plt.xlabel("Age group")
+plt.ylabel("Vaccination coverage (%)")
+plt.title("Vaccination coverage by age group")
+plt.ylim(0, 100)
+plt.tight_layout()
+
+plt.savefig(f"{plots_dir}/vaccination_coverage_by_age_bar.png", dpi=300)
+
+print(
+    f"Vaccination coverage by age plot saved to "
+    f"{plots_dir}/vaccination_coverage_by_age_bar.png"
+)
+
+#plt.show()
+
+plt.figure()
+
 locations = ["Home", "School", "Work", "Other"]
 location_values = [
     total_home_infections,
