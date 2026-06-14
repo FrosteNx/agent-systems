@@ -550,6 +550,43 @@ breakthrough_infection_rate = (
 )
 
 
+if total_vaccinations > 0:
+    vaccinated_infection_rate = (
+        model.vaccinated_breakthrough_infections
+        / total_vaccinations
+    )
+else:
+    vaccinated_infection_rate = 0
+
+unvaccinated_population = (
+    config.POPULATION
+    - total_vaccinations
+)
+
+unvaccinated_infections = (
+    model.total_infections
+    - model.vaccinated_breakthrough_infections
+)
+
+if unvaccinated_population > 0:
+    unvaccinated_infection_rate = (
+        unvaccinated_infections
+        / unvaccinated_population
+    )
+else:
+    unvaccinated_infection_rate = 0
+
+
+if unvaccinated_infection_rate > 0:
+    observed_vaccine_effectiveness = (
+        1
+        - vaccinated_infection_rate
+        / unvaccinated_infection_rate
+    )
+else:
+    observed_vaccine_effectiveness = 0
+
+
 summary_metrics = {
 
     # =====================
@@ -617,6 +654,9 @@ summary_metrics = {
     "vaccination_campaign_activation_count": model.vaccination_campaign_activation_count,
     "vaccinated_breakthrough_infections": model.vaccinated_breakthrough_infections,
     "breakthrough_infection_rate": breakthrough_infection_rate,
+    "vaccinated_infection_rate": vaccinated_infection_rate,
+    "unvaccinated_infection_rate": unvaccinated_infection_rate,
+    "observed_vaccine_effectiveness": observed_vaccine_effectiveness,
 
     "child_campaign_vaccinations": model.child_campaign_vaccinations,
     "adult_campaign_vaccinations": model.adult_campaign_vaccinations,
@@ -813,6 +853,9 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
     file.write(f"Vaccination campaign activation count: {model.vaccination_campaign_activation_count}\n")
     file.write(f"Breakthrough infections: {model.vaccinated_breakthrough_infections}\n")
     file.write(f"Breakthrough infection rate: {breakthrough_infection_rate:.2%}\n")
+    file.write(f"Vaccinated infection rate: "f"{vaccinated_infection_rate:.2%}\n")
+    file.write(f"Unvaccinated infection rate: "f"{unvaccinated_infection_rate:.2%}\n")
+    file.write(f"Observed vaccine effectiveness: "f"{observed_vaccine_effectiveness:.2%}\n")
 
     file.write(f"Child campaign vaccinations: {model.child_campaign_vaccinations}\n")
     file.write(f"Adult campaign vaccinations: {model.adult_campaign_vaccinations}\n")
