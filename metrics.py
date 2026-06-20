@@ -270,3 +270,60 @@ def calculate_intervention_metrics(model):
             model.total_infections
         ),
     }
+
+def calculate_all_metrics(
+    model,
+    results,
+    final_counts,
+    actual_steps,
+    population,
+    initial_infected,
+):
+    epidemic_metrics = calculate_epidemic_metrics(
+        model,
+        results,
+        final_counts,
+        population,
+        initial_infected
+    )
+
+    infection_totals = calculate_infection_totals(results)
+
+    transmission_metrics = calculate_transmission_metrics(
+        epidemic_metrics["secondary_infections"],
+        infection_totals["total_household_infections"],
+        infection_totals["total_community_infections"],
+        infection_totals["total_home_infections"],
+        infection_totals["total_school_infections"],
+        infection_totals["total_work_infections"],
+        infection_totals["total_other_infections"],
+    )
+
+    intervention_metrics = calculate_intervention_metrics(model)
+
+    age_counts = model.count_age_groups()
+
+    age_group_metrics = calculate_age_group_metrics(
+        model,
+        age_counts
+    )
+
+    vaccination_metrics = calculate_vaccination_metrics(
+        model,
+        population
+    )
+
+    policy_durations = calculate_policy_durations(
+        model,
+        actual_steps
+    )
+
+    return {
+        **epidemic_metrics,
+        **infection_totals,
+        **transmission_metrics,
+        **intervention_metrics,
+        **age_group_metrics,
+        **vaccination_metrics,
+        **policy_durations,
+    }
