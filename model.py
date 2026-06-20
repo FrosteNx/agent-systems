@@ -343,33 +343,31 @@ class FluModel(Model):
 
         self.running = True
 
-    def step(self):
-        if self.auto_lockdown:
-            active_cases = (
-                self.count_states()["Exposed"]
-                + self.count_states()["Infected"]
-                + self.count_states()["Asymptomatic"]
-            )
+    def get_active_cases(self):
+        counts = self.count_states()
 
+        return (
+            counts["Exposed"]
+            + counts["Infected"]
+            + counts["Asymptomatic"]
+        )
+    
+    def update_lockdown_policy(self, active_cases):
+        if self.auto_lockdown:
             if active_cases >= self.lockdown_threshold:
                 if not self.lockdown_active:
                     self.lockdown_start_step = self.step_count
                     self.lockdown_activation_count += 1
-                    
+
                 self.lockdown_active = True
 
-            if self.auto_lockdown_release and self.lockdown_active:
-                if active_cases <= self.lockdown_release_threshold:
-                    self.lockdown_active = False
-                    self.lockdown_end_step = self.step_count
+        if self.auto_lockdown_release and self.lockdown_active:
+            if active_cases <= self.lockdown_release_threshold:
+                self.lockdown_active = False
+                self.lockdown_end_step = self.step_count
 
+    def update_school_policy(self, active_cases):
         if self.auto_school_closure:
-            active_cases = (
-                self.count_states()["Exposed"]
-                + self.count_states()["Infected"]
-                + self.count_states()["Asymptomatic"]
-            )
-
             if active_cases >= self.school_closure_threshold:
                 if not self.school_closed_active:
                     self.school_closure_start_step = self.step_count
@@ -382,6 +380,7 @@ class FluModel(Model):
                 self.school_closed_active = False
                 self.school_closure_end_step = self.step_count
 
+    def update_work_policy(self, active_cases):
         if self.auto_work_closure:
             if active_cases >= self.work_closure_threshold:
                 if not self.work_closed_active:
@@ -395,6 +394,55 @@ class FluModel(Model):
                 self.work_closed_active = False
                 self.work_closure_end_step = self.step_count
 
+    def update_mask_policy(self, active_cases):
+        if self.auto_mask_compliance:
+            if active_cases >= self.mask_compliance_threshold:
+                if self.mask_compliance_active != self.high_mask_compliance:
+                    self.mask_compliance_start_step = self.step_count
+                    self.mask_compliance_activation_count += 1
+
+                self.mask_compliance_active = self.high_mask_compliance
+
+        if self.auto_mask_relaxation:
+            if active_cases <= self.mask_relaxation_threshold:
+                if self.mask_compliance_active != self.base_mask_compliance:
+                    self.mask_compliance_end_step = self.step_count
+
+                self.mask_compliance_active = self.base_mask_compliance
+
+    def update_testing_policy(self, active_cases):
+        if self.auto_testing_rate:
+            if active_cases >= self.testing_rate_threshold:
+                if self.testing_rate_active != self.high_testing_rate:
+                    self.testing_rate_start_step = self.step_count
+                    self.testing_rate_activation_count += 1
+
+                self.testing_rate_active = self.high_testing_rate
+
+        if self.auto_testing_relaxation:
+            if active_cases <= self.testing_relaxation_threshold:
+                if self.testing_rate_active != self.base_testing_rate:
+                    self.testing_rate_end_step = self.step_count
+
+                self.testing_rate_active = self.base_testing_rate
+
+    def update_quarantine_policy(self, active_cases):
+        if self.auto_quarantine_compliance:
+            if active_cases >= self.quarantine_compliance_threshold:
+                if self.quarantine_compliance_active != self.high_quarantine_compliance:
+                    self.quarantine_compliance_start_step = self.step_count
+                    self.quarantine_compliance_activation_count += 1
+
+                self.quarantine_compliance_active = self.high_quarantine_compliance
+
+        if self.auto_quarantine_relaxation:
+            if active_cases <= self.quarantine_relaxation_threshold:
+                if self.quarantine_compliance_active != self.base_quarantine_compliance:
+                    self.quarantine_compliance_end_step = self.step_count
+
+                self.quarantine_compliance_active = self.base_quarantine_compliance
+
+    def update_mobility_policy(self, active_cases):
         if self.auto_senior_mobility_reduction:
             if active_cases >= self.senior_mobility_threshold:
                 if self.senior_mobility_active != self.low_senior_mobility:
@@ -425,58 +473,8 @@ class FluModel(Model):
 
                 self.child_mobility_active = self.base_child_mobility
 
-        if self.auto_mask_compliance:
-            if active_cases >= self.mask_compliance_threshold:
-                if self.mask_compliance_active != self.high_mask_compliance:
-                    self.mask_compliance_start_step = self.step_count
-                    self.mask_compliance_activation_count += 1
-
-                self.mask_compliance_active = self.high_mask_compliance
-
-        if self.auto_mask_relaxation:
-            if active_cases <= self.mask_relaxation_threshold:
-                if self.mask_compliance_active != self.base_mask_compliance:
-                    self.mask_compliance_end_step = self.step_count
-
-                self.mask_compliance_active = self.base_mask_compliance
-
-        if self.auto_testing_rate:
-            if active_cases >= self.testing_rate_threshold:
-                if self.testing_rate_active != self.high_testing_rate:
-                    self.testing_rate_start_step = self.step_count
-                    self.testing_rate_activation_count += 1
-
-                self.testing_rate_active = self.high_testing_rate
-
-        if self.auto_testing_relaxation:
-            if active_cases <= self.testing_relaxation_threshold:
-                if self.testing_rate_active != self.base_testing_rate:
-                    self.testing_rate_end_step = self.step_count
-
-                self.testing_rate_active = self.base_testing_rate
-
-        if self.auto_quarantine_compliance:
-            if active_cases >= self.quarantine_compliance_threshold:
-                if self.quarantine_compliance_active != self.high_quarantine_compliance:
-                    self.quarantine_compliance_start_step = self.step_count
-                    self.quarantine_compliance_activation_count += 1
-
-                self.quarantine_compliance_active = self.high_quarantine_compliance
-
-        if self.auto_quarantine_relaxation:
-            if active_cases <= self.quarantine_relaxation_threshold:
-                if self.quarantine_compliance_active != self.base_quarantine_compliance:
-                    self.quarantine_compliance_end_step = self.step_count
-
-                self.quarantine_compliance_active = self.base_quarantine_compliance
-
+    def update_vaccination_policy(self, active_cases):
         if self.auto_vaccination_campaign:
-            active_cases = (
-                self.count_states()["Exposed"]
-                + self.count_states()["Infected"]
-                + self.count_states()["Asymptomatic"]
-            )
-
             if active_cases >= self.vaccination_campaign_threshold:
                 if not self.vaccination_campaign_active:
                     self.vaccination_campaign_start_step = self.step_count
@@ -484,7 +482,19 @@ class FluModel(Model):
 
                 self.vaccination_campaign_active = True
 
-        self.step_count += 1
+    def update_policies(self):
+        active_cases = self.get_active_cases()
+
+        self.update_lockdown_policy(active_cases)
+        self.update_school_policy(active_cases)
+        self.update_work_policy(active_cases)
+        self.update_mask_policy(active_cases)
+        self.update_testing_policy(active_cases)
+        self.update_quarantine_policy(active_cases)
+        self.update_mobility_policy(active_cases)
+        self.update_vaccination_policy(active_cases)
+
+    def reset_step_counters(self):
         self.new_infections = 0
         self.household_infections = 0
         self.community_infections = 0
@@ -495,17 +505,24 @@ class FluModel(Model):
         self.mask_protected_contacts = 0
         self.quarantined_agents = 0
         self.new_vaccinations = 0
+
+    def update_peak_active_cases(self):
+        active_cases = self.get_active_cases()
+        self.peak_active_cases = max(
+            self.peak_active_cases,
+            active_cases
+        )
+
+    def step(self):
+        self.update_policies()
+
+        self.step_count += 1
+        self.reset_step_counters()
+
         self.run_vaccination_campaign()
         self.schedule.step()
 
-        counts = self.count_states()
-        active_cases = (
-            counts["Exposed"]
-            + counts["Infected"]
-            + counts["Asymptomatic"]
-        )
-
-        self.peak_active_cases = max(self.peak_active_cases, active_cases)
+        self.update_peak_active_cases()
 
         self.datacollector.collect(self)
 

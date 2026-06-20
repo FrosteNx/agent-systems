@@ -8,7 +8,15 @@ from pathlib import Path
 import pandas as pd
 import logging
 import time
+from plots import generate_all_plots
 
+def save_dataframe(df, path, index=False, index_label=None):
+    df.to_csv(
+        path,
+        index=index,
+        index_label=index_label
+    )
+    print(f"Saved: {path}")
 
 model = FluModel(
     width=config.WIDTH,
@@ -147,12 +155,10 @@ for agent in model.schedule.agents:
 
 initial_population_df = pd.DataFrame(initial_population_data)
 
-initial_population_df.to_csv(
-    f"{data_dir}/initial_population.csv",
-    index=False
+save_dataframe(
+    initial_population_df,
+    f"{data_dir}/initial_population.csv"
 )
-
-print(f"Initial population saved to {data_dir}/initial_population.csv")
 
 with open(f"{data_dir}/parameters.txt", "w") as file:
     file.write("Simulation parameters\n")
@@ -220,8 +226,12 @@ logging.info(
 
 results = model.datacollector.get_model_vars_dataframe()
 
-results.to_csv(f"{data_dir}/simulation_results.csv", index_label="Step")
-print("Results saved to outputs/simulation_results.csv")
+save_dataframe(
+    results,
+    f"{data_dir}/simulation_results.csv",
+    index=True,
+    index_label="Step"
+)
 
 print("Peak active cases:", model.peak_active_cases)
 
@@ -242,13 +252,8 @@ for agent in model.schedule.agents:
 
 population_df = pd.DataFrame(population_data)
 
-population_df.to_csv(
-    f"{data_dir}/final_population.csv",
-    index=False
-)
-
-print(
-    f"Final population saved to "
+save_dataframe(
+    population_df,
     f"{data_dir}/final_population.csv"
 )
 
@@ -754,13 +759,8 @@ for key, value in summary_metrics.items():
 
 summary_df = pd.DataFrame([summary_metrics])
 
-summary_df.to_csv(
-    f"{data_dir}/summary_metrics.csv",
-    index=False
-)
-
-print(
-    f"Summary metrics saved to "
+save_dataframe(
+    summary_df,
     f"{data_dir}/summary_metrics.csv"
 )
 
@@ -960,605 +960,29 @@ with open(f"{data_dir}/simulation_summary.txt", "w") as file:
 
 print("Summary saved to outputs/simulation_summary.txt")
 
-plt.plot(results["Susceptible"], label="Susceptible")
-plt.plot(results["Exposed"], label="Exposed")
-plt.plot(results["Infected"], label="Infected")
-plt.plot(results["Asymptomatic"], label="Asymptomatic")
-plt.plot(results["Recovered"], label="Recovered")
-plt.plot(results["Dead"], label="Dead")
-plt.plot(results["Vaccinated"], label="Vaccinated")
-
-plt.xlabel("Step")
-plt.ylabel("Number of people")
-plt.title("Flu epidemic simulation")
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/epidemic_curve.png", dpi=300)
-
-plt.show()
-
-
-plt.figure()
-
-plt.plot(results["Rt"], label="Rt")
-plt.axhline(y=1, linestyle="--", label="Rt = 1")
-
-plt.xlabel("Step")
-plt.ylabel("Rt")
-plt.title("Effective reproduction number")
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/rt_curve.png", dpi=300)
-print("Rt plot saved to outputs/rt_curve.png")
-
-plt.show()
-
-
-plt.figure()
-
-plt.plot(results["ActiveCases"], label="Active cases")
-plt.plot(results["NewInfections"], label="New infections")
-plt.plot(results["HouseholdInfections"], label="Household infections")
-plt.plot(results["CommunityInfections"], label="Community infections")
-plt.plot(results["HomeInfections"], label="Home infections")
-plt.plot(results["SchoolInfections"], label="School infections")
-plt.plot(results["WorkInfections"], label="Work infections")
-plt.plot(results["MaskProtectedContacts"], label="Mask protected contacts")
-
-plt.xlabel("Step")
-plt.ylabel("Number of people")
-plt.title("Active and new infections")
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/infections_curve.png", dpi=300)
-print("Infections plot saved to outputs/infections_curve.png")
-
-plt.show()
-
-plt.figure()
-
-plt.plot(results["QuarantinedAgents"], label="Quarantined agents")
-plt.plot(results["DetectedInfected"], label="Detected infected")
-plt.plot(results["UndetectedInfected"], label="Undetected infected")
-
-plt.xlabel("Step")
-plt.ylabel("Number of agents")
-plt.title("Quarantined agents over time")
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/quarantine_curve.png", dpi=300)
-
-print(f"Quarantine plot saved to {plots_dir}/quarantine_curve.png")
-
-plt.show()
-
-plt.figure()
-
-plt.plot(results["NewVaccinations"], label="New vaccinations")
-plt.plot(results["VaccinationCampaignActive"], label="Vaccination campaign active")
-
-plt.xlabel("Step")
-plt.ylabel("Count / status")
-plt.title("Vaccination campaign over time")
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/vaccination_campaign_curve.png", dpi=300)
-
-print(
-    f"Vaccination campaign plot saved to "
-    f"{plots_dir}/vaccination_campaign_curve.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-vaccination_age_groups = ["Child", "Adult", "Senior"]
-vaccination_values = [
-    model.child_campaign_vaccinations,
-    model.adult_campaign_vaccinations,
-    model.senior_campaign_vaccinations,
-]
-
-plt.bar(vaccination_age_groups, vaccination_values)
-
-plt.xlabel("Age group")
-plt.ylabel("Vaccinations")
-plt.title("Campaign vaccinations by age group")
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/campaign_vaccinations_by_age_bar.png", dpi=300)
-
-print(
-    f"Campaign vaccinations by age plot saved to "
-    f"{plots_dir}/campaign_vaccinations_by_age_bar.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-vaccination_coverage_age_groups = ["Child", "Adult", "Senior"]
-vaccination_coverage_values = [
-    child_vaccination_coverage * 100,
-    adult_vaccination_coverage * 100,
-    senior_vaccination_coverage * 100,
-]
-
-plt.bar(vaccination_coverage_age_groups, vaccination_coverage_values)
-
-plt.xlabel("Age group")
-plt.ylabel("Vaccination coverage (%)")
-plt.title("Vaccination coverage by age group")
-plt.ylim(0, 100)
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/vaccination_coverage_by_age_bar.png", dpi=300)
-
-print(
-    f"Vaccination coverage by age plot saved to "
-    f"{plots_dir}/vaccination_coverage_by_age_bar.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-locations = ["Home", "School", "Work", "Other"]
-location_values = [
+generate_all_plots(
+    results,
+    plots_dir,
+    model,
     total_home_infections,
     total_school_infections,
     total_work_infections,
     total_other_infections,
-]
-
-plt.bar(locations, location_values)
-
-plt.xlabel("Location")
-plt.ylabel("Number of infections")
-plt.title("Infections by location")
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/location_infections_bar.png", dpi=300)
-print(f"Location infections plot saved to {plots_dir}/location_infections_bar.png")
-
-#plt.show()
-
-plt.figure()
-
-transmission_types = ["Household", "Community"]
-transmission_values = [
     total_household_infections,
     total_community_infections,
-]
-
-plt.bar(transmission_types, transmission_values)
-
-plt.xlabel("Transmission type")
-plt.ylabel("Number of infections")
-plt.title("Household vs community infections")
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/transmission_type_bar.png", dpi=300)
-print(
-    f"Transmission type plot saved to "
-    f"{plots_dir}/transmission_type_bar.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-location_share_labels = ["Home", "School", "Work", "Other"]
-
-location_share_values = [
-    home_infection_share * 100,
-    school_infection_share * 100,
-    work_infection_share * 100,
-    other_infection_share * 100,
-]
-
-plt.bar(location_share_labels, location_share_values)
-
-plt.xlabel("Location")
-plt.ylabel("Share of infections (%)")
-plt.title("Infection share by location")
-plt.ylim(0, 100)
-
-plt.tight_layout()
-
-plt.savefig(
-    f"{plots_dir}/location_infection_share_bar.png",
-    dpi=300
-)
-
-print(
-    f"Location infection share plot saved to "
-    f"{plots_dir}/location_infection_share_bar.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-pie_labels = ["Home", "School", "Work", "Other"]
-
-pie_values = [
     home_infection_share,
     school_infection_share,
     work_infection_share,
     other_infection_share,
-]
-
-plt.pie(
-    pie_values,
-    labels=pie_labels,
-    autopct="%1.1f%%"
-)
-
-plt.title("Infection share by location")
-
-plt.savefig(
-    f"{plots_dir}/location_infection_share_pie.png",
-    dpi=300
-)
-
-print(
-    f"Location infection share pie chart saved to "
-    f"{plots_dir}/location_infection_share_pie.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-transmission_share_labels = ["Household", "Community"]
-
-transmission_share_values = [
     household_infection_share,
     community_infection_share,
-]
-
-plt.pie(
-    transmission_share_values,
-    labels=transmission_share_labels,
-    autopct="%1.1f%%"
+    child_attack_rate,
+    adult_attack_rate,
+    senior_attack_rate,
+    child_death_rate,
+    adult_death_rate,
+    senior_death_rate,
+    child_vaccination_coverage,
+    adult_vaccination_coverage,
+    senior_vaccination_coverage,
 )
-
-plt.title("Household vs community infection share")
-
-plt.savefig(
-    f"{plots_dir}/transmission_type_share_pie.png",
-    dpi=300
-)
-
-print(
-    f"Transmission type share pie chart saved to "
-    f"{plots_dir}/transmission_type_share_pie.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-attack_age_groups = ["Child", "Adult", "Senior"]
-attack_values = [
-    child_attack_rate * 100,
-    adult_attack_rate * 100,
-    senior_attack_rate * 100,
-]
-
-plt.bar(attack_age_groups, attack_values)
-
-plt.xlabel("Age group")
-plt.ylabel("Attack rate (%)")
-plt.title("Attack rate by age group")
-plt.ylim(0, 100)
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/attack_rate_by_age_bar.png", dpi=300)
-
-print(f"Attack rate by age plot saved to {plots_dir}/attack_rate_by_age_bar.png")
-
-#plt.show()
-
-plt.figure()
-
-infection_age_groups = ["Child", "Adult", "Senior"]
-infection_values = [
-    model.child_infections,
-    model.adult_infections,
-    model.senior_infections,
-]
-
-plt.bar(infection_age_groups, infection_values)
-
-plt.xlabel("Age group")
-plt.ylabel("Infections")
-plt.title("Infections by age group")
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/infections_by_age_bar.png", dpi=300)
-
-print(f"Infections by age plot saved to {plots_dir}/infections_by_age_bar.png")
-
-#plt.show()
-
-plt.figure()
-
-death_rate_age_groups = ["Child", "Adult", "Senior"]
-death_rate_values = [
-    child_death_rate * 100,
-    adult_death_rate * 100,
-    senior_death_rate * 100,
-]
-
-plt.bar(death_rate_age_groups, death_rate_values)
-
-plt.xlabel("Age group")
-plt.ylabel("Death rate (%)")
-plt.title("Death rate by age group")
-plt.ylim(0, 100)
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/death_rate_by_age_bar.png", dpi=300)
-
-print(f"Death rate by age plot saved to {plots_dir}/death_rate_by_age_bar.png")
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(results["LockdownActive"], label="Lockdown active")
-
-plt.xlabel("Step")
-plt.ylabel("Active")
-plt.title("Lockdown status over time")
-plt.yticks([0, 1], ["Off", "On"])
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/lockdown_status.png", dpi=300)
-
-print(f"Lockdown status plot saved to {plots_dir}/lockdown_status.png")
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(results["ActiveCases"], label="Active cases")
-plt.axhline(
-    y=config.LOCKDOWN_THRESHOLD,
-    linestyle="--",
-    label="Lockdown threshold"
-)
-plt.axhline(
-    y=config.LOCKDOWN_RELEASE_THRESHOLD,
-    linestyle=":",
-    label="Release threshold"
-)
-
-plt.xlabel("Step")
-plt.ylabel("Active cases")
-plt.title("Active cases and lockdown thresholds")
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/lockdown_thresholds_curve.png", dpi=300)
-
-print(
-    f"Lockdown thresholds plot saved to "
-    f"{plots_dir}/lockdown_thresholds_curve.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(results["SchoolClosedActive"], label="School closed")
-
-plt.xlabel("Step")
-plt.ylabel("Active")
-plt.title("School closure status over time")
-plt.yticks([0, 1], ["Open", "Closed"])
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/school_closure_status.png", dpi=300)
-
-print(
-    f"School closure status plot saved to "
-    f"{plots_dir}/school_closure_status.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(results["WorkClosedActive"], label="Work closed")
-
-plt.xlabel("Step")
-plt.ylabel("Active")
-plt.title("Work closure status over time")
-plt.yticks([0, 1], ["Open", "Closed"])
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/work_closure_status.png", dpi=300)
-
-print(
-    f"Work closure status plot saved to "
-    f"{plots_dir}/work_closure_status.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(results["MaskComplianceActive"], label="Mask compliance")
-
-plt.xlabel("Step")
-plt.ylabel("Compliance")
-plt.title("Mask compliance over time")
-plt.ylim(0, 1)
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/mask_compliance_curve.png", dpi=300)
-
-print(
-    f"Mask compliance plot saved to "
-    f"{plots_dir}/mask_compliance_curve.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(results["TestingRateActive"], label="Testing rate")
-
-plt.xlabel("Step")
-plt.ylabel("Testing rate")
-plt.title("Testing rate over time")
-plt.ylim(0, 1)
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/testing_rate_curve.png", dpi=300)
-
-print(f"Testing rate plot saved to {plots_dir}/testing_rate_curve.png")
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(
-    results["QuarantineComplianceActive"],
-    label="Quarantine compliance"
-)
-
-plt.xlabel("Step")
-plt.ylabel("Compliance")
-plt.title("Quarantine compliance over time")
-plt.ylim(0, 1)
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/quarantine_compliance_curve.png", dpi=300)
-
-print(
-    f"Quarantine compliance plot saved to "
-    f"{plots_dir}/quarantine_compliance_curve.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(results["LockdownActive"], label="Lockdown active")
-plt.plot(results["SchoolClosedActive"], label="School closed")
-plt.plot(results["MaskComplianceActive"], label="Mask compliance")
-
-plt.xlabel("Step")
-plt.ylabel("Policy level")
-plt.title("Dynamic policy status over time")
-plt.ylim(0, 1)
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/policy_status.png", dpi=300)
-
-print(f"Policy status plot saved to {plots_dir}/policy_status.png")
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(results["LockdownActive"], label="Lockdown active")
-plt.plot(results["SchoolClosedActive"], label="School closed")
-plt.plot(results["WorkClosedActive"], label="Work closed")
-plt.plot(results["MaskComplianceActive"], label="Mask compliance")
-
-plt.xlabel("Step")
-plt.ylabel("Policy level")
-plt.title("Continuous dynamic policy levels")
-plt.ylim(0, 1)
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/continuous_policy_levels.png", dpi=300)
-
-print(
-    f"Continuous policy levels plot saved to "
-    f"{plots_dir}/continuous_policy_levels.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(results["SeniorMobilityActive"], label="Senior mobility")
-
-plt.xlabel("Step")
-plt.ylabel("Mobility")
-plt.title("Senior mobility over time")
-plt.ylim(0, 1)
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/senior_mobility_curve.png", dpi=300)
-
-print(
-    f"Senior mobility plot saved to "
-    f"{plots_dir}/senior_mobility_curve.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(results["SeniorMobilityActive"], label="Senior mobility")
-plt.plot(results["ChildMobilityActive"], label="Child mobility")
-
-plt.xlabel("Step")
-plt.ylabel("Mobility")
-plt.title("Dynamic mobility levels")
-plt.ylim(0, 1)
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/mobility_policy_levels.png", dpi=300)
-
-print(
-    f"Mobility policy levels plot saved to "
-    f"{plots_dir}/mobility_policy_levels.png"
-)
-
-#plt.show()
-
-plt.figure()
-
-plt.plot(results["LockdownActive"], label="Lockdown active")
-plt.plot(results["SchoolClosedActive"], label="School closed")
-plt.plot(results["WorkClosedActive"], label="Work closed")
-
-plt.xlabel("Step")
-plt.ylabel("Status")
-plt.title("Binary dynamic policy status")
-plt.yticks([0, 1], ["Off/Open", "On/Closed"])
-plt.legend()
-plt.tight_layout()
-
-plt.savefig(f"{plots_dir}/binary_policy_status.png", dpi=300)
-
-print(
-    f"Binary policy status plot saved to "
-    f"{plots_dir}/binary_policy_status.png"
-)
-
-#plt.show()
