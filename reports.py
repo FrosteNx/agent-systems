@@ -231,3 +231,34 @@ def build_summary_lines(
     summary_lines.append(f"Log file: {log_file}")
 
     return summary_lines
+
+def save_full_simulation_summary(
+    config,
+    model,
+    metrics,
+    experiment_id,
+    timestamp,
+    actual_steps,
+    final_counts,
+    execution_time_seconds,
+    log_file,
+    data_dir,
+):
+    summary_lines = build_summary_lines(
+        config,
+        model,
+        metrics,
+        experiment_id,
+        timestamp,
+        actual_steps,
+        final_counts,
+        execution_time_seconds,
+        log_file,
+    )
+
+    summary_text = build_simulation_summary(summary_lines)
+
+    save_simulation_summary(
+        f"{data_dir}/simulation_summary.txt",
+        summary_text
+    )

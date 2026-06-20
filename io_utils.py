@@ -99,3 +99,66 @@ def setup_logging(log_file):
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(message)s"
     )
+
+def save_summary_metrics(summary_metrics, data_dir, global_summary_path):
+    summary_df = pd.DataFrame([summary_metrics])
+
+    save_dataframe(
+        summary_df,
+        f"{data_dir}/summary_metrics.csv"
+    )
+
+    append_global_summary(
+        summary_df,
+        global_summary_path
+    )
+
+    return summary_df
+
+def save_simulation_data(
+    model,
+    results,
+    data_dir,
+):
+    initial_population_df = build_population_dataframe(
+        model,
+        include_home_and_work=True
+    )
+
+    save_dataframe(
+        initial_population_df,
+        f"{data_dir}/initial_population.csv"
+    )
+
+    save_dataframe(
+        results,
+        f"{data_dir}/simulation_results.csv",
+        index=True,
+        index_label="Step"
+    )
+
+    final_population_df = build_population_dataframe(model)
+
+    save_dataframe(
+        final_population_df,
+        f"{data_dir}/final_population.csv"
+    )
+
+def save_all_outputs(
+    model,
+    results,
+    summary_metrics,
+    data_dir,
+    global_summary_path,
+):
+    save_simulation_data(
+        model,
+        results,
+        data_dir
+    )
+
+    save_summary_metrics(
+        summary_metrics,
+        data_dir,
+        global_summary_path
+    )
