@@ -3,6 +3,9 @@ import time
 
 
 def run_simulation(model, steps):
+    logging.info("Simulation started")
+    logging.info(f"Population: {len(model.schedule.agents)}")
+
     actual_steps = 0
     start_time = time.time()
 
@@ -34,5 +37,11 @@ def run_simulation(model, steps):
             break
 
     execution_time_seconds = time.time() - start_time
+
+    logging.info("Simulation finished")
+    logging.info(
+        f"Execution time: "
+        f"{execution_time_seconds:.2f} seconds"
+    )
 
     return actual_steps, execution_time_seconds

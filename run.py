@@ -1,11 +1,11 @@
 import config
 from datetime import datetime
 from pathlib import Path
-import logging
 from plots import generate_all_plots
 from reports import (
     build_summary_metrics,
     save_full_simulation_summary,
+    log_summary_metrics,
 )
 from io_utils import (
     get_next_experiment_id,
@@ -18,104 +18,95 @@ from metrics import calculate_all_metrics
 from simulation_runner import run_simulation
 from model_factory import create_model
 
-model = create_model()
+def main():
+    model = create_model()
 
-steps = config.SIMULATION_STEPS
+    steps = config.SIMULATION_STEPS
 
-print(model.count_age_groups())
+    print(model.count_age_groups())
 
-Path("outputs").mkdir(exist_ok=True)
+    Path("outputs").mkdir(exist_ok=True)
 
-global_summary_path = "outputs/all_experiments_summary.csv"
+    global_summary_path = "outputs/all_experiments_summary.csv"
 
-experiment_id = get_next_experiment_id(global_summary_path)
+    experiment_id = get_next_experiment_id(global_summary_path)
 
-timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-output_dir, plots_dir, data_dir, logs_dir = create_output_dirs(
-    experiment_id,
-    timestamp
-)
+    output_dir, plots_dir, data_dir, logs_dir = create_output_dirs(
+        experiment_id,
+        timestamp
+    )
 
-log_file = f"{logs_dir}/simulation.log"
+    log_file = f"{logs_dir}/simulation.log"
 
-setup_logging(log_file)
+    setup_logging(log_file)
 
-logging.info("Simulation started")
-logging.info(f"Scenario: {config.SCENARIO_NAME}")
-logging.info(f"Population: {config.POPULATION}")
+    save_parameters(
+        data_dir,
+        experiment_id,
+        timestamp
+    )
 
-save_parameters(
-    data_dir,
-    experiment_id,
-    timestamp
-)
+    actual_steps, execution_time_seconds = run_simulation(
+        model,
+        steps
+    )
 
-actual_steps, execution_time_seconds = run_simulation(
-    model,
-    steps
-)
+    results = model.datacollector.get_model_vars_dataframe()
 
-logging.info("Simulation finished")
-logging.info(
-    f"Execution time: "
-    f"{execution_time_seconds:.2f} seconds"
-)
+    print("Peak active cases:", model.peak_active_cases)
 
-results = model.datacollector.get_model_vars_dataframe()
+    final_counts = model.count_states()
 
-print("Peak active cases:", model.peak_active_cases)
+    metrics = calculate_all_metrics(
+        model,
+        results,
+        final_counts,
+        actual_steps,
+        config.POPULATION,
+        config.INITIAL_INFECTED,
+    )
 
-final_counts = model.count_states()
+    summary_metrics = build_summary_metrics(
+        config,
+        model,
+        metrics,
+        experiment_id,
+        timestamp,
+        output_dir,
+        log_file,
+    )
 
-metrics = calculate_all_metrics(
-    model,
-    results,
-    final_counts,
-    actual_steps,
-    config.POPULATION,
-    config.INITIAL_INFECTED,
-)
+    log_summary_metrics(summary_metrics)
 
-summary_metrics = build_summary_metrics(
-    config,
-    model,
-    metrics,
-    experiment_id,
-    timestamp,
-    output_dir,
-    log_file,
-)
+    save_all_outputs(
+        model,
+        results,
+        summary_metrics,
+        data_dir,
+        global_summary_path
+    )
 
-logging.info("Final summary metrics:")
+    save_full_simulation_summary(
+        config,
+        model,
+        metrics,
+        experiment_id,
+        timestamp,
+        actual_steps,
+        final_counts,
+        execution_time_seconds,
+        log_file,
+        data_dir,
+    )
 
-for key, value in summary_metrics.items():
-    logging.info(f"{key}: {value}")
+    generate_all_plots(
+        results,
+        plots_dir,
+        model,
+        metrics,
+    )
 
-save_all_outputs(
-    model,
-    results,
-    summary_metrics,
-    data_dir,
-    global_summary_path
-)
-
-save_full_simulation_summary(
-    config,
-    model,
-    metrics,
-    experiment_id,
-    timestamp,
-    actual_steps,
-    final_counts,
-    execution_time_seconds,
-    log_file,
-    data_dir,
-)
-
-generate_all_plots(
-    results,
-    plots_dir,
-    model,
-    metrics,
-)
+if __name__ == "__main__":
+    main()

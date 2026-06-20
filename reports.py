@@ -1,3 +1,5 @@
+import logging
+
 def save_simulation_summary(path, content):
     with open(path, "w") as file:
         file.write(content)
@@ -262,3 +264,9 @@ def save_full_simulation_summary(
         f"{data_dir}/simulation_summary.txt",
         summary_text
     )
+
+def log_summary_metrics(summary_metrics):
+    logging.info("Final summary metrics:")
+
+    for key, value in summary_metrics.items():
+        logging.info(f"{key}: {value}")
