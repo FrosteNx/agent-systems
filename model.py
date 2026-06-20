@@ -95,7 +95,123 @@ class FluModel(Model):
         self.schools = [(5, 5), (15, 15)]
         self.household_size = household_size
 
-        # disease parameters
+        self.initialize_disease_parameters(
+            infection_probability,
+            recovery_time,
+            incubation_time,
+            vaccination_rate,
+            child_rate,
+            senior_rate,
+            child_mortality_rate,
+            adult_mortality_rate,
+            senior_mortality_rate,
+            asymptomatic_rate,
+            asymptomatic_transmission_multiplier,
+            isolation_rate,
+            vaccine_effectiveness,
+            initial_infected,
+            household_transmission_multiplier,
+        )
+        self.initialize_school_policy(
+            school_closed,
+            auto_school_closure,
+            school_closure_threshold,
+            auto_school_reopen,
+            school_reopen_threshold,
+        )
+        self.initialize_lockdown_policy(
+            lockdown,
+            lockdown_mobility,
+            auto_lockdown,
+            lockdown_threshold,
+            auto_lockdown_release,
+            lockdown_release_threshold,
+        )
+        self.initialize_work_policy(
+            work_closed,
+            auto_work_closure,
+            work_closure_threshold,
+            auto_work_reopen,
+            work_reopen_threshold,
+        )
+        self.initialize_mask_policy(
+            masks_enabled,
+            mask_transmission_reduction,
+            mask_compliance,
+            auto_mask_compliance,
+            mask_compliance_threshold,
+            high_mask_compliance,
+            auto_mask_relaxation,
+            mask_relaxation_threshold,
+        )
+        self.initialize_testing_policy(
+            testing_rate,
+            detected_transmission_multiplier,
+            auto_testing_rate,
+            testing_rate_threshold,
+            high_testing_rate,
+            auto_testing_relaxation,
+            testing_relaxation_threshold,
+        )
+        self.initialize_quarantine_policy(
+            quarantine_enabled,
+            quarantine_compliance,
+            auto_quarantine_compliance,
+            quarantine_compliance_threshold,
+            high_quarantine_compliance,
+            auto_quarantine_relaxation,
+            quarantine_relaxation_threshold,
+        )
+        self.initialize_mobility_policy(
+            senior_mobility,
+            child_mobility,
+            auto_senior_mobility_reduction,
+            senior_mobility_threshold,
+            low_senior_mobility,
+            auto_senior_mobility_restore,
+            senior_mobility_restore_threshold,
+            auto_child_mobility_reduction,
+            child_mobility_threshold,
+            low_child_mobility,
+            auto_child_mobility_restore,
+            child_mobility_restore_threshold,
+        )
+        self.initialize_vaccination_policy(
+            auto_vaccination_campaign,
+            vaccination_campaign_threshold,
+            daily_vaccination_capacity,
+            prioritize_seniors_for_vaccination,
+        )
+
+        self.peak_active_cases = 0
+        self.random_seed = random_seed
+
+        random.seed(self.random_seed)
+
+        self.create_population(initial_infected)
+
+        self.datacollector = self.create_datacollector()
+
+        self.running = True
+
+    def initialize_disease_parameters(
+        self,
+        infection_probability,
+        recovery_time,
+        incubation_time,
+        vaccination_rate,
+        child_rate,
+        senior_rate,
+        child_mortality_rate,
+        adult_mortality_rate,
+        senior_mortality_rate,
+        asymptomatic_rate,
+        asymptomatic_transmission_multiplier,
+        isolation_rate,
+        vaccine_effectiveness,
+        initial_infected,
+        household_transmission_multiplier,
+    ):
         self.infection_probability = infection_probability
         self.recovery_time = recovery_time
         self.incubation_time = incubation_time
@@ -109,17 +225,34 @@ class FluModel(Model):
         self.asymptomatic_transmission_multiplier = asymptomatic_transmission_multiplier
         self.isolation_rate = isolation_rate
         self.vaccine_effectiveness = vaccine_effectiveness
+
         self.new_infections = 0
         self.total_infections = initial_infected
         self.household_transmission_multiplier = household_transmission_multiplier
+
         self.household_infections = 0
         self.community_infections = 0
         self.home_infections = 0
         self.school_infections = 0
         self.work_infections = 0
         self.other_infections = 0
-        self.senior_mobility = senior_mobility
-        self.child_mobility = child_mobility
+
+        self.total_asymptomatic_infections = 0
+        self.child_deaths = 0
+        self.adult_deaths = 0
+        self.senior_deaths = 0
+        self.child_infections = 0
+        self.adult_infections = 0
+        self.senior_infections = 0
+
+    def initialize_school_policy(
+        self,
+        school_closed,
+        auto_school_closure,
+        school_closure_threshold,
+        auto_school_reopen,
+        school_reopen_threshold,
+    ):
         self.school_closed = school_closed
         self.auto_school_closure = auto_school_closure
         self.school_closure_threshold = school_closure_threshold
@@ -129,7 +262,16 @@ class FluModel(Model):
         self.school_reopen_threshold = school_reopen_threshold
         self.school_closure_end_step = None
         self.school_closure_count = 0
-        self.work_closed = work_closed
+
+    def initialize_lockdown_policy(
+        self,
+        lockdown,
+        lockdown_mobility,
+        auto_lockdown,
+        lockdown_threshold,
+        auto_lockdown_release,
+        lockdown_release_threshold,
+    ):
         self.lockdown = lockdown
         self.lockdown_mobility = lockdown_mobility
         self.lockdown_active = lockdown
@@ -140,54 +282,16 @@ class FluModel(Model):
         self.auto_lockdown_release = auto_lockdown_release
         self.lockdown_activation_count = 0
         self.lockdown_release_threshold = lockdown_release_threshold
-        self.masks_enabled = masks_enabled
-        self.mask_transmission_reduction = mask_transmission_reduction
-        self.mask_compliance = mask_compliance
-        self.mask_protected_contacts = 0
-        self.quarantine_enabled = quarantine_enabled
-        self.quarantine_compliance = quarantine_compliance
-        self.quarantined_agents = 0
-        self.testing_rate = testing_rate
-        self.detected_transmission_multiplier = detected_transmission_multiplier
-        self.total_detected_infections = 0
-        self.total_quarantined_people = 0
-        self.total_asymptomatic_infections = 0
-        self.child_deaths = 0
-        self.adult_deaths = 0
-        self.senior_deaths = 0
-        self.child_infections = 0
-        self.adult_infections = 0
-        self.senior_infections = 0
-        self.auto_mask_compliance = auto_mask_compliance
-        self.mask_compliance_threshold = mask_compliance_threshold
-        self.base_mask_compliance = mask_compliance
-        self.high_mask_compliance = high_mask_compliance
-        self.mask_compliance_active = mask_compliance
-        self.auto_mask_relaxation = auto_mask_relaxation
-        self.mask_relaxation_threshold = mask_relaxation_threshold
-        self.mask_compliance_start_step = None
-        self.mask_compliance_end_step = None
-        self.mask_compliance_activation_count = 0
-        self.auto_testing_rate = auto_testing_rate
-        self.testing_rate_threshold = testing_rate_threshold
-        self.base_testing_rate = testing_rate
-        self.high_testing_rate = high_testing_rate
-        self.testing_rate_active = testing_rate
-        self.auto_testing_relaxation = auto_testing_relaxation
-        self.testing_relaxation_threshold = testing_relaxation_threshold
-        self.testing_rate_start_step = None
-        self.testing_rate_end_step = None
-        self.testing_rate_activation_count = 0
-        self.auto_quarantine_compliance = auto_quarantine_compliance
-        self.quarantine_compliance_threshold = quarantine_compliance_threshold
-        self.base_quarantine_compliance = quarantine_compliance
-        self.high_quarantine_compliance = high_quarantine_compliance
-        self.quarantine_compliance_active = quarantine_compliance
-        self.auto_quarantine_relaxation = auto_quarantine_relaxation
-        self.quarantine_relaxation_threshold = quarantine_relaxation_threshold
-        self.quarantine_compliance_start_step = None
-        self.quarantine_compliance_end_step = None
-        self.quarantine_compliance_activation_count = 0
+
+    def initialize_work_policy(
+        self,
+        work_closed,
+        auto_work_closure,
+        work_closure_threshold,
+        auto_work_reopen,
+        work_reopen_threshold,
+    ):
+        self.work_closed = work_closed
         self.auto_work_closure = auto_work_closure
         self.work_closure_threshold = work_closure_threshold
         self.work_closed_active = work_closed
@@ -196,6 +300,106 @@ class FluModel(Model):
         self.work_reopen_threshold = work_reopen_threshold
         self.work_closure_end_step = None
         self.work_closure_count = 0
+
+    def initialize_mask_policy(
+        self,
+        masks_enabled,
+        mask_transmission_reduction,
+        mask_compliance,
+        auto_mask_compliance,
+        mask_compliance_threshold,
+        high_mask_compliance,
+        auto_mask_relaxation,
+        mask_relaxation_threshold,
+    ):
+        self.masks_enabled = masks_enabled
+        self.mask_transmission_reduction = mask_transmission_reduction
+        self.mask_compliance = mask_compliance
+        self.mask_protected_contacts = 0
+
+        self.auto_mask_compliance = auto_mask_compliance
+        self.mask_compliance_threshold = mask_compliance_threshold
+        self.base_mask_compliance = mask_compliance
+        self.high_mask_compliance = high_mask_compliance
+        self.mask_compliance_active = mask_compliance
+
+        self.auto_mask_relaxation = auto_mask_relaxation
+        self.mask_relaxation_threshold = mask_relaxation_threshold
+        self.mask_compliance_start_step = None
+        self.mask_compliance_end_step = None
+        self.mask_compliance_activation_count = 0
+
+    def initialize_testing_policy(
+        self,
+        testing_rate,
+        detected_transmission_multiplier,
+        auto_testing_rate,
+        testing_rate_threshold,
+        high_testing_rate,
+        auto_testing_relaxation,
+        testing_relaxation_threshold,
+    ):
+        self.testing_rate = testing_rate
+        self.detected_transmission_multiplier = detected_transmission_multiplier
+        self.total_detected_infections = 0
+
+        self.auto_testing_rate = auto_testing_rate
+        self.testing_rate_threshold = testing_rate_threshold
+        self.base_testing_rate = testing_rate
+        self.high_testing_rate = high_testing_rate
+        self.testing_rate_active = testing_rate
+
+        self.auto_testing_relaxation = auto_testing_relaxation
+        self.testing_relaxation_threshold = testing_relaxation_threshold
+        self.testing_rate_start_step = None
+        self.testing_rate_end_step = None
+        self.testing_rate_activation_count = 0
+
+    def initialize_quarantine_policy(
+        self,
+        quarantine_enabled,
+        quarantine_compliance,
+        auto_quarantine_compliance,
+        quarantine_compliance_threshold,
+        high_quarantine_compliance,
+        auto_quarantine_relaxation,
+        quarantine_relaxation_threshold,
+    ):
+        self.quarantine_enabled = quarantine_enabled
+        self.quarantine_compliance = quarantine_compliance
+        self.quarantined_agents = 0
+        self.total_quarantined_people = 0
+
+        self.auto_quarantine_compliance = auto_quarantine_compliance
+        self.quarantine_compliance_threshold = quarantine_compliance_threshold
+        self.base_quarantine_compliance = quarantine_compliance
+        self.high_quarantine_compliance = high_quarantine_compliance
+        self.quarantine_compliance_active = quarantine_compliance
+
+        self.auto_quarantine_relaxation = auto_quarantine_relaxation
+        self.quarantine_relaxation_threshold = quarantine_relaxation_threshold
+        self.quarantine_compliance_start_step = None
+        self.quarantine_compliance_end_step = None
+        self.quarantine_compliance_activation_count = 0
+
+    def initialize_mobility_policy(
+        self,
+        senior_mobility,
+        child_mobility,
+        auto_senior_mobility_reduction,
+        senior_mobility_threshold,
+        low_senior_mobility,
+        auto_senior_mobility_restore,
+        senior_mobility_restore_threshold,
+        auto_child_mobility_reduction,
+        child_mobility_threshold,
+        low_child_mobility,
+        auto_child_mobility_restore,
+        child_mobility_restore_threshold,
+    ):
+        self.senior_mobility = senior_mobility
+        self.child_mobility = child_mobility
+
         self.auto_senior_mobility_reduction = auto_senior_mobility_reduction
         self.senior_mobility_threshold = senior_mobility_threshold
         self.base_senior_mobility = senior_mobility
@@ -206,6 +410,7 @@ class FluModel(Model):
         self.senior_mobility_reduction_start_step = None
         self.senior_mobility_reduction_end_step = None
         self.senior_mobility_reduction_count = 0
+
         self.auto_child_mobility_reduction = auto_child_mobility_reduction
         self.child_mobility_threshold = child_mobility_threshold
         self.base_child_mobility = child_mobility
@@ -216,6 +421,14 @@ class FluModel(Model):
         self.child_mobility_reduction_start_step = None
         self.child_mobility_reduction_end_step = None
         self.child_mobility_reduction_count = 0
+
+    def initialize_vaccination_policy(
+        self,
+        auto_vaccination_campaign,
+        vaccination_campaign_threshold,
+        daily_vaccination_capacity,
+        prioritize_seniors_for_vaccination,
+    ):
         self.auto_vaccination_campaign = auto_vaccination_campaign
         self.vaccination_campaign_threshold = vaccination_campaign_threshold
         self.daily_vaccination_capacity = daily_vaccination_capacity
@@ -231,13 +444,8 @@ class FluModel(Model):
         self.vaccination_campaign_activation_count = 0
         self.initial_vaccinations = 0
         self.vaccinated_breakthrough_infections = 0
-        
 
-        self.peak_active_cases = 0
-        self.random_seed = random_seed
-
-        random.seed(self.random_seed)
-
+    def create_households(self):
         households = []
 
         for h in range((self.num_agents // self.household_size) + 1):
@@ -249,43 +457,54 @@ class FluModel(Model):
                 "home": (home_x, home_y)
             })
 
+        return households
+    
+    def create_agent(self, agent_id, initial_infected):
+        if agent_id < initial_infected:
+            state = "Infected"
+        elif random.random() < self.vaccination_rate:
+            state = "Vaccinated"
+            self.initial_vaccinations += 1
+        else:
+            state = "Susceptible"
+
+        r = self.random.random()
+
+        if r < self.child_rate:
+            age_group = "child"
+        elif r < self.child_rate + self.senior_rate:
+            age_group = "senior"
+        else:
+            age_group = "adult"
+
+        return PersonAgent(agent_id, self, state, age_group)
+    
+    def assign_agent_locations(self, agent, household):
+        agent.home = household["home"]
+        agent.household_id = household["id"]
+
+        if agent.age_group == "child":
+            agent.work = self.random.choice(self.schools)
+        else:
+            work_x = self.random.randrange(self.grid.width)
+            work_y = self.random.randrange(self.grid.height)
+            agent.work = (work_x, work_y)
+
+    def create_population(self, initial_infected):
+        households = self.create_households()
+
         for i in range(self.num_agents):
-            if i < initial_infected:
-                state = "Infected"
-            elif random.random() < self.vaccination_rate:
-                state = "Vaccinated"
-                self.initial_vaccinations += 1
-            else:
-                state = "Susceptible"
-
-            r = self.random.random()
-
-            if r < self.child_rate:
-                age_group = "child"
-            elif r < self.child_rate + self.senior_rate:
-                age_group = "senior"
-            else:
-                age_group = "adult"
-
-            agent = PersonAgent(i, self, state, age_group)
+            agent = self.create_agent(i, initial_infected)
 
             self.schedule.add(agent)
 
             household = households[i // self.household_size]
-
-            agent.home = household["home"]
-            agent.household_id = household["id"]
-
-            if agent.age_group == "child":
-                agent.work = self.random.choice(self.schools)
-            else:
-                work_x = self.random.randrange(self.grid.width)
-                work_y = self.random.randrange(self.grid.height)
-                agent.work = (work_x, work_y)
+            self.assign_agent_locations(agent, household)
 
             self.grid.place_agent(agent, agent.home)
 
-        self.datacollector = DataCollector(
+    def create_datacollector(self):
+        return DataCollector(
             model_reporters={
                 "Susceptible": lambda m: m.count_states()["Susceptible"],
                 "Exposed": lambda m: m.count_states()["Exposed"],
@@ -294,11 +513,7 @@ class FluModel(Model):
                 "Dead": lambda m: m.count_states()["Dead"],
                 "Asymptomatic": lambda m: m.count_states()["Asymptomatic"],
                 "Vaccinated": lambda m: m.count_states()["Vaccinated"],
-                "ActiveCases": lambda m: (
-                    m.count_states()["Exposed"]
-                    + m.count_states()["Infected"]
-                    + m.count_states()["Asymptomatic"]
-                ),
+                "ActiveCases": lambda m: m.get_active_cases(),
                 "NewInfections": lambda m: m.new_infections,
                 "Rt": lambda m: (
                     m.new_infections /
@@ -341,8 +556,6 @@ class FluModel(Model):
             }
         )
 
-        self.running = True
-
     def get_active_cases(self):
         counts = self.count_states()
 
@@ -351,6 +564,28 @@ class FluModel(Model):
             + counts["Infected"]
             + counts["Asymptomatic"]
         )
+    
+    def count_states(self):
+        counts = {
+            "Susceptible": 0,
+            "Exposed": 0,
+            "Infected": 0,
+            "Recovered": 0,
+            "Dead": 0,
+            "Asymptomatic": 0,
+            "Vaccinated": 0,
+        }
+
+        for agent in self.schedule.agents:
+            counts[agent.state] += 1
+
+        return counts
+    
+    def count_age_groups(self):
+        counts = {"child": 0, "adult": 0, "senior": 0}
+        for agent in self.schedule.agents:
+            counts[agent.age_group] += 1
+        return counts
     
     def update_lockdown_policy(self, active_cases):
         if self.auto_lockdown:
@@ -525,28 +760,6 @@ class FluModel(Model):
         self.update_peak_active_cases()
 
         self.datacollector.collect(self)
-
-    def count_states(self):
-        counts = {
-            "Susceptible": 0,
-            "Exposed": 0,
-            "Infected": 0,
-            "Recovered": 0,
-            "Dead": 0,
-            "Asymptomatic": 0,
-            "Vaccinated": 0,
-        }
-
-        for agent in self.schedule.agents:
-            counts[agent.state] += 1
-
-        return counts
-    
-    def count_age_groups(self):
-        counts = {"child": 0, "adult": 0, "senior": 0}
-        for agent in self.schedule.agents:
-            counts[agent.age_group] += 1
-        return counts
     
     def run_vaccination_campaign(self):
         if not self.vaccination_campaign_active:
