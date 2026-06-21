@@ -92,7 +92,13 @@ class FluModel(Model):
         self.grid = MultiGrid(width, height, torus=True)
         self.schedule = RandomActivation(self)
         self.step_count = 0
-        self.schools = [(5, 5), (15, 15)]
+        self.schools = [
+    (10, 10),
+    (25, 25),
+    (45, 45),
+    (65, 65),
+    (75, 20),
+]
         self.household_size = household_size
 
         self.initialize_disease_parameters(
