@@ -5,7 +5,7 @@ def save_plot(path):
     plt.tight_layout()
     plt.savefig(path, dpi=300)
     print(f"Saved: {path}")
-    plt.show()
+    #plt.show()
 
 def plot_epidemic_curve(results, plots_dir):
     plt.figure()

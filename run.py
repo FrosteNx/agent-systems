@@ -17,6 +17,7 @@ from io_utils import (
 from metrics import calculate_all_metrics
 from simulation_runner import run_simulation
 from model_factory import create_model
+from dashboard import generate_dashboard
 
 def main():
     model = create_model()
@@ -106,6 +107,11 @@ def main():
         plots_dir,
         model,
         metrics,
+    )
+
+    generate_dashboard(
+        output_dir,
+        summary_metrics
     )
 
 if __name__ == "__main__":
