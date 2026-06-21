@@ -1,0 +1,881 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flu Simulation Dashboard</title>
+
+<style>
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 30px;
+    color: #222;
+}
+
+h1 {
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.nav {
+    background: white;
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    line-height: 2;
+}
+
+.nav strong {
+    margin-right: 8px;
+}
+
+.nav a {
+    text-decoration: none;
+    color: #1565c0;
+    font-weight: 600;
+    margin-right: 16px;
+}
+
+.nav a:hover {
+    text-decoration: underline;
+}
+
+.card {
+    background: white;
+    padding: 24px;
+    margin-bottom: 28px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.metric-box {
+    background: #fafafa;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.metric-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.metric-value {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 6px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+th {
+    text-align: left;
+    background-color: #f0f0f0;
+}
+
+th,
+td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #dddddd;
+    vertical-align: top;
+}
+
+td:nth-child(1),
+td:nth-child(3) {
+    font-weight: 600;
+    color: #333;
+    width: 28%;
+}
+
+td:nth-child(2),
+td:nth-child(4) {
+    width: 22%;
+    font-family: Consolas, monospace;
+}
+
+tr:hover {
+    background-color: #fafafa;
+}
+
+.section-title {
+    margin-top: 40px;
+    margin-bottom: 16px;
+}
+
+.small-note {
+    color: #777;
+    font-size: 13px;
+}
+
+.stats-section h3,
+.plot-section h3 {
+    margin-top: 0;
+}
+
+.plot-section {
+    margin-bottom: 35px;
+}
+
+.plot-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.plot-card {
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.plot-card h3 {
+    margin-top: 0;
+    margin-bottom: 14px;
+    font-size: 18px;
+}
+
+.plot-card img {
+    width: 100%;
+    max-height: 420px;
+    object-fit: contain;
+    display: block;
+    border: 1px solid #eeeeee;
+    border-radius: 8px;
+    background: white;
+}
+
+.back-to-top {
+    display: inline-block;
+    margin-top: 10px;
+    color: #1565c0;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.back-to-top:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+    .plot-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body {
+        padding: 16px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    .nav a {
+        display: inline-block;
+        margin-bottom: 4px;
+    }
+}
+</style>
+
+</head>
+
+<body id="top">
+
+<h1>Flu Simulation Dashboard</h1>
+<div class="subtitle">Automatically generated simulation report</div>
+
+
+    <div class="nav">
+        <strong>Main:</strong>
+        <a href="#key-metrics">Key Metrics</a>
+        <a href="#all-statistics">Statistics</a>
+        <a href="#all-plots">Plots</a>
+
+        <br>
+
+        <strong>Stats:</strong>
+        <a href="#stats-experiment">Experiment</a>
+<a href="#stats-epidemic-outcomes">Epidemic Outcomes</a>
+<a href="#stats-transmission">Transmission</a>
+<a href="#stats-interventions">Interventions</a>
+<a href="#stats-vaccination">Vaccination</a>
+<a href="#stats-dynamic-policies">Dynamic Policies</a>
+<a href="#stats-mobility-policies">Mobility Policies</a>
+<a href="#stats-age-groups">Age Groups</a>
+
+        <br>
+
+        <strong>Plots:</strong>
+        <a href="#plots-epidemic">Epidemic</a>
+<a href="#plots-policies">Policies</a>
+<a href="#plots-mobility">Mobility</a>
+<a href="#plots-transmission">Transmission</a>
+<a href="#plots-age-groups">Age Groups</a>
+<a href="#plots-vaccination">Vaccination</a>
+    </div>
+    
+
+<div class="card" id="key-metrics">
+    <h2>Key Metrics</h2>
+
+    <div class="metric-grid">
+        <div class="metric-box">
+            <div class="metric-label">Scenario</div>
+            <div class="metric-value">High mask compliance</div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-label">Population</div>
+            <div class="metric-value">5000</div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-label">Total Infections</div>
+            <div class="metric-value">194</div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-label">Peak Active Cases</div>
+            <div class="metric-value">114</div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-label">Attack Rate</div>
+            <div class="metric-value">3.88%</div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-label">Case Fatality Rate</div>
+            <div class="metric-value">1.55%</div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-label">Average Rt</div>
+            <div class="metric-value">0.01</div>
+        </div>
+
+        <div class="metric-box">
+            <div class="metric-label">Vaccination Coverage</div>
+            <div class="metric-value">38.42%</div>
+        </div>
+    </div>
+</div>
+
+<h2 class="section-title" id="all-statistics">Statistics</h2>
+<p class="small-note">Metrics are grouped by topic and displayed two per row.</p>
+
+
+        <div class="card stats-section" id="stats-experiment">
+            <h3>Experiment</h3>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                
+        <tr>
+            <td>Experiment Id</td>
+            <td>28</td>
+            <td>Timestamp</td>
+            <td>2026-06-21_20-17-18</td>
+        </tr>
+        
+
+        <tr>
+            <td>Scenario Name</td>
+            <td>High mask compliance</td>
+            <td>Output Dir</td>
+            <td>outputs/experiment_028_2026-06-21_20-17-18</td>
+        </tr>
+        
+
+        <tr>
+            <td>Log File</td>
+            <td>outputs/experiment_028_2026-06-21_20-17-18/logs/simulation.log</td>
+            <td>Population</td>
+            <td>5000</td>
+        </tr>
+        
+
+        <tr>
+            <td>Initial Infected</td>
+            <td>18</td>
+            <td></td>
+            <td></td>
+        </tr>
+        
+            </table>
+        </div>
+        
+        <div class="card stats-section" id="stats-epidemic-outcomes">
+            <h3>Epidemic Outcomes</h3>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                
+        <tr>
+            <td>Total Infections</td>
+            <td>194</td>
+            <td>Secondary Infections</td>
+            <td>176</td>
+        </tr>
+        
+
+        <tr>
+            <td>Peak Active Cases</td>
+            <td>114</td>
+            <td>Attack Rate</td>
+            <td>0.0388</td>
+        </tr>
+        
+
+        <tr>
+            <td>Case Fatality Rate</td>
+            <td>0.0155</td>
+            <td>Average Rt</td>
+            <td>0.0097</td>
+        </tr>
+        
+            </table>
+        </div>
+        
+        <div class="card stats-section" id="stats-transmission">
+            <h3>Transmission</h3>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                
+        <tr>
+            <td>Total Household Infections</td>
+            <td>14</td>
+            <td>Total Community Infections</td>
+            <td>162</td>
+        </tr>
+        
+
+        <tr>
+            <td>Household Infection Share</td>
+            <td>0.0795</td>
+            <td>Community Infection Share</td>
+            <td>0.9205</td>
+        </tr>
+        
+
+        <tr>
+            <td>Household Share Sum</td>
+            <td>1.0000</td>
+            <td>Total Home Infections</td>
+            <td>66</td>
+        </tr>
+        
+
+        <tr>
+            <td>Total School Infections</td>
+            <td>104</td>
+            <td>Total Work Infections</td>
+            <td>6</td>
+        </tr>
+        
+
+        <tr>
+            <td>Total Other Infections</td>
+            <td>0</td>
+            <td>Home Infection Share</td>
+            <td>0.3750</td>
+        </tr>
+        
+
+        <tr>
+            <td>School Infection Share</td>
+            <td>0.5909</td>
+            <td>Work Infection Share</td>
+            <td>0.0341</td>
+        </tr>
+        
+
+        <tr>
+            <td>Other Infection Share</td>
+            <td>0.0000</td>
+            <td>Location Share Sum</td>
+            <td>1.0000</td>
+        </tr>
+        
+            </table>
+        </div>
+        
+        <div class="card stats-section" id="stats-interventions">
+            <h3>Interventions</h3>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                
+        <tr>
+            <td>Total Quarantined Agents</td>
+            <td>268</td>
+            <td>Quarantine Rate</td>
+            <td>0.0722</td>
+        </tr>
+        
+
+        <tr>
+            <td>Detection Rate</td>
+            <td>0.1082</td>
+            <td>Undetected Infections</td>
+            <td>173</td>
+        </tr>
+        
+
+        <tr>
+            <td>Undetected Rate</td>
+            <td>0.8918</td>
+            <td>Asymptomatic Rate Observed</td>
+            <td>0.2320</td>
+        </tr>
+        
+            </table>
+        </div>
+        
+        <div class="card stats-section" id="stats-vaccination">
+            <h3>Vaccination</h3>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                
+        <tr>
+            <td>Vaccination Campaign Duration</td>
+            <td>0</td>
+            <td>Total Vaccinations</td>
+            <td>1921</td>
+        </tr>
+        
+
+        <tr>
+            <td>Vaccination Coverage</td>
+            <td>0.3842</td>
+            <td>Breakthrough Infection Rate</td>
+            <td>0.0172</td>
+        </tr>
+        
+
+        <tr>
+            <td>Vaccinated Infection Rate</td>
+            <td>0.0172</td>
+            <td>Unvaccinated Infection Rate</td>
+            <td>0.0523</td>
+        </tr>
+        
+
+        <tr>
+            <td>Observed Vaccine Effectiveness</td>
+            <td>0.6715</td>
+            <td>Child Vaccination Coverage</td>
+            <td>0.3620</td>
+        </tr>
+        
+
+        <tr>
+            <td>Adult Vaccination Coverage</td>
+            <td>0.3776</td>
+            <td>Senior Vaccination Coverage</td>
+            <td>0.3944</td>
+        </tr>
+        
+            </table>
+        </div>
+        
+        <div class="card stats-section" id="stats-dynamic-policies">
+            <h3>Dynamic Policies</h3>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                
+        <tr>
+            <td>Lockdown Duration</td>
+            <td>0</td>
+            <td>School Closure Duration</td>
+            <td>281</td>
+        </tr>
+        
+
+        <tr>
+            <td>Work Closure Duration</td>
+            <td>0</td>
+            <td>Mask Compliance Duration</td>
+            <td>0</td>
+        </tr>
+        
+
+        <tr>
+            <td>Testing Rate Duration</td>
+            <td>0</td>
+            <td>Quarantine Compliance Duration</td>
+            <td>0</td>
+        </tr>
+        
+            </table>
+        </div>
+        
+        <div class="card stats-section" id="stats-mobility-policies">
+            <h3>Mobility Policies</h3>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                
+        <tr>
+            <td>Senior Mobility Reduction Duration</td>
+            <td>0</td>
+            <td>Child Mobility Reduction Duration</td>
+            <td>281</td>
+        </tr>
+        
+            </table>
+        </div>
+        
+        <div class="card stats-section" id="stats-age-groups">
+            <h3>Age Groups</h3>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                
+        <tr>
+            <td>Child Attack Rate</td>
+            <td>0.1171</td>
+            <td>Adult Attack Rate</td>
+            <td>0.0129</td>
+        </tr>
+        
+
+        <tr>
+            <td>Senior Attack Rate</td>
+            <td>0.0177</td>
+            <td>Child Death Rate</td>
+            <td>0.0000</td>
+        </tr>
+        
+
+        <tr>
+            <td>Adult Death Rate</td>
+            <td>0.0003</td>
+            <td>Senior Death Rate</td>
+            <td>0.0021</td>
+        </tr>
+        
+            </table>
+        </div>
+        
+        <div class="card stats-section" id="stats-other">
+            <h3>Other</h3>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Metric</th>
+                    <th>Value</th>
+                </tr>
+                
+        <tr>
+            <td>Total Mask Protected Contacts</td>
+            <td>175544</td>
+            <td>Batch Id</td>
+            <td>batch_2026-06-21_20-17-18</td>
+        </tr>
+        
+
+        <tr>
+            <td>Scenario Index</td>
+            <td>1</td>
+            <td>Scenario Run</td>
+            <td>1</td>
+        </tr>
+        
+
+        <tr>
+            <td>Random Seed</td>
+            <td>42</td>
+            <td>Scenario Description</td>
+            <td>High mask compliance and stronger mask protection.</td>
+        </tr>
+        
+            </table>
+        </div>
+        
+
+<h2 class="section-title" id="all-plots">Plots</h2>
+<p class="small-note">Plots are grouped by topic. All PNG files from the plots directory are included.</p>
+
+
+        <section class="plot-section" id="plots-epidemic">
+            <h3>Epidemic</h3>
+
+            <div class="plot-grid">
+                
+    <div class="plot-card" id="plot-epidemic-curve">
+        <h3>Epidemic Curve</h3>
+        <img src="plots/epidemic_curve.png" alt="Epidemic Curve">
+    </div>
+    
+
+    <div class="plot-card" id="plot-rt-curve">
+        <h3>Rt Curve</h3>
+        <img src="plots/rt_curve.png" alt="Rt Curve">
+    </div>
+    
+
+    <div class="plot-card" id="plot-infections-curve">
+        <h3>Infections Curve</h3>
+        <img src="plots/infections_curve.png" alt="Infections Curve">
+    </div>
+    
+
+    <div class="plot-card" id="plot-quarantine-curve">
+        <h3>Quarantine Curve</h3>
+        <img src="plots/quarantine_curve.png" alt="Quarantine Curve">
+    </div>
+    
+            </div>
+        </section>
+        
+        <section class="plot-section" id="plots-policies">
+            <h3>Policies</h3>
+
+            <div class="plot-grid">
+                
+    <div class="plot-card" id="plot-binary-policy-status">
+        <h3>Binary Policy Status</h3>
+        <img src="plots/binary_policy_status.png" alt="Binary Policy Status">
+    </div>
+    
+
+    <div class="plot-card" id="plot-continuous-policy-levels">
+        <h3>Continuous Policy Levels</h3>
+        <img src="plots/continuous_policy_levels.png" alt="Continuous Policy Levels">
+    </div>
+    
+
+    <div class="plot-card" id="plot-policy-status">
+        <h3>Policy Status</h3>
+        <img src="plots/policy_status.png" alt="Policy Status">
+    </div>
+    
+
+    <div class="plot-card" id="plot-lockdown-status">
+        <h3>Lockdown Status</h3>
+        <img src="plots/lockdown_status.png" alt="Lockdown Status">
+    </div>
+    
+
+    <div class="plot-card" id="plot-lockdown-thresholds-curve">
+        <h3>Lockdown Thresholds Curve</h3>
+        <img src="plots/lockdown_thresholds_curve.png" alt="Lockdown Thresholds Curve">
+    </div>
+    
+
+    <div class="plot-card" id="plot-school-closure-status">
+        <h3>School Closure Status</h3>
+        <img src="plots/school_closure_status.png" alt="School Closure Status">
+    </div>
+    
+
+    <div class="plot-card" id="plot-work-closure-status">
+        <h3>Work Closure Status</h3>
+        <img src="plots/work_closure_status.png" alt="Work Closure Status">
+    </div>
+    
+
+    <div class="plot-card" id="plot-mask-compliance-curve">
+        <h3>Mask Compliance Curve</h3>
+        <img src="plots/mask_compliance_curve.png" alt="Mask Compliance Curve">
+    </div>
+    
+
+    <div class="plot-card" id="plot-testing-rate-curve">
+        <h3>Testing Rate Curve</h3>
+        <img src="plots/testing_rate_curve.png" alt="Testing Rate Curve">
+    </div>
+    
+
+    <div class="plot-card" id="plot-quarantine-compliance-curve">
+        <h3>Quarantine Compliance Curve</h3>
+        <img src="plots/quarantine_compliance_curve.png" alt="Quarantine Compliance Curve">
+    </div>
+    
+            </div>
+        </section>
+        
+        <section class="plot-section" id="plots-mobility">
+            <h3>Mobility</h3>
+
+            <div class="plot-grid">
+                
+    <div class="plot-card" id="plot-mobility-policy-levels">
+        <h3>Mobility Policy Levels</h3>
+        <img src="plots/mobility_policy_levels.png" alt="Mobility Policy Levels">
+    </div>
+    
+
+    <div class="plot-card" id="plot-senior-mobility-curve">
+        <h3>Senior Mobility Curve</h3>
+        <img src="plots/senior_mobility_curve.png" alt="Senior Mobility Curve">
+    </div>
+    
+            </div>
+        </section>
+        
+        <section class="plot-section" id="plots-transmission">
+            <h3>Transmission</h3>
+
+            <div class="plot-grid">
+                
+    <div class="plot-card" id="plot-location-infections-bar">
+        <h3>Location Infections Bar</h3>
+        <img src="plots/location_infections_bar.png" alt="Location Infections Bar">
+    </div>
+    
+
+    <div class="plot-card" id="plot-location-infection-share-bar">
+        <h3>Location Infection Share Bar</h3>
+        <img src="plots/location_infection_share_bar.png" alt="Location Infection Share Bar">
+    </div>
+    
+
+    <div class="plot-card" id="plot-location-infection-share-pie">
+        <h3>Location Infection Share Pie</h3>
+        <img src="plots/location_infection_share_pie.png" alt="Location Infection Share Pie">
+    </div>
+    
+
+    <div class="plot-card" id="plot-transmission-type-bar">
+        <h3>Transmission Type Bar</h3>
+        <img src="plots/transmission_type_bar.png" alt="Transmission Type Bar">
+    </div>
+    
+
+    <div class="plot-card" id="plot-transmission-type-share-pie">
+        <h3>Transmission Type Share Pie</h3>
+        <img src="plots/transmission_type_share_pie.png" alt="Transmission Type Share Pie">
+    </div>
+    
+            </div>
+        </section>
+        
+        <section class="plot-section" id="plots-age-groups">
+            <h3>Age Groups</h3>
+
+            <div class="plot-grid">
+                
+    <div class="plot-card" id="plot-infections-by-age-bar">
+        <h3>Infections By Age Bar</h3>
+        <img src="plots/infections_by_age_bar.png" alt="Infections By Age Bar">
+    </div>
+    
+
+    <div class="plot-card" id="plot-attack-rate-by-age-bar">
+        <h3>Attack Rate By Age Bar</h3>
+        <img src="plots/attack_rate_by_age_bar.png" alt="Attack Rate By Age Bar">
+    </div>
+    
+
+    <div class="plot-card" id="plot-deaths-by-age-bar">
+        <h3>Deaths By Age Bar</h3>
+        <img src="plots/deaths_by_age_bar.png" alt="Deaths By Age Bar">
+    </div>
+    
+
+    <div class="plot-card" id="plot-death-rate-by-age-bar">
+        <h3>Death Rate By Age Bar</h3>
+        <img src="plots/death_rate_by_age_bar.png" alt="Death Rate By Age Bar">
+    </div>
+    
+
+    <div class="plot-card" id="plot-vaccination-coverage-by-age-bar">
+        <h3>Vaccination Coverage By Age Bar</h3>
+        <img src="plots/vaccination_coverage_by_age_bar.png" alt="Vaccination Coverage By Age Bar">
+    </div>
+    
+            </div>
+        </section>
+        
+        <section class="plot-section" id="plots-vaccination">
+            <h3>Vaccination</h3>
+
+            <div class="plot-grid">
+                
+    <div class="plot-card" id="plot-vaccination-campaign-curve">
+        <h3>Vaccination Campaign Curve</h3>
+        <img src="plots/vaccination_campaign_curve.png" alt="Vaccination Campaign Curve">
+    </div>
+    
+
+    <div class="plot-card" id="plot-campaign-vaccinations-by-age-bar">
+        <h3>Campaign Vaccinations By Age Bar</h3>
+        <img src="plots/campaign_vaccinations_by_age_bar.png" alt="Campaign Vaccinations By Age Bar">
+    </div>
+    
+            </div>
+        </section>
+        
+
+<a class="back-to-top" href="#top">Back to top ↑</a>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+Flu simulation summary
+======================
+
+General information
+-------------------
+Experiment ID: 72
+Timestamp: 2026-06-21_21-51-52
+Scenario: Weak testing and quarantine
+Population: 5000
+Max steps: 3000
+Actual steps: 1098
+
+Epidemic outcomes
+-----------------
+Peak active cases: 112
+Total infections: 360
+Initial infections: 18
+Secondary infections: 342
+Attack rate: 7.20%
+Case fatality rate: 0.28%
+Average Rt: 0.01
+
+Transmission analysis
+---------------------
+Household infections: 30
+Household infection share: 8.77%
+Community infections: 312
+Community infection share: 91.23%
+Household/community share sum: 100.00%
+Home infections: 113
+Home infection share: 33.04%
+School infections: 218
+School infection share: 63.74%
+Work infections: 11
+Work infection share: 3.22%
+Other infections: 0
+Other infection share: 0.00%
+Location share sum: 100.00%
+
+Intervention outcomes
+---------------------
+Masks enabled: True
+Mask compliance: 15.00%
+Mask transmission reduction: 35.00%
+Mask protected contacts: 54252
+Quarantine enabled: True
+Quarantine compliance: 10.00%
+Total quarantined agent-steps: 41
+Total quarantined people: 6
+Quarantine rate: 1.67%
+Total detected infections: 12
+Detection rate: 3.33%
+Undetected infections: 348
+Undetected rate: 96.67%
+Total asymptomatic infections: 95
+Observed asymptomatic rate: 26.39%
+
+Vaccination campaign
+--------------------
+Auto vaccination campaign: False
+Vaccination campaign threshold: 250
+Daily vaccination capacity: 10
+Vaccination campaign start step: None
+Vaccination campaign end step: None
+Vaccination campaign duration: 0
+Initial vaccinations: 1905
+Total vaccinations: 1905
+Vaccination coverage: 38.10%
+Total campaign vaccinations: 0
+Vaccination campaign activation count: 0
+Breakthrough infections: 96
+Breakthrough infection rate: 5.04%
+Vaccinated infection rate: 5.04%
+Unvaccinated infection rate: 8.53%
+Observed vaccine effectiveness: 40.92%
+Child campaign vaccinations: 0
+Adult campaign vaccinations: 0
+Senior campaign vaccinations: 0
+Child vaccination coverage: 32.86%
+Adult vaccination coverage: 37.06%
+Senior vaccination coverage: 36.81%
+
+Dynamic policies
+----------------
+Auto lockdown: False
+Lockdown threshold: 450
+Lockdown release threshold: 120
+Lockdown start step: None
+Lockdown end step: None
+Lockdown duration: 0
+Lockdown activation count: 0
+Auto school closure: True
+School closure threshold: 110
+School reopen threshold: 10
+School closure start step: 703
+School closure end step: 946
+School closure duration: 243
+School closure count: 2
+Auto work closure: False
+Work closure threshold: 450
+Work reopen threshold: 120
+Work closure start step: None
+Work closure end step: None
+Work closure duration: 0
+Work closure count: 0
+Auto mask compliance: True
+Mask compliance threshold: 150
+Mask relaxation threshold: 45
+Final mask compliance: 15.00%
+Mask compliance start step: None
+Mask compliance end step: None
+Mask compliance duration: 0
+Mask compliance activation count: 0
+Auto testing rate: False
+Testing rate threshold: 160
+Testing relaxation threshold: 45
+Final testing rate: 5.00%
+Testing rate start step: None
+Testing rate end step: None
+Testing rate duration: 0
+Testing rate activation count: 0
+Auto quarantine compliance: False
+Quarantine compliance threshold: 160
+Quarantine relaxation threshold: 45
+Final quarantine compliance: 10.00%
+Quarantine compliance start step: None
+Quarantine compliance end step: None
+Quarantine compliance duration: 0
+Quarantine compliance activation count: 0
+
+Mobility policies
+-----------------
+Base senior mobility: 65.00%
+Low senior mobility: 40.00%
+Senior mobility reduction start step: None
+Senior mobility reduction end step: None
+Senior mobility reduction duration: 0
+Senior mobility reduction count: 0
+Base child mobility: 100.00%
+Low child mobility: 45.00%
+Child mobility reduction start step: 703
+Child mobility reduction end step: 946
+Child mobility reduction duration: 243
+Child mobility reduction count: 2
+
+Age-group analysis
+------------------
+Child infections: 232
+Child attack rate: 23.39%
+Child deaths: 0
+Child death rate: 0.00%
+Adult infections: 76
+Adult attack rate: 2.52%
+Adult deaths: 0
+Adult death rate: 0.00%
+Senior infections: 34
+Senior attack rate: 3.41%
+Senior deaths: 1
+Senior death rate: 0.10%
+
+Final state counts
+------------------
+Susceptible: 2831
+Exposed: 0
+Infected: 0
+Recovered: 359
+Dead: 1
+Asymptomatic: 0
+Vaccinated: 1809
+
+Performance
+-----------
+Execution time (seconds): 51.54
+Log file: outputs/experiment_072_2026-06-21_21-51-52/logs/simulation.log
