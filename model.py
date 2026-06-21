@@ -193,6 +193,7 @@ class FluModel(Model):
         self.random_seed = random_seed
 
         random.seed(self.random_seed)
+        self.random.seed(self.random_seed)
 
         self.create_population(initial_infected)
 
@@ -468,7 +469,7 @@ class FluModel(Model):
     def create_agent(self, agent_id, initial_infected):
         if agent_id < initial_infected:
             state = "Infected"
-        elif random.random() < self.vaccination_rate:
+        elif self.random.random() < self.vaccination_rate:
             state = "Vaccinated"
             self.initial_vaccinations += 1
         else:

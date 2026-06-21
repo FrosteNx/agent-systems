@@ -97,7 +97,8 @@ def setup_logging(log_file):
     logging.basicConfig(
         filename=log_file,
         level=logging.INFO,
-        format="%(asctime)s [%(levelname)s] %(message)s"
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        force=True
     )
 
 def save_summary_metrics(summary_metrics, data_dir, global_summary_path):
