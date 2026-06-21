@@ -100,6 +100,25 @@ h1 {{
     margin-bottom: 30px;
 }}
 
+.nav {{
+    background: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}}
+
+.nav a {{
+    text-decoration: none;
+    color: #1565c0;
+    font-weight: 600;
+    margin-right: 25px;
+}}
+
+.nav a:hover {{
+    text-decoration: underline;
+}}
+
 .card {{
     background: white;
     padding: 24px;
@@ -218,6 +237,11 @@ tr:hover {{
     table {{
         font-size: 12px;
     }}
+
+    .nav a {{
+        display: inline-block;
+        margin-bottom: 8px;
+    }}
 }}
 </style>
 
@@ -228,7 +252,13 @@ tr:hover {{
 <h1>Flu Simulation Dashboard</h1>
 <div class="subtitle">Automatically generated simulation report</div>
 
-<div class="card">
+<div class="nav">
+    <a href="#key-metrics">Key Metrics</a>
+    <a href="#all-statistics">All Statistics</a>
+    <a href="#all-plots">All Plots</a>
+</div>
+
+<div class="card" id="key-metrics">
     <h2>Key Metrics</h2>
 
     <div class="metric-grid">
@@ -274,7 +304,7 @@ tr:hover {{
     </div>
 </div>
 
-<div class="card">
+<div class="card" id="all-statistics">
     <h2>All Statistics</h2>
     <p class="small-note">Two metrics are shown per row to make the table more compact.</p>
 
@@ -289,7 +319,7 @@ tr:hover {{
     </table>
 </div>
 
-<h2 class="section-title">All Plots</h2>
+<h2 class="section-title" id="all-plots">All Plots</h2>
 
 <div class="plot-grid">
     {plot_cards}
